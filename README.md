@@ -81,13 +81,13 @@ A solução é composta por três blocos principais:
 <a id="sec-03"></a>
 ## 3) Arquitetura 🧱
 
-```mermaid
+
 flowchart LR
-  A[Notebook / Python 🧪\nEDA + Treino + Tuning] --> B[Artefato .joblib 📦\n(model + preprocess + threshold)]
-  B --> C[FastAPI ds_service 🚀\nPOST /predict]
-  C -->|HTTP JSON| D[Spring Boot backend ☕\nRegras de negócio + Integrações]
-  D --> E[Clientes / Sistemas 🧑‍💻\nFront • CRM • Postman]
-```
+  A["Notebook / Python 🧪<br/>EDA + Treino + Tuning"] --> B["Artefato .joblib 📦<br/>(model + preprocess + threshold)"]
+  B --> C["FastAPI ds_service 🚀<br/>POST /predict"]
+  C -->|HTTP JSON| D["Spring Boot backend ☕<br/>Regras de negócio + Integrações"]
+  D --> E["Clientes / Sistemas 🧑‍💻<br/>Front • CRM • Postman"]
+
 
 **Por que separar assim?**
 - **Notebook**: laboratório (experimento, avaliação, decisão técnica).
@@ -274,6 +274,7 @@ cd backend
 ```json
 
 {
+
   "gender": "Female",
   "SeniorCitizen": 0,
   "Partner": "Yes",
@@ -322,7 +323,9 @@ BASE_URL="http://localhost:8000"
 
 ### 10.1 🛑 Alto risco
 ```bash
-curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d '{
+curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d 
+
+'{
     "gender": "Female",
     "SeniorCitizen": 0,
     "Partner": "Yes",
@@ -347,7 +350,9 @@ curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d '{
 
 ### 10.2 🟢 Baixo risco
 ```bash
-curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d '{
+curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d 
+
+'{
     "gender": "Male",
     "SeniorCitizen": 0,
     "Partner": "Yes",
@@ -373,7 +378,9 @@ curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d '{
 ### 10.3 ⚠️ Inválido (exemplo para 422)
 JSON válido (sintaxe), mas com tipo incorreto:
 ```bash
-curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d '{
+curl -X POST "$BASE_URL/predict"   -H "Content-Type: application/json"   -d 
+
+'{
     "gender": "Female",
     "SeniorCitizen": 0,
     "Partner": "Yes",
