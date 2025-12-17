@@ -4,211 +4,213 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ChurnDataDTO {
     @JsonProperty("gender")
-    private String gender;
+    private String genero;
 
     @JsonProperty("SeniorCitizen")
-    private int seniorCitizen;
+    private int idoso;
 
     @JsonProperty("Partner")
-    private String partner;
+    private String conjuge;
 
     @JsonProperty("Dependents")
-    private String dependents;
+    private String dependentes;
 
     @JsonProperty("tenure")
-    private int tenure;
+    private int tempoContrato;
 
     @JsonProperty("PhoneService")
-    private String phoneService;
+    private String servicoTelefone;
 
     @JsonProperty("MultipleLines")
-    private String multipleLines;
+    private String multiplasLinhasTel;
 
     @JsonProperty("InternetService")
-    private String internetService;
+    private String servicoInternet;
 
     @JsonProperty("OnlineSecurity")
-    private String onlineSecurity;
+    private String segurancaOnline;
 
     @JsonProperty("OnlineBackup")
-    private String onlineBackup;
+    private String backupOnline;
 
     @JsonProperty("DeviceProtection")
-    private String deviceProtection;
+    private String protecaoDispositivo;
 
     @JsonProperty("TechSupport")
-    private String techSupport;
+    private String suporteTecnico;
 
     @JsonProperty("StreamingTV")
-    private String streamingTV;
+    private String tvStreaming;
 
     @JsonProperty("StreamingMovies")
-    private String streamingMovies;
+    private String filmesStreaming;
 
     @JsonProperty("Contract")
-    private String contract;
+    private String tipoContrato;
 
     @JsonProperty("PaperlessBilling")
-    private String paperlessBilling;
+    private String faturaOnline;
 
     @JsonProperty("PaymentMethod")
-    private String paymentMethod;
+    private String metodoPagamento;
 
     @JsonProperty("MonthlyCharges")
-    private double monthlyCharges;
+    private double valorMensal;
 
     @JsonProperty("TotalCharges")
-    private double totalCharges;
+    private double valorTotal;
 
-    public String getGender() {
-        return gender;
+    // Getters and setters
+
+    public String getGenero() {
+        return genero;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
-    public int getSeniorCitizen() {
-        return seniorCitizen;
+    public int getIdoso() {
+        return idoso;
     }
 
-    public void setSeniorCitizen(int seniorCitizen) {
-        this.seniorCitizen = seniorCitizen;
+    public void setIdoso(int idoso) {
+        this.idoso = idoso;
     }
 
-    public String getPartner() {
-        return partner;
+    public String getConjuge() {
+        return conjuge;
     }
 
-    public void setPartner(String partner) {
-        this.partner = partner;
+    public void setConjuge(String conjuge) {
+        this.conjuge = conjuge;
     }
 
-    public String getDependents() {
-        return dependents;
+    public String getDependentes() {
+        return dependentes;
     }
 
-    public void setDependents(String dependents) {
-        this.dependents = dependents;
+    public void setDependentes(String dependentes) {
+        this.dependentes = dependentes;
     }
 
-    public int getTenure() {
-        return tenure;
+    public int getTempoContrato() {
+        return tempoContrato;
     }
 
-    public void setTenure(int tenure) {
-        this.tenure = tenure;
+    public void setTempoContrato(int tempoContrato) {
+        this.tempoContrato = tempoContrato;
     }
 
-    public String getPhoneService() {
-        return phoneService;
+    public String getServicoTelefone() {
+        return servicoTelefone;
     }
 
-    public void setPhoneService(String phoneService) {
-        this.phoneService = phoneService;
+    public void setServicoTelefone(String servicoTelefone) {
+        this.servicoTelefone = servicoTelefone;
     }
 
-    public String getMultipleLines() {
-        return multipleLines;
+    public String getMultiplasLinhasTel() {
+        return multiplasLinhasTel;
     }
 
-    public void setMultipleLines(String multipleLines) {
-        this.multipleLines = multipleLines;
+    public void setMultiplasLinhasTel(String multiplasLinhasTel) {
+        this.multiplasLinhasTel = multiplasLinhasTel;
     }
 
-    public String getInternetService() {
-        return internetService;
+    public String getServicoInternet() {
+        return servicoInternet;
     }
 
-    public void setInternetService(String internetService) {
-        this.internetService = internetService;
+    public void setServicoInternet(String servicoInternet) {
+        this.servicoInternet = servicoInternet;
     }
 
-    public String getOnlineSecurity() {
-        return onlineSecurity;
+    public String getSegurancaOnline() {
+        return segurancaOnline;
     }
 
-    public void setOnlineSecurity(String onlineSecurity) {
-        this.onlineSecurity = onlineSecurity;
+    public void setSegurancaOnline(String segurancaOnline) {
+        this.segurancaOnline = segurancaOnline;
     }
 
-    public String getOnlineBackup() {
-        return onlineBackup;
+    public String getBackupOnline() {
+        return backupOnline;
     }
 
-    public void setOnlineBackup(String onlineBackup) {
-        this.onlineBackup = onlineBackup;
+    public void setBackupOnline(String backupOnline) {
+        this.backupOnline = backupOnline;
     }
 
-    public String getDeviceProtection() {
-        return deviceProtection;
+    public String getProtecaoDispositivo() {
+        return protecaoDispositivo;
     }
 
-    public void setDeviceProtection(String deviceProtection) {
-        this.deviceProtection = deviceProtection;
+    public void setProtecaoDispositivo(String protecaoDispositivo) {
+        this.protecaoDispositivo = protecaoDispositivo;
     }
 
-    public String getTechSupport() {
-        return techSupport;
+    public String getSuporteTecnico() {
+        return suporteTecnico;
     }
 
-    public void setTechSupport(String techSupport) {
-        this.techSupport = techSupport;
+    public void setSuporteTecnico(String suporteTecnico) {
+        this.suporteTecnico = suporteTecnico;
     }
 
-    public String getStreamingTV() {
-        return streamingTV;
+    public String getTvStreaming() {
+        return tvStreaming;
     }
 
-    public void setStreamingTV(String streamingTV) {
-        this.streamingTV = streamingTV;
+    public void setTvStreaming(String tvStreaming) {
+        this.tvStreaming = tvStreaming;
     }
 
-    public String getStreamingMovies() {
-        return streamingMovies;
+    public String getFilmesStreaming() {
+        return filmesStreaming;
     }
 
-    public void setStreamingMovies(String streamingMovies) {
-        this.streamingMovies = streamingMovies;
+    public void setFilmesStreaming(String filmesStreaming) {
+        this.filmesStreaming = filmesStreaming;
     }
 
-    public String getContract() {
-        return contract;
+    public String getTipoContrato() {
+        return tipoContrato;
     }
 
-    public void setContract(String contract) {
-        this.contract = contract;
+    public void setTipoContrato(String tipoContrato) {
+        this.tipoContrato = tipoContrato;
     }
 
-    public String getPaperlessBilling() {
-        return paperlessBilling;
+    public String getFaturaOnline() {
+        return faturaOnline;
     }
 
-    public void setPaperlessBilling(String paperlessBilling) {
-        this.paperlessBilling = paperlessBilling;
+    public void setFaturaOnline(String faturaOnline) {
+        this.faturaOnline = faturaOnline;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public String getMetodoPagamento() {
+        return metodoPagamento;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setMetodoPagamento(String metodoPagamento) {
+        this.metodoPagamento = metodoPagamento;
     }
 
-    public double getMonthlyCharges() {
-        return monthlyCharges;
+    public double getValorMensal() {
+        return valorMensal;
     }
 
-    public void setMonthlyCharges(double monthlyCharges) {
-        this.monthlyCharges = monthlyCharges;
+    public void setValorMensal(double valorMensal) {
+        this.valorMensal = valorMensal;
     }
 
-    public double getTotalCharges() {
-        return totalCharges;
+    public double getValorTotal() {
+        return valorTotal;
     }
 
-    public void setTotalCharges(double totalCharges) {
-        this.totalCharges = totalCharges;
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
