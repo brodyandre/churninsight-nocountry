@@ -1,8 +1,10 @@
 package nocountry.churninsight.churn.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum GeneroEnum {
-    MASCULINO("masculino"),
-    FEMININO("feminino");
+    MASCULINO("Masculino"),
+    FEMININO("Feminino");
 
     private final String valor;
 
@@ -10,6 +12,7 @@ public enum GeneroEnum {
         this.valor = valor;
     }
 
+    @JsonValue
     public String getValor() {
         return valor;
     }

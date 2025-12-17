@@ -1,9 +1,11 @@
 package nocountry.churninsight.churn.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum TipoContratoEnum {
-    MENSAL("mensal"),
-    ANUAL("anual"),
-    BI_ANUAL("bi anual");
+    MENSAL("Mensal"),
+    ANUAL("Anual"),
+    BIANUAL("Bianual");
 
     private final String valor;
 
@@ -11,6 +13,7 @@ public enum TipoContratoEnum {
         this.valor = valor;
     }
 
+    @JsonValue
     public String getValor() {
         return valor;
     }
