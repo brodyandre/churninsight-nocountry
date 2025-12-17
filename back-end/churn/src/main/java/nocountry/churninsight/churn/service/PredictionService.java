@@ -6,8 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PredictionService {
-    //aguardando o modelo para integração
     public PredictDTO predict(ChurnDataDTO data) {
-        return new PredictDTO("Vai continuar", 0.47);
+        // Valor de retorno provisório enquanto o modelo não é integrado.
+        // A lógica abaixo é apenas um exemplo e será substituída.
+        if (data.getValorMensal() > 100) {
+            return new PredictDTO("Vai cancelar", 0.8);
+        } else {
+            return new PredictDTO("Vai continuar", 0.47);
+        }
     }
 }
