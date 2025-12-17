@@ -12,7 +12,7 @@ public class Cliente {
     private Long id;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "genero", nullable = false)
+    @Column(name = "genero", columnDefinition = "genero_enum", nullable = false)
     private GeneroEnum genero;
     
     @Column(name = "idoso", nullable = false)
@@ -25,7 +25,7 @@ public class Cliente {
     private String dependentes;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_contrato", nullable = false)
+    @Column(name = "tipo_contrato", columnDefinition = "tipo_contrato_enum", nullable = false)
     private TipoContratoEnum tipoContrato;
     
     @Column(name = "tempo_contrato", nullable = false)
@@ -38,7 +38,7 @@ public class Cliente {
     private String multiplasLinhasTel;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "servico_internet", nullable = false)
+    @Column(name = "servico_internet", columnDefinition = "servico_internet_enum", nullable = false)
     private ServicoInternetEnum servicoInternet;
     
     @Column(name = "seguranca_online", nullable = false, length = 3)
@@ -63,7 +63,7 @@ public class Cliente {
     private String faturaOnline;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "metodo_pagamento", nullable = false)
+    @Column(name = "metodo_pagamento", columnDefinition = "metodo_pagamento_enum", nullable = false)
     private MetodoPagamentoEnum metodoPagamento;
     
     @Column(name = "valor_mensal", nullable = false)
@@ -72,12 +72,12 @@ public class Cliente {
     @Column(name = "valor_total", nullable = false)
     private Float valorTotal;
     
-    @Column(name = "criado_em", nullable = false)
-    private OffsetDateTime criadoEm;
+    @Column(name = "data_criacao", nullable = false)
+    private OffsetDateTime dataCriacao;
     
     @PrePersist
     protected void onCreate() {
-        criadoEm = OffsetDateTime.now();
+        dataCriacao = OffsetDateTime.now();
     }
     
     // Constructors
@@ -272,12 +272,12 @@ public class Cliente {
         this.valorTotal = valorTotal;
     }
     
-    public OffsetDateTime getCriadoEm() {
-        return criadoEm;
+    public OffsetDateTime getDataCriacao() {
+        return dataCriacao;
     }
     
-    public void setCriadoEm(OffsetDateTime criadoEm) {
-        this.criadoEm = criadoEm;
+    public void setDataCriacao(OffsetDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
     
     @Override
@@ -303,7 +303,7 @@ public class Cliente {
                 ", metodoPagamento=" + metodoPagamento +
                 ", valorMensal=" + valorMensal +
                 ", valorTotal=" + valorTotal +
-                ", criadoEm=" + criadoEm +
+                ", dataCriacao=" + dataCriacao +
                 '}';
     }
 }
