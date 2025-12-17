@@ -17,7 +17,7 @@ public class Previsao {
     @Column(name = "previsao", nullable = false, length = 50)
     private String previsao;
     
-    @Column(name = "probabilidade", nullable = false, precision = 5, scale = 4)
+    @Column(name = "probabilidade", nullable = false)
     private Double probabilidade;
     
     @Column(name = "data_criacao", nullable = false, updatable = false)
