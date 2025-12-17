@@ -1,0 +1,29 @@
+# Definindo as colunas
+categorical_cols = df.select_dtypes(include=['object']).drop(columns=['customerID', 'Churn']).columns
+numerical_cols = ['tenure', 'MonthlyCharges', 'TotalCharges']
+
+X = df[categorical_cols.tolist() + numerical_cols]
+y = df['Churn'].apply(lambda x: 1 if x == 'Yes' else 0) # Convertendo alvo para binário
+
+# Criação do Pipeline de Transformação:
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_cols),
+        ('cat', OneHotEncoder(drop='first'), categorical_cols)
+    ])
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+print(f"Treino: {X_train.shape}, Teste: {X_test.shape}")
+
+# Adicionei o parâmetro 'stratify=y' para manter a proporção de Churn
+X_train, X_test, y_train, y_test = train_test_split(
+    X_processed_df, y, 
+    test_size=0.2, 
+    random_state=42, 
+    stratify=y  # <---  garaniae que o treino e o teste tenham a mesma % de churn
+)
