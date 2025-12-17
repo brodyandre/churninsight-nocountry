@@ -1,11 +1,13 @@
 package nocountry.churninsight.churn.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum MetodoPagamentoEnum {
     PIX("Pix"),
     TED("Ted"),
-    BOLETO("boleto"),
-    DEBITO_EM_CONTA("debito em conta"),
-    CARTAO_CREDITO("cartão de credito");
+    BOLETO("Boleto"),
+    DEBITO_EM_CONTA("Débito em conta"),
+    CARTAO_CREDITO("Cartão de crédito");
 
     private final String valor;
 
@@ -13,6 +15,7 @@ public enum MetodoPagamentoEnum {
         this.valor = valor;
     }
 
+    @JsonValue
     public String getValor() {
         return valor;
     }

@@ -1,9 +1,11 @@
 package nocountry.churninsight.churn.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ServicoInternetEnum {
     DSL("DSL"),
-    FIBRA_OTICA("Fibra Otica"),
-    NENHUM("nenhum");
+    FIBRA_OTICA("Fibra Ótica"),
+    NENHUM("Nenhum");
 
     private final String valor;
 
@@ -11,6 +13,7 @@ public enum ServicoInternetEnum {
         this.valor = valor;
     }
 
+    @JsonValue
     public String getValor() {
         return valor;
     }
