@@ -1,0 +1,6 @@
+import joblib
+import os
+
+# Salvando o modelo serializado para produção
+if not os.path.exists('models'): os.makedirs('models')
+joblib.dump(rf_final, 'models/modelo_churn_final.pkl')

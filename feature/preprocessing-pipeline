@@ -1,0 +1,31 @@
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Separação de Features e Target
+X = df.drop(['customerID', 'Churn'], axis=1)
+y = df['Churn'].apply(lambda x: 1 if x == 'Yes' else 0)
+
+# Mapeamento automático de colunas por tipo
+categorical_cols = X.select_dtypes(include='object').columns
+numerical_cols = X.select_dtypes(include=['int64', 'float64']).columns
+
+# Pipeline de Pré-processamento
+preprocessor = ColumnTransformer(transformers=[
+    ('cat', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols),
+    ('num', 'passthrough', numerical_cols)
+])
+
+# Divisão Estratificada (Mantém a proporção de Churn em treino e teste)
+X_train_raw, X_test_raw, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Ajuste apenas nos dados de treino para evitar vazamento de informação
+X_train_processed = preprocessor.fit_transform(X_train_raw)
+X_test_processed = preprocessor.transform(X_test_raw)
+
+# Recuperação dos nomes das colunas após One-Hot Encoding
+feature_names = preprocessor.get_feature_names_out()
+X_train = pd.DataFrame(X_train_processed, columns=feature_names, index=X_train_raw.index)
+X_test = pd.DataFrame(X_test_processed, columns=feature_names, index=X_test_raw.index)
