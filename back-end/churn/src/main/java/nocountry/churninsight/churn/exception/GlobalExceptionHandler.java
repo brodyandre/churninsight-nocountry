@@ -104,6 +104,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage());
     }
 
+    // Status 504 - Erro de Comunicação entre Servidores
+    @ExceptionHandler(PredictionServiceTimeoutException.class)
+    public ResponseEntity<Object> handlePredictionTimeOut(PredictionServiceTimeoutException ex) {
+        return buildResponse(HttpStatus.GATEWAY_TIMEOUT,
+                "O serviço de predição demorou muito para responder.",
+                "Tente novamente em instantes ou reduza o volume de dados.");
+    }
+
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
