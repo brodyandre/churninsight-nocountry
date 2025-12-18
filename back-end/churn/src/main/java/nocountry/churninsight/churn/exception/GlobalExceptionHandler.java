@@ -88,6 +88,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage());
     }
 
+    // Status 500 - Erro Genérico
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocorreu um erro interno inesperado.",
+                "Entre em contato com o suporte.");
+    }
+
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
