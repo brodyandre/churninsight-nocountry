@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -55,6 +56,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponse(HttpStatus.valueOf(status.value()),
                 message,
                 "Verifique o corpo da requisição.");
+    }
+
+    // Status 405 - Método HTTP Errado
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest req) {
+
+        return buildResponse(HttpStatus.valueOf(status.value()),
+                "Método HTTP não suportado para este endpoint.",
+                "O método correto é " + ex.getSupportedHttpMethods());
     }
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
