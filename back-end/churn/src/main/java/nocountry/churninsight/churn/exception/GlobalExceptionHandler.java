@@ -1,9 +1,11 @@
 package nocountry.churninsight.churn.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -36,6 +38,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponse(HttpStatus.valueOf(status.value()),
                 "Erro de validação dos campos.",
                 errors);
+    }
+
+    // Status 400 - JSON Mal Formado
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest req) {
+
+        String message = (ex.getCause() instanceof InvalidFormatException)
+                ? "Erro de formato: valor incompatível com o campo."
+                : "JSON malformado ou erro de sintaxe.";
+
+        return buildResponse(HttpStatus.valueOf(status.value()),
+                message,
+                "Verifique o corpo da requisição.");
     }
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
