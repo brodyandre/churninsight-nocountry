@@ -80,6 +80,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "O método correto é " + ex.getSupportedHttpMethods());
     }
 
+    // Status 422 - Erro de Negócio
+    @ExceptionHandler(InvalidChurnDataException.class)
+    public ResponseEntity<Object> handleInvalidChurnDta(InvalidChurnDataException ex) {
+        return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT,
+                "Dados inconsistentes para análise de churn.",
+                ex.getMessage());
+    }
+
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
