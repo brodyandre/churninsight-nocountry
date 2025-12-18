@@ -96,6 +96,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Entre em contato com o suporte.");
     }
 
+    // Status 502 - Erro de Integração
+    @ExceptionHandler(IntegrationException.class)
+    public ResponseEntity<Object> handleIntegration(IntegrationException ex) {
+        return buildResponse(HttpStatus.BAD_GATEWAY,
+                "Serviço de predição indisponível.",
+                ex.getMessage());
+    }
+
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
