@@ -2,102 +2,106 @@ package nocountry.churninsight.churn.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChurnDataDTO {
     @JsonProperty("gender")
     @NotBlank(message = "Gênero é obrigatório")
-    @Pattern(regexp = "Male|Female", message = "Gênero deve ser 'Male' ou 'Female'")
+    @Pattern(regexp = "Masculino|Feminino", message = "Gênero deve ser 'Masculino' ou 'Feminino'")
     private String genero;
 
     @JsonProperty("SeniorCitizen")
     @Min(value = 0, message = "Idoso deve ser 0 ou 1")
     @Max(value = 1, message = "Idoso deve ser 0 ou 1")
-    private int idoso;
+    private Integer idoso;
 
     @JsonProperty("Partner")
-    @NotBlank(message = "Partner é obrigatório")
-    @Pattern(regexp = "Yes|No", message = "Partner deve ser 'Yes' ou 'No'")
+    @NotBlank(message = "Cônjuge é obrigatório")
+    @Pattern(regexp = "Sim|Não", message = "Cônjuge deve ser 'Sim' ou 'Não'")
     private String conjuge;
 
     @JsonProperty("Dependents")
     @NotBlank(message = "Dependentes é obrigatório")
-    @Pattern(regexp = "Yes|No", message = "Dependentes deve ser 'Yes' ou 'No'")
+    @Pattern(regexp = "Sim|Não", message = "Dependentes deve ser 'Sim' ou 'Não'")
     private String dependentes;
 
     @JsonProperty("tenure")
     @Min(value = 0, message = "Tempo de contrato não pode ser negativo")
     @Max(value = 72, message = "Tempo de contrato não pode exceder 72 meses")
-    private int tempoContrato;
+    private Integer tempoContrato;
 
     @JsonProperty("PhoneService")
     @NotBlank(message = "Serviço de Telefone é obrigatório")
-    @Pattern(regexp = "Yes|No", message = "Serviço de Telefone deve ser 'Yes' ou 'No'")
+    @Pattern(regexp = "Sim|Não", message = "Serviço de Telefone deve ser 'Sim' ou 'Não'")
     private String servicoTelefone;
 
     @JsonProperty("MultipleLines")
     @NotBlank(message = "Múltiplas Linhas é obrigatório")
-    @Pattern(regexp = "Yes|No|No phone service", message = "Múltiplas Linhas deve ser 'Yes', 'No' ou 'No phone service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de telefone", message = "Múltiplas Linhas deve ser 'Sim', 'Não' ou 'Sem serviço de telefone'")
     private String multiplasLinhasTel;
 
     @JsonProperty("InternetService")
     @NotBlank(message = "Serviço de Internet é obrigatório")
-    @Pattern(regexp = "DSL|Fiber optic|No", message = "Serviço de Internet deve ser 'DSL', 'Fiber optic' ou 'No'")
+    @Pattern(regexp = "DSL|Fibra Ótica|Nenhum", message = "Serviço de Internet deve ser 'DSL', 'Fibra Ótica' ou 'Nenhum'")
     private String servicoInternet;
 
     @JsonProperty("OnlineSecurity")
     @NotBlank(message = "Segurança Online é obrigatória")
-    @Pattern(regexp = "Yes|No|No internet service", message = "Segurança Online deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Segurança Online deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String segurancaOnline;
 
     @JsonProperty("OnlineBackup")
     @NotBlank(message = "Backup Online é obrigatório")
-    @Pattern(regexp = "Yes|No|No internet service", message = "Backup Online deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Backup Online deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String backupOnline;
 
     @JsonProperty("DeviceProtection")
     @NotBlank(message = "Proteção de Dispositivo é obrigatória")
-    @Pattern(regexp = "Yes|No|No internet service", message = "Proteção de Dispositivo deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Proteção de Dispositivo deve ser 'Sim', 'No' ou 'Sem serviço de internet'")
     private String protecaoDispositivo;
 
     @JsonProperty("TechSupport")
     @NotBlank(message = "Suporte Técnico é obrigatório")
-    @Pattern(regexp = "Yes|No|No internet service", message = "Suporte Técnico deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Suporte Técnico deve ser 'Sim', 'Não' ou 'Sem serviço de internete'")
     private String suporteTecnico;
 
     @JsonProperty("StreamingTV")
     @NotBlank(message = "TV Streaming é obrigatória")
-    @Pattern(regexp = "Yes|No|No internet service", message = "TV Streaming deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "TV Streaming deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String tvStreaming;
 
     @JsonProperty("StreamingMovies")
     @NotBlank(message = "Filmes Streaming é obrigatório")
-    @Pattern(regexp = "Yes|No|No internet service", message = "Filmes Streaming deve ser 'Yes', 'No' ou 'No internet service'")
+    @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Filmes Streaming deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String filmesStreaming;
 
     @JsonProperty("Contract")
     @NotBlank(message = "Tipo de Contrato é obrigatório")
-    @Pattern(regexp = "Month-to-month|One year|Two year", message = "Tipo de Contrato deve ser 'Month-to-month', 'One year' ou 'Two year'")
+    @Pattern(regexp = "Mensal|Anual|Bianual", message = "Tipo de Contrato deve ser 'Month-to-month', 'One year' ou 'Two year'")
     private String tipoContrato;
 
     @JsonProperty("PaperlessBilling")
     @NotBlank(message = "Fatura Online é obrigatória")
-    @Pattern(regexp = "Yes|No", message = "Fatura Online deve ser 'Yes' ou 'No'")
+    @Pattern(regexp = "Sim|Não", message = "Fatura Online deve ser 'Sim' ou 'No'")
     private String faturaOnline;
 
     @JsonProperty("PaymentMethod")
     @NotBlank(message = "Método de Pagamento é obrigatório")
-    @Pattern(regexp = "Electronic check|Mailed check|Bank transfer \\(automatic\\)|Credit card \\(automatic\\)", message = "Método de Pagamento inválido")
+    @Pattern(regexp = "Pix|Ted|Boleto|Débito em conta|Cartão de crédito", message = "Método de Pagamento inválido")
     private String metodoPagamento;
 
     @JsonProperty("MonthlyCharges")
     @DecimalMin(value = "0.0", inclusive = true, message = "Valor mensal não pode ser negativo")
     @DecimalMax(value = "9999.99", message = "Valor mensal muito alto")
-    private double valorMensal;
+    private Double valorMensal;
 
     @JsonProperty("TotalCharges")
     @DecimalMin(value = "0.0", inclusive = true, message = "Valor total não pode ser negativo")
     @DecimalMax(value = "99999.99", message = "Valor total muito alto")
-    private double valorTotal;
+    private Double valorTotal;
 
     // Getters and setters
 
@@ -241,7 +245,7 @@ public class ChurnDataDTO {
         return valorMensal;
     }
 
-    public void setValorMensal(double valorMensal) {
+    public void setValorMensal(Double valorMensal) {
         this.valorMensal = valorMensal;
     }
 
@@ -249,7 +253,7 @@ public class ChurnDataDTO {
         return valorTotal;
     }
 
-    public void setValorTotal(double valorTotal) {
+    public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
     }
 }
