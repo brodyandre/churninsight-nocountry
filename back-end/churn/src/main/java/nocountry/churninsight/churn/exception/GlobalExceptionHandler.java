@@ -123,4 +123,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
+    /**
+     * Trata exceções de validação de negócio customizadas.
+     */
+    @ExceptionHandler(ValidationBusinessException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationBusinessException(
+            ValidationBusinessException ex,
+            WebRequest request) {
+        
+        ValidationErrorResponse response = new ValidationErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                ex.getErrors(),
+                LocalDateTime.now(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }
