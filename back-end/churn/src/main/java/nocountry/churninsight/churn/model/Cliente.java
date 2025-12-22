@@ -34,29 +34,29 @@ public class Cliente {
     @Column(name = "servico_telefone", nullable = false, length = 3)
     private String servicoTelefone;
     
-    @Column(name = "multiplas_linhas_tel", nullable = false, length = 3)
+    @Column(name = "multiplas_linhas_tel", nullable = false, length = 30)
     private String multiplasLinhasTel;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "servico_internet", columnDefinition = "servico_internet_enum", nullable = false)
     private ServicoInternetEnum servicoInternet;
     
-    @Column(name = "seguranca_online", nullable = false, length = 3)
+    @Column(name = "seguranca_online", nullable = false, length = 30)
     private String segurancaOnline;
     
-    @Column(name = "backup_online", nullable = false, length = 3)
+    @Column(name = "backup_online", nullable = false, length = 30)
     private String backupOnline;
     
-    @Column(name = "protecao_dispositivo", nullable = false, length = 3)
+    @Column(name = "protecao_dispositivo", nullable = false, length = 30)
     private String protecaoDispositivo;
     
-    @Column(name = "suporte_tecnico", nullable = false, length = 3)
+    @Column(name = "suporte_tecnico", nullable = false, length = 30)
     private String suporteTecnico;
     
-    @Column(name = "tv_streaming", nullable = false, length = 3)
+    @Column(name = "tv_streaming", nullable = false, length = 30)
     private String tvStreaming;
     
-    @Column(name = "filmes_streaming", nullable = false, length = 3)
+    @Column(name = "filmes_streaming", nullable = false, length = 30)
     private String filmesStreaming;
     
     @Column(name = "fatura_online", nullable = false, length = 3)
@@ -67,10 +67,10 @@ public class Cliente {
     private MetodoPagamentoEnum metodoPagamento;
     
     @Column(name = "valor_mensal", nullable = false)
-    private Float valorMensal;
+    private Double valorMensal;
     
     @Column(name = "valor_total", nullable = false)
-    private Float valorTotal;
+    private Double valorTotal;
     
     @Column(name = "data_criacao", nullable = false)
     private OffsetDateTime dataCriacao;
@@ -89,7 +89,7 @@ public class Cliente {
                    String multiplasLinhasTel, ServicoInternetEnum servicoInternet, String segurancaOnline,
                    String backupOnline, String protecaoDispositivo, String suporteTecnico, String tvStreaming,
                    String filmesStreaming, String faturaOnline, MetodoPagamentoEnum metodoPagamento,
-                   Float valorMensal, Float valorTotal) {
+                   Double valorMensal, Double valorTotal) {
         this.genero = genero;
         this.idoso = idoso;
         this.conjuge = conjuge;
@@ -256,19 +256,19 @@ public class Cliente {
         this.metodoPagamento = metodoPagamento;
     }
     
-    public Float getValorMensal() {
+    public Double getValorMensal() {
         return valorMensal;
     }
     
-    public void setValorMensal(Float valorMensal) {
+    public void setValorMensal(Double valorMensal) {
         this.valorMensal = valorMensal;
     }
     
-    public Float getValorTotal() {
+    public Double getValorTotal() {
         return valorTotal;
     }
     
-    public void setValorTotal(Float valorTotal) {
+    public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
     }
     
