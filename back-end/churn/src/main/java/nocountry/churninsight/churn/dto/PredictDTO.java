@@ -13,7 +13,7 @@ public class PredictDTO {
     @JsonProperty("probabilidade")
     @DecimalMin(value = "0.0", inclusive = true, message = "Probabilidade não pode ser negativa")
     @DecimalMax(value = "1.0", inclusive = true, message = "Probabilidade não pode ser maior que 1")
-    private double probabilidade;
+    private Double probabilidade;
 
     public PredictDTO(String previsao, double probabilidade) {
         this.previsao = previsao;
@@ -32,7 +32,7 @@ public class PredictDTO {
         return probabilidade;
     }
 
-    public void setProbabilidade(double probabilidade) {
+    public void setProbabilidade(Double probabilidade) {
         this.probabilidade = probabilidade;
     }
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // Status 400 - Erro de Validação
+    // Status 400 - Erro de Validação (DTO)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -40,6 +40,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponse(HttpStatus.valueOf(status.value()),
                 "Erro de validação dos campos.",
                 errors);
+    }
+
+    // Status 400 - Erro de Validação (Service)
+    @ExceptionHandler(ValidationBusinessException.class)
+    public ResponseEntity<Object> handleValidationBusinessException(ValidationBusinessException ex) {
+        
+        return buildResponse(HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                ex.getErrors());
     }
 
     // Status 400 - JSON Mal Formado
@@ -121,24 +130,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return new ResponseEntity<>(error, status);
-    }
-
-    /**
-     * Trata exceções de validação de negócio customizadas.
-     */
-    @ExceptionHandler(ValidationBusinessException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationBusinessException(
-            ValidationBusinessException ex,
-            WebRequest request) {
-        
-        ValidationErrorResponse response = new ValidationErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                ex.getErrors(),
-                LocalDateTime.now(),
-                request.getDescription(false).replace("uri=", "")
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
