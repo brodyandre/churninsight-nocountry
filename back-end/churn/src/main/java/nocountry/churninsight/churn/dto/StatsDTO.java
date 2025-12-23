@@ -1,18 +1,33 @@
 package nocountry.churninsight.churn.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class StatsDTO {
-    private Long totalClients;
-    private Long totalPredictions;
-    private Double churnRate;
-    private Long retainedClients;
-    private Long churnedClients;
+
+    @JsonProperty("total_clientes")
+    private long totalClientes;
+
+    @JsonProperty("media_valor_mensal")
+    private double mediaValorMensal;
+
+    public StatsDTO(long totalClientes, double mediaValorMensal) {
+        this.totalClientes = totalClientes;
+        this.mediaValorMensal = mediaValorMensal;
+    }
+
+    public long getTotalClientes() {
+        return totalClientes;
+    }
+
+    public void setTotalClientes(long totalClientes) {
+        this.totalClientes = totalClientes;
+    }
+
+    public double getMediaValorMensal() {
+        return mediaValorMensal;
+    }
+
+    public void setMediaValorMensal(double mediaValorMensal) {
+        this.mediaValorMensal = mediaValorMensal;
+    }
 }
