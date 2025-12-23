@@ -5,29 +5,93 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class StatsDTO {
 
     @JsonProperty("total_clientes")
-    private long totalClientes;
+    private Long totalClients;
 
-    @JsonProperty("media_valor_mensal")
-    private double mediaValorMensal;
+    @JsonProperty("total_previsoes")
+    private Long totalPredictions;
 
-    public StatsDTO(long totalClientes, double mediaValorMensal) {
-        this.totalClientes = totalClientes;
-        this.mediaValorMensal = mediaValorMensal;
+    @JsonProperty("taxa_churn")
+    private Double churnRate;
+
+    @JsonProperty("clientes_retidos")
+    private Long retainedClients;
+
+    @JsonProperty("clientes_churn")
+    private Long churnedClients;
+
+    // Construtor privado para o Builder
+    private StatsDTO(Builder builder) {
+        this.totalClients = builder.totalClients;
+        this.totalPredictions = builder.totalPredictions;
+        this.churnRate = builder.churnRate;
+        this.retainedClients = builder.retainedClients;
+        this.churnedClients = builder.churnedClients;
     }
 
-    public long getTotalClientes() {
-        return totalClientes;
+    public StatsDTO() {
     }
 
-    public void setTotalClientes(long totalClientes) {
-        this.totalClientes = totalClientes;
+    // Getters
+    public Long getTotalClients() {
+        return totalClients;
     }
 
-    public double getMediaValorMensal() {
-        return mediaValorMensal;
+    public Long getTotalPredictions() {
+        return totalPredictions;
     }
 
-    public void setMediaValorMensal(double mediaValorMensal) {
-        this.mediaValorMensal = mediaValorMensal;
+    public Double getChurnRate() {
+        return churnRate;
+    }
+
+    public Long getRetainedClients() {
+        return retainedClients;
+    }
+
+    public Long getChurnedClients() {
+        return churnedClients;
+    }
+
+    // Método estático para iniciar o Builder
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    // Classe estática interna Builder
+    public static class Builder {
+        private Long totalClients;
+        private Long totalPredictions;
+        private Double churnRate;
+        private Long retainedClients;
+        private Long churnedClients;
+
+        public Builder totalClients(Long totalClients) {
+            this.totalClients = totalClients;
+            return this;
+        }
+
+        public Builder totalPredictions(Long totalPredictions) {
+            this.totalPredictions = totalPredictions;
+            return this;
+        }
+
+        public Builder churnRate(Double churnRate) {
+            this.churnRate = churnRate;
+            return this;
+        }
+
+        public Builder retainedClients(Long retainedClients) {
+            this.retainedClients = retainedClients;
+            return this;
+        }
+
+        public Builder churnedClients(Long churnedClients) {
+            this.churnedClients = churnedClients;
+            return this;
+        }
+
+        public StatsDTO build() {
+            return new StatsDTO(this);
+        }
     }
 }

@@ -9,20 +9,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import nocountry.churninsight.churn.dto.ChurnDataDTO;
 import nocountry.churninsight.churn.dto.PredictDTO;
-import nocountry.churninsight.churn.dto.StatsDTO;
 import nocountry.churninsight.churn.exception.IntegrationException;
 import nocountry.churninsight.churn.exception.ValidationBusinessException;
-import nocountry.churninsight.churn.model.Cliente;
-import nocountry.churninsight.churn.repository.ClientRepository;
 import nocountry.churninsight.churn.validator.ChurnDataValidator;
 
 @Service
@@ -31,14 +24,6 @@ public class PredictionService {
 
     @Autowired
     private ChurnDataValidator churnDataValidator;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Value("${ds.service.url:http://localhost:8001}")
-    private String dsServiceUrl;
-
-    private ClientRepository clientRepository;
 
     /**
      * Realiza a previsão de churn para um único cliente.
@@ -57,57 +42,24 @@ public class PredictionService {
         }
 
         try {
-            // Chamar o microsserviço Python de predição
-            logger.info("Enviando dados para microsserviço Python: {}", dsServiceUrl);
-            
-            ResponseEntity<PredictDTO> response = restTemplate.postForEntity(
-                dsServiceUrl + "/predict",
-                data,
-                PredictDTO.class
-            );
+            PredictDTO resultado;
 
-            if (response.getBody() == null) {
-                throw new IntegrationException("Resposta vazia do serviço de predição");
+            // Lógica MOCK (Provisória) - Substituir pelo modelo real futuramente
+            if (data.getValorMensal() > 100) {
+                resultado = new PredictDTO("Vai cancelar", 0.82);
+            } else {
+                resultado = new PredictDTO("Vai continuar", 0.15);
             }
 
-            PredictDTO resultado = response.getBody();
-            
-            // Registra o sucesso da operação
             logger.info("Análise finalizada. Resultado: '{}', Probabilidade: {}",
                     resultado.getPrevisao(), resultado.getProbabilidade());
 
             return resultado;
 
-        } catch (RestClientException e) {
-            // Erro de comunicação com o microsserviço
-            logger.error("Falha ao conectar com microsserviço Python em {}: {}",
-                    dsServiceUrl, e.getMessage());
-            
-            throw new IntegrationException(
-                "Erro ao conectar com serviço de predição: " + e.getMessage()
-            );
         } catch (Exception e) {
             logger.error("Falha crítica ao calcular churn para os dados: {}", data, e);
             throw new IntegrationException("Erro interno no serviço de previsão: " + e.getMessage());
         }
-    }
-
-    /**
-     * Calcula estatísticas básicas sobre os clientes cadastrados no banco.
-     */
-    public StatsDTO getStats() {
-        logger.info("Calculando estatísticas gerais...");
-        List<Cliente> clientes = clientRepository.findAll();
-
-        long total = clientes.size();
-        double somaValor = clientes.stream()
-                .mapToDouble(Cliente::getValorMensal)
-                .sum();
-        
-        double media = total > 0 ? somaValor / total : 0.0;
-
-        logger.info("Estatísticas calculadas: Total={}, Média={}", total, media);
-        return new StatsDTO(total, media);
     }
 
     /**

@@ -19,6 +19,7 @@ import nocountry.churninsight.churn.dto.ChurnDataDTO;
 import nocountry.churninsight.churn.dto.PredictDTO;
 import nocountry.churninsight.churn.dto.StatsDTO;
 import nocountry.churninsight.churn.service.PredictionService;
+import nocountry.churninsight.churn.service.StatsService;
 
 @RestController
 @RequestMapping("/churn")
@@ -28,6 +29,9 @@ public class ChurnController {
 
     @Autowired
     private PredictionService predictionService;
+
+    @Autowired
+    private StatsService statsService;
 
     @PostMapping("/predict")
     public ResponseEntity<PredictDTO> predictChurn(@RequestBody ChurnDataDTO data) {
@@ -46,7 +50,8 @@ public class ChurnController {
     public ResponseEntity<StatsDTO> getStats() {
         logger.info("Recebida requisição para estatísticas gerais.");
         try {
-            StatsDTO stats = predictionService.getStats();
+            // Agora usa o StatsService que tem a lógica mais completa
+            StatsDTO stats = statsService.getBasicStats();
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
             logger.error("Erro ao buscar estatísticas.", e);
