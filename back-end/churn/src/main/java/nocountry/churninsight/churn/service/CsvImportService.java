@@ -2,6 +2,7 @@ package nocountry.churninsight.churn.service;
 
 import nocountry.churninsight.churn.dto.CsvImportResponseDTO;
 import nocountry.churninsight.churn.model.Cliente;
+import nocountry.churninsight.churn.model.GeneroEnum;
 import nocountry.churninsight.churn.repository.ClientRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -30,6 +31,7 @@ public class CsvImportService {
      * @param file CSV file containing client data
      * @return CsvImportResponseDTO with import statistics
      */
+    @SuppressWarnings("deprecation")
     public CsvImportResponseDTO importClientsFromCsv(MultipartFile file) {
         int successCount = 0;
         int failureCount = 0;
@@ -37,7 +39,8 @@ public class CsvImportService {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
 
-            CSVParser csvParser = new CSVFormat()
+            // Use DEFAULT format which supports header
+            CSVParser csvParser = CSVFormat.DEFAULT
                     .withFirstRecordAsHeader()
                     .withIgnoreEmptyLines()
                     .parse(reader);
@@ -84,7 +87,9 @@ public class CsvImportService {
         
         try {
             if (record.isMapped("genero")) {
-                cliente.setGenero(record.get("genero"));
+                // Convert string to GeneroEnum
+                String generoStr = record.get("genero");
+                cliente.setGenero(GeneroEnum.valueOf(generoStr.toUpperCase()));
             }
             if (record.isMapped("idoso")) {
                 cliente.setIdoso(Integer.parseInt(record.get("idoso")));
@@ -101,8 +106,11 @@ public class CsvImportService {
             // Add more fields as needed
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid number format in CSV record", e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid enum value in CSV record", e);
         }
 
         return cliente;
     }
 }
+
