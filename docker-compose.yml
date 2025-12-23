@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: churninsight-db
+    environment:
+      POSTGRES_DB: churninsight_db
+      POSTGRES_USER: churnuser
+      POSTGRES_PASSWORD: churnpass123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U churnuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - churninsight-network
+
+  # Python Data Science Microservice (FastAPI)
+  ds-service:
+    build:
+      context: ./ds_service
+      dockerfile: Dockerfile
+    container_name: churninsight-ds-api
+    ports:
+      - "8001:8001"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8001
+      MODEL_PATH: models/modelo_churn_final.pkl
+      RELOAD: "False"
+    volumes:
+      - ./ds_service/models:/app/models
+      - ./ds_service/main.py:/app/main.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - churninsight-network
+    restart: unless-stopped
+
+  # Java Spring Boot API
+  java-api:
+    build:
+      context: ./back-end/churn
+      dockerfile: Dockerfile
+    container_name: churninsight-java-api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: postgres:5432
+      DATABASE_NAME: churninsight_db
+      DATABASE_USER: churnuser
+      DATABASE_PASSWORD: churnpass123
+      DS_SERVICE_URL: http://ds-service:8001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ds-service:
+        condition: service_healthy
+    volumes:
+      - ./back-end/churn/src:/app/src
+    networks:
+      - churninsight-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  churninsight-network:
+    driver: bridge
