@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-backend
+  namespace: churninsight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-backend
+  template:
+    metadata:
+      labels:
+        app: spring-backend
+    spec:
+      containers:
+        - name: spring-backend
+          image: <REGISTRY>/<NAMESPACE>/churninsight-spring:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DS_SERVICE_URL
+              value: "http://ds-service:8000"
+          readinessProbe:
+            httpGet:
+              path: /api/churn/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/churn/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 20

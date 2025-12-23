@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Jupyter / dados
+.ipynb_checkpoints/
+data/
+*.csv
+
+# Git
+.git/
+.gitignore
+
+# Node / front
+node_modules/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

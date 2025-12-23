@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-backend
+  namespace: churninsight
+spec:
+  selector:
+    app: spring-backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  # Para demo rápida: expõe externamente (em OKE, criará um LB).
+  type: LoadBalancer

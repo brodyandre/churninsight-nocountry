@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "ds.service.url",
+      "type": "java.lang.String",
+      "description": "URL base do serviço Python/FastAPI (ds_service). Ex.: http://127.0.0.1:8000",
+      "defaultValue": "http://127.0.0.1:8000"
+    }
+  ]
+}

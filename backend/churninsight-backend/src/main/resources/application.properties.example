@@ -1,0 +1,6 @@
+spring.application.name=churninsight-backend
+
+# local: cai no default; docker/oci: sobrescreve via env DS_SERVICE_URL
+ds.service.url=${DS_SERVICE_URL:http://127.0.0.1:8000}
+
+server.port=8080

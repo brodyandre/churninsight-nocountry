@@ -1,0 +1,115 @@
+html, body { background: #070a12 !important; }
+
+.swagger-ui {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial !important;
+  color: #eaf0ff !important;
+  background:
+    radial-gradient(900px 500px at 12% 0%, rgba(124,58,237,.22), transparent 60%),
+    radial-gradient(900px 500px at 88% 8%, rgba(34,211,238,.16), transparent 60%),
+    #070a12 !important;
+}
+
+.swagger-ui .wrapper {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 14px !important;
+}
+
+.swagger-ui .topbar{
+  background: linear-gradient(90deg, rgba(124,58,237,.28), rgba(34,211,238,.18), rgba(2,6,23,.75)) !important;
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+.swagger-ui .topbar * { color: #eaf0ff !important; }
+
+.swagger-ui .info { margin: 26px 0 18px !important; }
+.swagger-ui .info .title { font-weight: 900 !important; letter-spacing: .2px !important; }
+.swagger-ui .info p, .swagger-ui .info li { color: rgba(234,240,255,.78) !important; }
+
+.swagger-ui .info::after{
+  content: "Quickstart: 1) /demo-examples  •  2) POST /predict (Try it out → Execute)  •  3) Veja previsao + probabilidade";
+  display: block;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(234,240,255,.90);
+  font-weight: 700;
+}
+
+.swagger-ui .opblock-tag {
+  color: #eaf0ff !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: .3px !important;
+  padding: 12px 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.swagger-ui .opblock,
+.swagger-ui .scheme-container,
+.swagger-ui .responses-wrapper{
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 20px 55px rgba(0,0,0,.35) !important;
+}
+
+.swagger-ui .opblock .opblock-summary{
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  align-items: center !important;
+}
+.swagger-ui .opblock .opblock-summary-path{
+  color: rgba(234,240,255,.92) !important;
+  font-weight: 800 !important;
+}
+.swagger-ui .opblock .opblock-summary-description{
+  color: rgba(234,240,255,.74) !important;
+}
+
+.swagger-ui .opblock .opblock-summary-method{
+  border-radius: 999px !important;
+  padding: 7px 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .35px !important;
+  min-width: 78px !important;
+}
+
+.swagger-ui .opblock.opblock-get{ border-left: 4px solid rgba(34,211,238,.85) !important; }
+.swagger-ui .opblock.opblock-post{ border-left: 4px solid rgba(124,58,237,.90) !important; }
+
+.swagger-ui input[type="text"],
+.swagger-ui input[type="search"],
+.swagger-ui textarea,
+.swagger-ui select{
+  background: rgba(0,0,0,.28) !important;
+  color: #eaf0ff !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 14px !important;
+}
+
+.swagger-ui .btn{
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.04) !important;
+  color: #eaf0ff !important;
+}
+
+.swagger-ui .btn.try-out__btn{
+  background: rgba(34,211,238,.14) !important;
+  border-color: rgba(34,211,238,.30) !important;
+  font-weight: 900 !important;
+}
+
+.swagger-ui .btn.execute{
+  background: linear-gradient(90deg, rgba(124,58,237,.85), rgba(34,211,238,.55)) !important;
+  border-color: rgba(124,58,237,.45) !important;
+  font-weight: 900 !important;
+}
+
+.swagger-ui pre, .swagger-ui code, .swagger-ui .highlight-code{
+  background: rgba(0,0,0,.30) !important;
+  color: #eaf0ff !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}

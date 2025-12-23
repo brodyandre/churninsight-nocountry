@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChurnInsight – UI (Spring Boot)</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --card2:#0f1730;
+      --text:#e9eefc;
+      --muted:#a9b6da;
+      --line:#24325c;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --btn:#2b3a73;
+      --btn2:#1f2b57;
+      --accent:#7c3aed;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 700px at 20% 0%, #172554 0%, var(--bg) 55%) fixed;
+      color:var(--text);
+    }
+    .container{
+      max-width:1280px;
+      margin:0 auto;
+      padding:18px;
+    }
+
+    /* Header */
+    .header{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    .brand{ display:flex; gap:14px; align-items:center; }
+    .logo{
+      width:44px;height:44px;border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), #22c55e);
+      box-shadow:0 10px 30px rgba(124,58,237,.25);
+    }
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.4;
+    }
+    code{ font-family: var(--mono); font-size: 12px; }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(17,26,51,.7);
+      color:var(--muted);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .chip.ok{ border-color: rgba(34,197,94,.35); color:#b9f6cd;}
+    .chip.bad{ border-color: rgba(239,68,68,.35); color:#ffd0d0;}
+    .chip.warn{ border-color: rgba(245,158,11,.35); color:#ffe0b2;}
+
+    /* Layout Streamlit-like */
+    .layout{
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    @media (max-width: 1040px){
+      .layout{ grid-template-columns: 1fr; }
+      .chips{ justify-content:flex-start; }
+    }
+
+    /* Cards */
+    .card{
+      background: rgba(17,26,51,.75);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+      backdrop-filter: blur(8px);
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:15px;
+      color:#eaf0ff;
+    }
+    .muted{ color:var(--muted); font-size:13px; line-height:1.5; }
+
+    /* Form controls (compact) */
+    .label{ display:block; margin:8px 0 6px; font-size:12px; color:var(--muted); }
+    select, textarea, input{
+      width:100%;
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.85);
+      color:var(--text);
+      border-radius:12px;
+      padding:9px 10px;
+      outline:none;
+    }
+    select, input{ height:36px; }
+    textarea{
+      font-family:var(--mono);
+      min-height:220px;
+      resize:vertical;
+      line-height:1.35;
+      font-size:12.5px;
+    }
+
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .row .grow{ flex:1; min-width: 160px; }
+
+    .btn{
+      border:1px solid transparent;
+      background: linear-gradient(180deg, var(--btn), var(--btn2));
+      color:var(--text);
+      border-radius:12px;
+      padding:9px 11px;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .05s ease, filter .15s ease;
+      white-space:nowrap;
+      font-size: 12.5px;
+    }
+    .btn:hover{ filter:brightness(1.08); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{ background: linear-gradient(180deg, #6d28d9, #4c1d95); }
+    .btn.ghost{ background: transparent; border-color: var(--line); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed rgba(169,182,218,.35);
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.5;
+      background: rgba(15,23,48,.45);
+    }
+
+    /* KPI pills */
+    .kpi{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;
+    }
+    .kpi .pill{
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.55);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* Result */
+    pre{
+      margin:0;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.9);
+      color:var(--text);
+      font-family:var(--mono);
+      font-size:12.5px;
+      line-height:1.4;
+      overflow:auto;
+      min-height:160px;
+      white-space:pre-wrap;
+    }
+
+    /* Risk tag */
+    .riskTag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.55);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .riskTag .badge{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--warn);
+    }
+    .riskTag.high .badge{ background: var(--bad); }
+    .riskTag.low  .badge{ background: var(--ok); }
+    .riskTag.invalid .badge{ background: #94a3b8; }
+    .riskTag.custom .badge{ background: #60a5fa; }
+
+    .divider{
+      height:1px;
+      background: rgba(36,50,92,.7);
+      margin:12px 0;
+    }
+    .footer{
+      margin-top:14px;
+      color: rgba(169,182,218,.75);
+      font-size:12px;
+      text-align:center;
+    }
+
+    /* Tabs (para evitar scroll vertical grande no formulário) */
+    .tabbar{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+    }
+    .tabbtn{
+      flex:1;
+      border:1px solid var(--line);
+      background: rgba(15,23,48,.55);
+      color: var(--muted);
+      border-radius:12px;
+      padding:8px 10px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:12px;
+      transition: filter .15s ease;
+    }
+    .tabbtn:hover{ filter: brightness(1.08); }
+    .tabbtn.active{
+      background: rgba(124,58,237,.18);
+      color: #e9eefc;
+      border-color: rgba(124,58,237,.5);
+    }
+    .tabpanel{ display:none; margin-top:10px; }
+    .tabpanel.active{ display:block; }
+
+    .formGrid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .span2{ grid-column: 1 / -1; }
+
+    details summary{
+      cursor:pointer;
+      user-select:none;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    details[open] summary{ margin-bottom: 8px; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>ChurnInsight – UI (Spring Boot)</h1>
+          <div class="subtitle">
+            UI local (Spring) → Proxy Java → FastAPI.<br/>
+            Presets via <code>/api/churn/demo-examples</code> e health DS via <code>/api/churn/ds-health</code> (sem CORS).
+          </div>
+        </div>
+      </div>
+
+      <div class="chips">
+        <span class="chip">UI: <code>/</code></span>
+        <span class="chip">Predict: <code>/api/churn/predict</code></span>
+        <span class="chip">DS Health: <code>/api/churn/ds-health</code></span>
+        <span class="chip" id="chipDsUrl">DS: —</span>
+        <span class="chip warn" id="chipHealth">Health: checando…</span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="card">
+        <h2>Entrada (Streamlit-like)</h2>
+
+        <label class="label">Presets (dinâmicos)</label>
+        <div class="row">
+          <div class="grow">
+            <select id="demoSelect"></select>
+          </div>
+          <button class="btn" id="btnLoad">Carregar</button>
+        </div>
+
+        <div class="row" style="margin-top:10px; align-items:center;">
+          <span class="riskTag custom" id="riskTag"><span class="badge"></span><span id="riskText">Custom</span></span>
+          <span class="muted" id="demoHint">Edite o formulário ou carregue um preset.</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <button class="btn primary" id="btnPredict">Prever</button>
+          <button class="btn ghost" id="btnHealth">Rechecar health</button>
+          <button class="btn ghost" id="btnReset">Reset</button>
+        </div>
+
+        <div class="hint" style="margin-top:12px;">
+          Dicas:
+          <ul style="margin:8px 0 0 18px; padding:0;">
+            <li><b>422</b>: JSON inválido para o schema (preset “Inválido”).</li>
+            <li><b>502</b>: DS fora/timeout (proxy Java).</li>
+          </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Abas do formulário -->
+        <div class="tabbar" role="tablist" aria-label="Form tabs">
+          <button class="tabbtn active" id="tabBtn_basic" data-tab="tab_basic" type="button">Básico</button>
+          <button class="tabbtn" id="tabBtn_services" data-tab="tab_services" type="button">Serviços</button>
+          <button class="tabbtn" id="tabBtn_billing" data-tab="tab_billing" type="button">Cobrança</button>
+        </div>
+
+        <!-- TAB: Básico -->
+        <div class="tabpanel active" id="tab_basic" role="tabpanel">
+          <div class="formGrid2">
+            <div>
+              <label class="label">gender</label>
+              <select id="f_gender">
+                <option>Female</option><option>Male</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="label">SeniorCitizen</label>
+              <select id="f_SeniorCitizen">
+                <option value="0">0</option><option value="1">1</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="label">Partner</label>
+              <select id="f_Partner"><option>Yes</option><option>No</option></select>
+            </div>
+
+            <div>
+              <label class="label">Dependents</label>
+              <select id="f_Dependents"><option>Yes</option><option>No</option></select>
+            </div>
+
+            <div class="span2">
+              <label class="label">tenure</label>
+              <input id="f_tenure" type="number" min="0" step="1" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Serviços -->
+        <div class="tabpanel" id="tab_services" role="tabpanel">
+          <div class="formGrid2">
+            <div>
+              <label class="label">PhoneService</label>
+              <select id="f_PhoneService"><option>Yes</option><option>No</option></select>
+            </div>
+
+            <div>
+              <label class="label">MultipleLines</label>
+              <select id="f_MultipleLines">
+                <option>No</option><option>Yes</option><option>No phone service</option>
+              </select>
+            </div>
+
+            <div class="span2">
+              <label class="label">InternetService</label>
+              <select id="f_InternetService"><option>DSL</option><option>Fiber optic</option><option>No</option></select>
+            </div>
+
+            <div>
+              <label class="label">OnlineSecurity</label>
+              <select id="f_OnlineSecurity"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+
+            <div>
+              <label class="label">OnlineBackup</label>
+              <select id="f_OnlineBackup"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+
+            <div>
+              <label class="label">DeviceProtection</label>
+              <select id="f_DeviceProtection"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+
+            <div>
+              <label class="label">TechSupport</label>
+              <select id="f_TechSupport"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+
+            <div>
+              <label class="label">StreamingTV</label>
+              <select id="f_StreamingTV"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+
+            <div>
+              <label class="label">StreamingMovies</label>
+              <select id="f_StreamingMovies"><option>No</option><option>Yes</option><option>No internet service</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Cobrança -->
+        <div class="tabpanel" id="tab_billing" role="tabpanel">
+          <div class="formGrid2">
+            <div class="span2">
+              <label class="label">Contract</label>
+              <select id="f_Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select>
+            </div>
+
+            <div class="span2">
+              <label class="label">PaperlessBilling</label>
+              <select id="f_PaperlessBilling"><option>Yes</option><option>No</option></select>
+            </div>
+
+            <div class="span2">
+              <label class="label">PaymentMethod</label>
+              <select id="f_PaymentMethod">
+                <option>Electronic check</option>
+                <option>Mailed check</option>
+                <option>Bank transfer (automatic)</option>
+                <option>Credit card (automatic)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="label">MonthlyCharges</label>
+              <input id="f_MonthlyCharges" type="number" min="0" step="0.01" />
+            </div>
+
+            <div>
+              <label class="label">TotalCharges</label>
+              <input id="f_TotalCharges" type="number" min="0" step="0.01" />
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="card">
+        <h2>Status e KPIs</h2>
+        <div class="muted">
+          1) Confirma Spring e DS (<code>/api/churn/health</code> e <code>/api/churn/ds-health</code>).<br/>
+          2) Presets vêm da FastAPI via proxy (<code>/api/churn/demo-examples</code>).<br/>
+          3) Clique em <b>Prever</b> para chamar <code>/api/churn/predict</code>.
+        </div>
+
+        <div class="kpi">
+          <div class="pill" id="kpiSpring">Spring: —</div>
+          <div class="pill" id="kpiDs">FastAPI: —</div>
+          <div class="pill" id="kpiDsLatency">Latência proxy: —</div>
+          <div class="pill" id="kpiThreshold">Threshold: —</div>
+          <div class="pill" id="kpiModel">Modelo: —</div>
+          <div class="pill" id="kpiPredictLatency">Latência predict: —</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Resposta</h2>
+        <pre id="result">Carregando…</pre>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn ghost" id="btnCopyJson">Copiar JSON</button>
+          <button class="btn ghost" id="btnFormatJson">Formatar JSON</button>
+          <button class="btn ghost" id="btnApplyJson">Aplicar JSON → Form</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <details>
+          <summary>Modo avançado (JSON)</summary>
+          <label class="label">Request JSON (fonte alternativa)</label>
+          <textarea id="payloadJson" spellcheck="false"></textarea>
+          <div class="hint">
+            Você pode editar o JSON manualmente e clicar em <b>Aplicar JSON → Form</b>.
+            O botão <b>Formatar JSON</b> ajuda a normalizar.
+          </div>
+        </details>
+
+        <div class="footer">
+          ChurnInsight • Spring Boot UI • Endpoints:
+          <code>/api/churn/health</code> • <code>/api/churn/ds-health</code> • <code>/api/churn/demo-examples</code>
+        </div>
+      </main>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+
+  const setText = (id, txt) => { $(id).textContent = txt; };
+  const setHtml = (id, html) => { $(id).innerHTML = html; };
+
+  const safeJsonParse = (text) => {
+    try { return { ok:true, value: JSON.parse(text) }; }
+    catch(e){ return { ok:false, error: e.message }; }
+  };
+
+  const pretty = (obj) => JSON.stringify(obj, null, 2);
+
+  const setHealthChip = (ok, text) => {
+    const el = $("chipHealth");
+    el.textContent = text;
+    el.classList.remove("warn","ok","bad");
+    el.classList.add(ok ? "ok" : "bad");
+  };
+
+  const setRiskTag = (risk) => {
+    const tag = $("riskTag");
+    const txt = $("riskText");
+    tag.classList.remove("high","low","invalid","custom");
+
+    if (risk === "high"){
+      tag.classList.add("high"); txt.textContent = "Alto risco";
+    } else if (risk === "low"){
+      tag.classList.add("low"); txt.textContent = "Baixo risco";
+    } else if (risk === "invalid"){
+      tag.classList.add("invalid"); txt.textContent = "Inválido";
+    } else {
+      tag.classList.add("custom"); txt.textContent = "Custom";
+    }
+  };
+
+  // Tabs
+  const activateTab = (tabId) => {
+    for (const b of document.querySelectorAll(".tabbtn")){
+      b.classList.toggle("active", b.dataset.tab === tabId);
+    }
+    for (const p of document.querySelectorAll(".tabpanel")){
+      p.classList.toggle("active", p.id === tabId);
+    }
+  };
+
+  // State
+  const state = {
+    demos: [],
+    currentDemo: null,
+    payload: null
+  };
+
+  // Form map
+  const FIELD_MAP = [
+    ["gender", "f_gender", "string"],
+    ["SeniorCitizen", "f_SeniorCitizen", "int"],
+    ["Partner", "f_Partner", "string"],
+    ["Dependents", "f_Dependents", "string"],
+    ["tenure", "f_tenure", "int"],
+    ["PhoneService", "f_PhoneService", "string"],
+    ["MultipleLines", "f_MultipleLines", "string"],
+    ["InternetService", "f_InternetService", "string"],
+    ["OnlineSecurity", "f_OnlineSecurity", "string"],
+    ["OnlineBackup", "f_OnlineBackup", "string"],
+    ["DeviceProtection", "f_DeviceProtection", "string"],
+    ["TechSupport", "f_TechSupport", "string"],
+    ["StreamingTV", "f_StreamingTV", "string"],
+    ["StreamingMovies", "f_StreamingMovies", "string"],
+    ["Contract", "f_Contract", "string"],
+    ["PaperlessBilling", "f_PaperlessBilling", "string"],
+    ["PaymentMethod", "f_PaymentMethod", "string"],
+    ["MonthlyCharges", "f_MonthlyCharges", "float"],
+    ["TotalCharges", "f_TotalCharges", "float"]
+  ];
+
+  const readFormToPayload = () => {
+    const p = {};
+    for (const [k, id, t] of FIELD_MAP){
+      const el = $(id);
+      let v = el.value;
+
+      if (t === "int"){
+        v = (v === "" || v === null) ? 0 : parseInt(v, 10);
+        if (!Number.isFinite(v)) v = 0;
+      }
+      if (t === "float"){
+        v = (v === "" || v === null) ? 0 : parseFloat(v);
+        if (!Number.isFinite(v)) v = 0;
+      }
+      p[k] = v;
+    }
+    return p;
+  };
+
+  const applyPayloadToForm = (payload) => {
+    for (const [k, id, t] of FIELD_MAP){
+      if (!(k in payload)) continue;
+      const el = $(id);
+      const v = payload[k];
+      el.value = (v === null || v === undefined) ? "" : String(v);
+    }
+  };
+
+  const syncPayloadToJson = () => {
+    $("payloadJson").value = pretty(state.payload ?? {});
+  };
+
+  const syncJsonToPayload = () => {
+    const parsed = safeJsonParse($("payloadJson").value || "");
+    if (!parsed.ok) return { ok:false, error: parsed.error };
+    state.payload = parsed.value;
+    applyPayloadToForm(state.payload);
+    setRiskTag("custom");
+    $("demoHint").textContent = "Payload custom aplicado a partir do JSON.";
+    return { ok:true };
+  };
+
+  // Demos
+  const fillSelect = () => {
+    const sel = $("demoSelect");
+    sel.innerHTML = "";
+    for (const d of state.demos){
+      const opt = document.createElement("option");
+      opt.value = d.id;
+      opt.textContent = d.label || d.id;
+      sel.appendChild(opt);
+    }
+  };
+
+  const getSelectedDemo = () => {
+    const id = $("demoSelect").value;
+    return state.demos.find(d => d.id === id) || state.demos[0] || null;
+  };
+
+  const applyDemo = (demo) => {
+    if (!demo) return;
+    state.currentDemo = demo;
+    state.payload = demo.payload ? JSON.parse(JSON.stringify(demo.payload)) : {};
+
+    applyPayloadToForm(state.payload);
+    syncPayloadToJson();
+
+    setRiskTag(demo.risk || "custom");
+    $("demoHint").textContent = demo.description || "Preset carregado.";
+    $("result").textContent = `Preset carregado: ${demo.label || demo.id}\nClique em "Prever".`;
+
+    // opcional: ao carregar demo, abre a aba mais relevante
+    if (demo.risk === "high" || demo.risk === "low") activateTab("tab_basic");
+    if (demo.risk === "invalid") activateTab("tab_basic");
+  };
+
+  const loadDemos = async () => {
+    const resp = await fetch("/api/churn/demo-examples", { cache: "no-store" });
+    const text = await resp.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = null; }
+
+    if (!resp.ok){
+      throw new Error(`HTTP ${resp.status} em /api/churn/demo-examples: ${text}`);
+    }
+
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.items)) return data.items;
+
+    throw new Error("Formato inesperado em /api/churn/demo-examples (esperado array).");
+  };
+
+  // Health (CORRIGIDO: leitura do threshold)
+  const checkHealth = async () => {
+    // Spring
+    try{
+      const springResp = await fetch("/api/churn/health", { cache: "no-store" });
+      const springJson = await springResp.json().catch(() => ({}));
+
+      $("kpiSpring").textContent = `Spring: ${springResp.ok ? "OK" : "ERRO"} (HTTP ${springResp.status})`;
+
+      const dsUrl = springJson.ds_service_url || "—";
+      setHtml("chipDsUrl", `DS: <code>${dsUrl}</code>`);
+    } catch(e){
+      $("kpiSpring").textContent = "Spring: indisponível";
+      setHealthChip(false, "Health: falha");
+      $("kpiDs").textContent = "FastAPI: —";
+      $("kpiDsLatency").textContent = "Latência proxy: —";
+      $("kpiThreshold").textContent = "Threshold: —";
+      $("kpiModel").textContent = "Modelo: —";
+      return;
+    }
+
+    // DS via proxy
+    try{
+      const dsResp = await fetch("/api/churn/ds-health", { cache: "no-store" });
+      const dsText = await dsResp.text();
+      let dsBody;
+      try { dsBody = JSON.parse(dsText); } catch { dsBody = { detail: dsText }; }
+
+      const proxyMs = dsResp.headers.get("X-Proxy-Latency-Ms");
+      $("kpiDsLatency").textContent = `Latência proxy: ${proxyMs ? (proxyMs + " ms") : "—"}`;
+
+      $("kpiDs").textContent = `FastAPI: ${dsResp.ok ? "OK" : "ERRO"} (HTTP ${dsResp.status})`;
+      setHealthChip(dsResp.ok, dsResp.ok ? "Health: OK" : "Health: DS falhou");
+
+      // THRESHOLD (fix)
+      const thrNum = Number(dsBody && dsBody.threshold);
+      const thr = Number.isFinite(thrNum) ? thrNum : null;
+
+      // modelo path
+      const modelPath = dsBody && dsBody.modelo_path ? dsBody.modelo_path : null;
+
+      $("kpiThreshold").textContent = `Threshold: ${thr !== null ? thr.toFixed(2) : "—"}`;
+      $("kpiModel").textContent = `Modelo: ${modelPath ? String(modelPath).split("\\").pop() : "—"}`;
+
+    } catch(e){
+      setHealthChip(false, "Health: DS off");
+      $("kpiDs").textContent = "FastAPI: indisponível";
+      $("kpiDsLatency").textContent = "Latência proxy: —";
+      $("kpiThreshold").textContent = "Threshold: —";
+      $("kpiModel").textContent = "Modelo: —";
+    }
+  };
+
+  // Predict (CORRIGIDO: preset inválido deve enviar payload RAW e retornar 422/Inválido)
+  const predict = async () => {
+    const selected = getSelectedDemo();
+    const isInvalidPreset = !!(selected && (selected.risk === "invalid" || selected.id === "invalido"));
+
+    let payloadToSend;
+
+    if (isInvalidPreset) {
+      // Força o payload RAW do preset inválido (para garantir 422)
+      payloadToSend = selected.payload ? JSON.parse(JSON.stringify(selected.payload)) : {};
+      state.payload = payloadToSend;
+
+      $("payloadJson").value = pretty(payloadToSend);
+      setRiskTag("invalid");
+      $("demoHint").textContent = selected.description || "Preset inválido selecionado (esperado HTTP 422).";
+    } else {
+      // Caso normal: mantém predição a partir do FORM (custom)
+      state.payload = readFormToPayload();
+      syncPayloadToJson();
+      setRiskTag("custom");
+      payloadToSend = state.payload;
+    }
+
+    $("result").textContent = "Chamando /api/churn/predict ...";
+
+    const t0 = performance.now();
+    try{
+      const resp = await fetch("/api/churn/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payloadToSend)
+      });
+      const t1 = performance.now();
+      const clientMs = Math.max(0, t1 - t0);
+      $("kpiPredictLatency").textContent = `Latência predict: ${clientMs.toFixed(0)} ms`;
+
+      const text = await resp.text();
+      let body;
+      try { body = JSON.parse(text); } catch { body = text; }
+
+      // 422: FastAPI validação -> normalmente retorna "Inválido" (texto puro)
+      if (resp.status === 422) {
+        const msg =
+          (typeof body === "string" && body) ? body :
+          (body && typeof body === "object" && body.detail) ? body.detail :
+          "Inválido";
+
+        $("result").textContent = `HTTP 422 (Inválido) • ${clientMs.toFixed(0)} ms\n\n${msg}`;
+        return;
+      }
+
+      const header = `HTTP ${resp.status} ${resp.ok ? "(OK)" : "(ERRO)"} • ${clientMs.toFixed(0)} ms`;
+
+      if (typeof body === "string"){
+        $("result").textContent = header + "\n\n" + body;
+        return;
+      }
+
+      // resumo se tiver probabilidade
+      if (body && typeof body === "object" && "probabilidade" in body){
+        const p = Number(body.probabilidade);
+        const pct = Number.isFinite(p) ? (p * 100).toFixed(2).replace(".", ",") + "%" : "—";
+
+        $("result").textContent =
+          header + "\n\n" +
+          JSON.stringify(body, null, 2) +
+          "\n\nResumo:\n" +
+          `- Previsão: ${body.previsao ?? "—"}\n` +
+          `- Probabilidade: ${pct}`;
+        return;
+      }
+
+      $("result").textContent = header + "\n\n" + JSON.stringify(body, null, 2);
+
+    } catch(e){
+      $("result").textContent = "Falha ao chamar o endpoint.\n\nDetalhe: " + e.message;
+    }
+  };
+
+  // Events
+  $("btnLoad").addEventListener("click", () => applyDemo(getSelectedDemo()));
+
+  $("demoSelect").addEventListener("change", () => {
+    const d = getSelectedDemo();
+    if (!d) return;
+    $("demoHint").textContent = `Selecionado: ${d.label || d.id}. Clique em “Carregar”.`;
+  });
+
+  $("btnHealth").addEventListener("click", async () => {
+    $("result").textContent = "Rechecando health...";
+    await checkHealth();
+    $("result").textContent = "Health atualizado.";
+  });
+
+  $("btnReset").addEventListener("click", () => {
+    if (state.currentDemo) {
+      applyDemo(state.currentDemo);
+      return;
+    }
+    state.payload = readFormToPayload();
+    syncPayloadToJson();
+    setRiskTag("custom");
+    $("demoHint").textContent = "Reset aplicado (mantendo formulário atual).";
+    $("result").textContent = "Reset aplicado.";
+  });
+
+  $("btnPredict").addEventListener("click", predict);
+
+  $("btnCopyJson").addEventListener("click", async () => {
+    try{
+      const txt = $("payloadJson").value || pretty(readFormToPayload());
+      await navigator.clipboard.writeText(txt);
+      $("result").textContent = "JSON copiado para a área de transferência.";
+    } catch(e){
+      $("result").textContent = "Não foi possível copiar (permissão do navegador).";
+    }
+  });
+
+  $("btnFormatJson").addEventListener("click", () => {
+    const parsed = safeJsonParse($("payloadJson").value);
+    if (!parsed.ok){
+      $("result").textContent = "Erro ao formatar: JSON inválido.\n\nDetalhe: " + parsed.error;
+      return;
+    }
+    $("payloadJson").value = pretty(parsed.value);
+    $("result").textContent = "JSON formatado.";
+  });
+
+  $("btnApplyJson").addEventListener("click", () => {
+    const r = syncJsonToPayload();
+    if (!r.ok){
+      $("result").textContent = "Erro: JSON inválido.\n\nDetalhe: " + r.error;
+      return;
+    }
+    $("result").textContent = "JSON aplicado ao formulário.";
+  });
+
+  // Form change -> custom + sync JSON
+  for (const [, id] of FIELD_MAP){
+    $(id).addEventListener("change", () => {
+      state.payload = readFormToPayload();
+      syncPayloadToJson();
+      setRiskTag("custom");
+    });
+  }
+
+  // Tab buttons
+  for (const b of document.querySelectorAll(".tabbtn")){
+    b.addEventListener("click", () => activateTab(b.dataset.tab));
+  }
+
+  // Init
+  (async () => {
+    try{
+      $("result").textContent = "Carregando presets e health...";
+      await checkHealth();
+
+      state.demos = await loadDemos();
+      fillSelect();
+
+      if (state.demos.length > 0){
+        $("demoSelect").value = state.demos[0].id;
+        applyDemo(state.demos[0]);
+      } else {
+        $("result").textContent = "Nenhum preset retornado por /api/churn/demo-examples.";
+      }
+    } catch(e){
+      setHealthChip(false, "Health: falha");
+      $("result").textContent = "Falha na inicialização:\n\n" + e.message;
+    }
+  })();
+})();
+</script>
+</body>
+</html>

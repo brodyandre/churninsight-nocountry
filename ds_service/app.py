@@ -9,7 +9,10 @@ import joblib
 import pandas as pd
 from pathlib import Path
 import json
-import re
+from copy import deepcopy
+from typing import Any, Dict, List, Optional, Tuple
+import time
+
 
 # ==========================================
 # Paths
@@ -17,12 +20,12 @@ import re
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 MODEL_PATH = BASE_DIR.parent / "model" / "churn_xgboost_pipeline_tuned.joblib"
-NOTEBOOK_PATH = BASE_DIR.parent / "notebooks" / "churn_modeling.ipynb"
+NOTEBOOK_PATH = BASE_DIR.parent / "notebooks" / "churn_modeling.ipynb"  # mantido só para /health
 
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
 # ==========================================
-# Exemplo base (fallback)
+# Exemplo base
 # ==========================================
 EXAMPLE_CLIENTE = {
     "gender": "Female",
@@ -45,6 +48,71 @@ EXAMPLE_CLIENTE = {
     "MonthlyCharges": 70.35,
     "TotalCharges": 151.65,
 }
+
+# ==========================================
+# Presets dinâmicos (Fonte única para UI/Proxy)
+# Formato: lista [{id,label,risk,description,payload}, ...]
+# ==========================================
+def _build_demo_examples() -> List[Dict[str, Any]]:
+    alto = dict(EXAMPLE_CLIENTE)
+    alto.update({
+        "tenure": 1,
+        "Contract": "Month-to-month",
+        "PaymentMethod": "Electronic check",
+        "InternetService": "Fiber optic",
+        "OnlineSecurity": "No",
+        "TechSupport": "No",
+        "MonthlyCharges": 99.0,
+        "TotalCharges": 99.0,
+    })
+
+    baixo = dict(EXAMPLE_CLIENTE)
+    baixo.update({
+        "gender": "Male",
+        "Partner": "Yes",
+        "Dependents": "Yes",
+        "tenure": 60,
+        "Contract": "Two year",
+        "PaymentMethod": "Credit card (automatic)",
+        "InternetService": "DSL",
+        "OnlineSecurity": "Yes",
+        "TechSupport": "Yes",
+        "MonthlyCharges": 29.0,
+        "TotalCharges": 1700.0,
+    })
+
+    invalido = dict(EXAMPLE_CLIENTE)
+    invalido.pop("gender", None)     # força 422 (campo obrigatório ausente)
+    invalido["tenure"] = "doze"      # força 422 (tipo inválido)
+
+    return [
+        {
+            "id": "alto_risco",
+            "label": "Exemplo 1 – Alto risco (tende a churn)",
+            "risk": "high",
+            "description": "Tenure baixo, contrato mensal, cobrança alta, pouco suporte.",
+            "payload": deepcopy(alto),
+        },
+        {
+            "id": "baixo_risco",
+            "label": "Exemplo 2 – Baixo risco (tende a ficar)",
+            "risk": "low",
+            "description": "Tenure alto, contrato 2 anos, cobrança baixa, segurança/suporte ativos.",
+            "payload": deepcopy(baixo),
+        },
+        {
+            "id": "invalido",
+            "label": "Exemplo 3 – Inválido (testar validação)",
+            "risk": "invalid",
+            "description": "Payload propositalmente inválido (campo faltando e tipo incorreto).",
+            "payload": deepcopy(invalido),
+        },
+    ]
+
+
+DEMO_EXAMPLES: List[Dict[str, Any]] = _build_demo_examples()
+DEMO_SOURCE: str = "fastapi"  # agora os presets são expostos no padrão do Passo 3
+
 
 # ==========================================
 # OpenAPI tags
@@ -79,7 +147,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # ==========================================
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Mantém detalhes no console (útil para debug), mas não expõe na resposta.
+    # Log no console e resposta simplificada para demo
     try:
         print(f"[VALIDATION 422] {request.method} {request.url.path} -> {exc.errors()}")
     except Exception:
@@ -89,16 +157,18 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 # ==========================================
 # Globals
 # ==========================================
-model = None
-THRESHOLD = 0.50
-MODEL_META = {}
-DEMO_EXAMPLES = []
+model: Optional[Any] = None
+MODEL_ERROR: Optional[str] = None
+
+THRESHOLD: float = 0.50
+MODEL_META: Dict[str, Any] = {}
 
 # ==========================================
 # Carregar modelo (aceita Pipeline ou dict com chaves)
 # ==========================================
 def carregar_modelo():
-    global model, THRESHOLD, MODEL_META
+    global model, THRESHOLD, MODEL_META, MODEL_ERROR
+    MODEL_ERROR = None
 
     if not MODEL_PATH.exists():
         raise FileNotFoundError(f"Arquivo de modelo não encontrado em: {MODEL_PATH}")
@@ -126,124 +196,20 @@ def carregar_modelo():
     if not hasattr(model, "predict_proba"):
         raise TypeError(f"O objeto carregado em 'model' não possui predict_proba(). Tipo: {type(model)}")
 
-    print(f"Modelo carregado com sucesso de: {MODEL_PATH} (tipo: {type(model)})")
-    print(f"Threshold em uso: {THRESHOLD:.2f}")
-
-# ==========================================
-# Demos: fallback
-# ==========================================
-def gerar_demos_padrao():
-    alto = dict(EXAMPLE_CLIENTE)
-    alto.update({
-        "tenure": 1,
-        "Contract": "Month-to-month",
-        "PaymentMethod": "Electronic check",
-        "InternetService": "Fiber optic",
-        "OnlineSecurity": "No",
-        "TechSupport": "No",
-        "MonthlyCharges": 99.0,
-        "TotalCharges": 99.0,
-    })
-
-    baixo = dict(EXAMPLE_CLIENTE)
-    baixo.update({
-        "tenure": 60,
-        "Contract": "Two year",
-        "PaymentMethod": "Credit card (automatic)",
-        "OnlineSecurity": "Yes",
-        "TechSupport": "Yes",
-        "MonthlyCharges": 29.0,
-        "TotalCharges": 1700.0,
-    })
-
-    invalido = dict(EXAMPLE_CLIENTE)
-    invalido.pop("gender", None)
-    invalido["tenure"] = "doze"
-
-    return [
-        {"id": "alto_risco", "label": "Alto risco (tende a churn)", "payload": alto},
-        {"id": "baixo_risco", "label": "Exemplo 2 - Baixo Risco (tende a ficar)", "payload": baixo},
-        {"id": "invalido", "label": "Exemplo 3 — Inválido (para testar validação da API)", "payload": invalido},
-    ]
-
-# ==========================================
-# Demos: extrair JSON do churn_modeling.ipynb (markdown ```json ... ```)
-# ==========================================
-def _extrair_json_blocks(texto: str):
-    blocks = []
-
-    for m in re.finditer(r"```json\s*([\s\S]*?)\s*```", texto, flags=re.IGNORECASE):
-        blocks.append(m.group(1))
-
-    for m in re.finditer(r"```\s*([\s\S]*?)\s*```", texto):
-        content = m.group(1).strip()
-        if content.startswith("{") and content.endswith("}"):
-            blocks.append(content)
-
-    parsed = []
-    for b in blocks:
-        b = b.strip()
-        try:
-            parsed.append(json.loads(b))
-        except Exception:
-            pass
-    return parsed
-
-def carregar_demos_do_notebook():
-    global DEMO_EXAMPLES
-
-    if not NOTEBOOK_PATH.exists():
-        DEMO_EXAMPLES = gerar_demos_padrao()
-        return
-
-    try:
-        nb = json.loads(NOTEBOOK_PATH.read_text(encoding="utf-8"))
-        cells = nb.get("cells", [])
-
-        markdown_all = []
-        for c in cells:
-            if c.get("cell_type") == "markdown":
-                markdown_all.append("".join(c.get("source", [])))
-
-        full_md = "\n\n".join(markdown_all)
-
-        lower = full_md.lower()
-        idx = -1
-        for key in ["exemplos de requisição", "exemplos de requisicao", "exemplos de requisi"]:
-            idx = lower.find(key)
-            if idx != -1:
-                break
-
-        md_to_parse = full_md[idx:] if idx != -1 else full_md
-        found = _extrair_json_blocks(md_to_parse)
-
-        if len(found) < 3:
-            found = _extrair_json_blocks(full_md)
-
-        if len(found) >= 3:
-            DEMO_EXAMPLES = [
-                {"id": "alto_risco", "label": "Alto risco (tende a churn)", "payload": found[0]},
-                {"id": "baixo_risco", "label": "Exemplo 2 - Baixo Risco (tende a ficar)", "payload": found[1]},
-                {"id": "invalido", "label": "Exemplo 3 — Inválido (para testar validação da API)", "payload": found[2]},
-            ]
-        else:
-            DEMO_EXAMPLES = gerar_demos_padrao()
-
-    except Exception as e:
-        print(f"[WARN] Falha ao extrair demos do notebook: {e}")
-        DEMO_EXAMPLES = gerar_demos_padrao()
+    print(f"[OK] Modelo carregado: {MODEL_PATH} (tipo: {type(model)})")
+    print(f"[OK] Threshold em uso: {THRESHOLD:.2f}")
 
 # ==========================================
 # Startup
 # ==========================================
 @app.on_event("startup")
 def startup_event():
+    global MODEL_ERROR
     try:
         carregar_modelo()
     except Exception as e:
-        print(f"Erro ao carregar o modelo na inicialização: {e}")
-
-    carregar_demos_do_notebook()
+        MODEL_ERROR = str(e)
+        print(f"[ERROR] Erro ao carregar o modelo na inicialização: {e}")
 
 # ==========================================
 # Schemas (Pydantic v2 vs v1)
@@ -277,6 +243,8 @@ if PYDANTIC_V2:
     class ResultadoChurn(BaseModel):
         previsao: str
         probabilidade: float
+        threshold: float
+        latencia_ms: float
 else:
     class ClienteTelco(BaseModel):
         gender: str
@@ -305,21 +273,29 @@ else:
     class ResultadoChurn(BaseModel):
         previsao: str
         probabilidade: float
+        threshold: float
+        latencia_ms: float
 
 # ==========================================
-# Inferência
+# Inferência (com latência)
 # ==========================================
 def prever_cliente(dados_cliente: dict) -> dict:
     if model is None:
         raise RuntimeError("Modelo ainda não foi carregado na aplicação.")
 
+    t0 = time.perf_counter()
+
     X_novo = pd.DataFrame([dados_cliente])
-    prob = model.predict_proba(X_novo)[:, 1][0]
+    prob = float(model.predict_proba(X_novo)[:, 1][0])
     pred = int(prob >= THRESHOLD)
+
+    lat_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
     return {
         "previsao": "Vai cancelar" if pred == 1 else "Vai continuar",
-        "probabilidade": float(prob),
+        "probabilidade": prob,
+        "threshold": float(THRESHOLD),
+        "latencia_ms": lat_ms,
     }
 
 # ==========================================
@@ -352,7 +328,10 @@ def favicon():
     return Response(status_code=204)
 
 # ==========================================
-# Landing Page
+# Landing Page (UI consome /demo-examples)
+# Compatível com:
+# - formato NOVO (lista)
+# - formato antigo (dict com items/presets/labels)
 # ==========================================
 @app.get("/", include_in_schema=False, response_class=HTMLResponse)
 def landing():
@@ -363,9 +342,6 @@ def landing():
     best_pr_auc = MODEL_META.get("best_cv_pr_auc", None)
     best_pr_auc_str = f"{best_pr_auc:.4f}" if isinstance(best_pr_auc, (int, float)) else "—"
     features_count = MODEL_META.get("features_count", "—")
-
-    demos = DEMO_EXAMPLES if DEMO_EXAMPLES else gerar_demos_padrao()
-    demos_js = json.dumps(demos, ensure_ascii=False)
 
     html = f"""
     <!doctype html>
@@ -411,7 +387,7 @@ def landing():
                 <div class="step"><span class="stepN">3</span> Se quiser, abra <code>/docs</code> e rode o POST /predict no Swagger.</div>
               </div>
               <div class="hint">
-                Presets vêm do <code>notebooks/churn_modeling.ipynb</code> quando possível; se não houver JSONs detectáveis, usamos fallback automático.
+                Os presets em <code>/demo-examples</code> seguem o padrão recomendado (lista com <b>id/label/risk/description/payload</b>).
               </div>
             </section>
 
@@ -434,7 +410,7 @@ def landing():
               </div>
 
               <label class="label" style="margin-top:12px;">Resposta</label>
-              <pre id="result" class="mono">Selecione um preset e clique em "Carregar exemplo".</pre>
+              <pre id="result" class="mono">Carregando presets de demo...</pre>
 
               <div class="hint" style="margin-top:12px;">
                 <b>422</b>: saída simplificada para demo -> <b>Inválido</b>.<br/>
@@ -449,7 +425,7 @@ def landing():
         </div>
 
         <script>
-          const demos = {demos_js};
+          let demos = [];
 
           const elSelect  = document.getElementById("demoSelect");
           const elPayload = document.getElementById("payload");
@@ -470,10 +446,53 @@ def landing():
             return demos.find(d => d.id === id) || demos[0];
           }}
 
+          function loadSelectedIntoTextarea() {{
+            if (!demos.length) return;
+            const d = getSelectedDemo();
+            elPayload.value = JSON.stringify(d.payload, null, 2);
+          }}
+
+          async function loadDemosFromApi() {{
+            const resp = await fetch("/demo-examples", {{
+              headers: {{ "Accept": "application/json" }},
+              cache: "no-store"
+            }});
+            const data = await resp.json();
+
+            // FORMATO NOVO: lista
+            if (Array.isArray(data)) {{
+              return data;
+            }}
+
+            // FORMATO ANTIGO: dict com items
+            if (data && Array.isArray(data.items)) {{
+              return data.items;
+            }}
+
+            // FORMATO ANTIGO: dict com labels/presets
+            const labels = data.labels || {{}};
+            const presets = data.presets || {{}};
+            return Object.keys(presets).map(k => ({{
+              id: k,
+              label: labels[k] || k,
+              risk: "unknown",
+              description: "",
+              payload: presets[k]
+            }}));
+          }}
+
           document.getElementById("btnLoad").addEventListener("click", () => {{
+            if (!demos.length) {{
+              elResult.textContent = "Nenhum preset disponível. Verifique /demo-examples.";
+              return;
+            }}
             const d = getSelectedDemo();
             elPayload.value = JSON.stringify(d.payload, null, 2);
             elResult.textContent = `Preset carregado: ${{d.label}}\\nClique em "Prever" para chamar POST /predict...`;
+          }});
+
+          elSelect.addEventListener("change", () => {{
+            loadSelectedIntoTextarea();
           }});
 
           document.getElementById("btnClear").addEventListener("click", () => {{
@@ -503,11 +522,24 @@ def landing():
             }}
           }});
 
-          // init
-          fillSelect();
-          const first = demos[0];
-          elPayload.value = JSON.stringify(first.payload, null, 2);
-          elResult.textContent = `Preset carregado automaticamente: ${{first.label}}\\nClique em "Prever".`;
+          (async () => {{
+            try {{
+              elResult.textContent = "Carregando presets de demo via /demo-examples...";
+              demos = await loadDemosFromApi();
+
+              if (!Array.isArray(demos) || demos.length === 0) {{
+                elResult.textContent = "Nenhum preset retornado por /demo-examples.";
+                return;
+              }}
+
+              fillSelect();
+              loadSelectedIntoTextarea();
+              const first = demos[0];
+              elResult.textContent = `Preset carregado automaticamente: ${{first.label}}\\nClique em "Prever".`;
+            }} catch (e) {{
+              elResult.textContent = "Falha ao carregar /demo-examples: " + e.message;
+            }}
+          }})();
         </script>
       </body>
     </html>
@@ -522,15 +554,18 @@ def health_check():
     return {
         "status": "ok",
         "modelo_carregado": model is not None,
+        "model_error": MODEL_ERROR,
         "modelo_path": str(MODEL_PATH),
         "threshold": THRESHOLD,
         "meta": MODEL_META,
         "notebook_path": str(NOTEBOOK_PATH),
+        "demo_source": DEMO_SOURCE,
     }
 
 @app.get("/demo-examples", tags=["Status"], summary="Exemplos de requisição para demo (alto/baixo/inválido)")
 def demo_examples():
-    return DEMO_EXAMPLES if DEMO_EXAMPLES else gerar_demos_padrao()
+    # NOVO PADRÃO (Passo 3): lista de objetos com risk/description
+    return DEMO_EXAMPLES
 
 @app.post("/predict", tags=["Predict"], response_model=ResultadoChurn, summary="Prever churn para um cliente (Telco)")
 def predict_churn(cliente: ClienteTelco):

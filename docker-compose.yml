@@ -1,0 +1,31 @@
+services:
+  ds-service:
+    container_name: churninsight-ds
+    build:
+      context: .
+      dockerfile: ds_service/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  spring-backend:
+    container_name: churninsight-spring
+    build:
+      context: ./backend/churninsight-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # Importante: dentro do compose NÃO use localhost para acessar o DS.
+      - DS_SERVICE_URL=http://ds-service:8000
+    restart: unless-stopped
+    depends_on:
+      ds-service:
+        condition: service_healthy
