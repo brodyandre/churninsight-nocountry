@@ -15,9 +15,24 @@ public class PredictDTO {
     @DecimalMax(value = "1.0", inclusive = true, message = "Probabilidade não pode ser maior que 1")
     private Double probabilidade;
 
+    @JsonProperty("confianca")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Confiança não pode ser negativa")
+    @DecimalMax(value = "1.0", inclusive = true, message = "Confiança não pode ser maior que 1")
+    private Double confianca;
+
+    public PredictDTO() {
+    }
+
     public PredictDTO(String previsao, double probabilidade) {
         this.previsao = previsao;
         this.probabilidade = probabilidade;
+        this.confianca = Math.abs(probabilidade - 0.5) * 2;
+    }
+
+    public PredictDTO(String previsao, double probabilidade, double confianca) {
+        this.previsao = previsao;
+        this.probabilidade = probabilidade;
+        this.confianca = confianca;
     }
 
     public String getPrevisao() {
@@ -34,5 +49,13 @@ public class PredictDTO {
 
     public void setProbabilidade(Double probabilidade) {
         this.probabilidade = probabilidade;
+    }
+
+    public double getConfianca() {
+        return confianca;
+    }
+
+    public void setConfianca(Double confianca) {
+        this.confianca = confianca;
     }
 }
