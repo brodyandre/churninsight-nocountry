@@ -85,7 +85,7 @@ public class ChurnDataDTO {
 
     @JsonProperty("PaperlessBilling")
     @NotBlank(message = "Fatura Online é obrigatória")
-    @Pattern(regexp = "Sim|Não", message = "Fatura Online deve ser 'Sim' ou 'No'")
+    @Pattern(regexp = "Sim|Não", message = "Fatura Online deve ser 'Sim' ou 'Não'")
     private String faturaOnline;
 
     @JsonProperty("PaymentMethod")
