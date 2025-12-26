@@ -30,6 +30,9 @@ __pycache__/
 *.pyd
 *.pkl
 *.joblib
+# Permite versionar modelos do projeto via Git LFS
+!model/**/*.joblib
+
 
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
