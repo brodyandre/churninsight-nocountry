@@ -31,6 +31,9 @@ public class StatsDTO {
     public StatsDTO() {
     }
 
+    public StatsDTO(long total, double media) {
+    }
+
     // Getters
     public Long getTotalClients() {
         return totalClients;

@@ -80,7 +80,7 @@ public class ChurnDataDTO {
 
     @JsonProperty("Contract")
     @NotBlank(message = "Tipo de Contrato é obrigatório")
-    @Pattern(regexp = "Mensal|Anual|Bianual", message = "Tipo de Contrato deve ser 'Month-to-month', 'One year' ou 'Two year'")
+    @Pattern(regexp = "Mensal|Anual|Bianual", message = "Tipo de Contrato deve ser 'Mensal', 'Anual' ou 'Bianual'")
     private String tipoContrato;
 
     @JsonProperty("PaperlessBilling")
@@ -137,11 +137,11 @@ public class ChurnDataDTO {
         this.dependentes = dependentes;
     }
 
-    public int getTempoContrato() {
+    public Integer getTempoContrato() {
         return tempoContrato;
     }
 
-    public void setTempoContrato(int tempoContrato) {
+    public void setTempoContrato(Integer tempoContrato) {
         this.tempoContrato = tempoContrato;
     }
 
