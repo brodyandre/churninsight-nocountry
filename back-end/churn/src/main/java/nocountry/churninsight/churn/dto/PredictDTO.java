@@ -1,7 +1,10 @@
 package nocountry.churninsight.churn.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class PredictDTO {
 
@@ -11,6 +14,7 @@ public class PredictDTO {
     private String previsao;
 
     @JsonProperty("probabilidade")
+    @NotBlank(message = "Probabilidade é obrigatória")
     @DecimalMin(value = "0.0", inclusive = true, message = "Probabilidade não pode ser negativa")
     @DecimalMax(value = "1.0", inclusive = true, message = "Probabilidade não pode ser maior que 1")
     private Double probabilidade;
@@ -23,27 +27,25 @@ public class PredictDTO {
     public PredictDTO() {
     }
 
-    public PredictDTO(String previsao, double probabilidade) {
+    public PredictDTO(String previsao, Double probabilidade) {
         this.previsao = previsao;
         this.probabilidade = probabilidade;
-        this.confianca = Math.abs(probabilidade - 0.5) * 2;
+        this.confianca = (probabilidade != null) ? Math.abs(probabilidade - 0.5) * 2 : 0.0;
     }
 
-    public PredictDTO(String previsao, double probabilidade, double confianca) {
+    public PredictDTO(String previsao, Double probabilidade, Double confianca) {
         this.previsao = previsao;
         this.probabilidade = probabilidade;
         this.confianca = confianca;
     }
 
-    public String getPrevisao() {
-        return previsao;
-    }
+    public String getPrevisao() { return previsao; }
 
     public void setPrevisao(String previsao) {
         this.previsao = previsao;
     }
 
-    public double getProbabilidade() {
+    public Double getProbabilidade() {
         return probabilidade;
     }
 
@@ -51,7 +53,7 @@ public class PredictDTO {
         this.probabilidade = probabilidade;
     }
 
-    public double getConfianca() {
+    public Double getConfianca() {
         return confianca;
     }
 
