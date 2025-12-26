@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChurnInsight – UI (Spring Boot)</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <div class="brand">
+            <div class="logo" aria-hidden="true"></div>
+            <div>
+                <h1>ChurnInsight – UI (Spring Boot)</h1>
+                <div class="subtitle">
+                    UI local (Spring) → Proxy Java → FastAPI.<br/>
+                    Presets via <code>/churn/demo-examples</code> e health DS via <code>/churn/ds-health</code>.
+                </div>
+            </div>
+        </div>
+
+        <div class="chips">
+            <span class="chip">UI: <code>/</code></span>
+            <span class="chip">Predict: <code>/churn/predict</code></span>
+            <span class="chip">DS Health: <code>/churn/ds-health</code></span>
+            <span class="chip" id="chipDsUrl">DS: —</span>
+            <span class="chip warn" id="chipHealth">Health: checando…</span>
+        </div>
+    </div>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="card">
+            <h2>Entrada (Streamlit-like)</h2>
+
+            <div class="row">
+                <div class="grow">
+                    <label class="label">Presets (dinâmicos)
+                        <select id="demoSelect"></select>
+                    </label>
+                </div>
+                <button class="btn" id="btnLoad">Carregar</button>
+            </div>
+
+            <div class="row" style="margin-top:10px; align-items:center;">
+                <span class="riskTag custom" id="riskTag"><span class="badge"></span><span id="riskText">Custom</span></span>
+                <span class="muted" id="demoHint">Edite o formulário ou carregue um preset.</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+                <button class="btn primary" id="btnPredict">Prever</button>
+                <button class="btn ghost" id="btnHealth">Rechecar health</button>
+                <button class="btn ghost" id="btnReset">Reset</button>
+            </div>
+
+            <div class="hint" style="margin-top:12px;">
+                Dicas:
+                <ul style="margin:8px 0 0 18px; padding:0;">
+                    <li><b>422</b>: JSON inválido para o schema (preset “Inválido”).</li>
+                    <li><b>502</b>: DS fora/timeout (proxy Java).</li>
+                </ul>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Abas do formulário -->
+            <div class="tabbar" role="tablist" aria-label="Form tabs">
+                <button class="tabbtn active" id="tabBtn_basic" data-tab="tab_basic" type="button">Básico</button>
+                <button class="tabbtn" id="tabBtn_services" data-tab="tab_services" type="button">Serviços</button>
+                <button class="tabbtn" id="tabBtn_billing" data-tab="tab_billing" type="button">Cobrança</button>
+            </div>
+
+            <!-- TAB: Básico -->
+            <div class="tabpanel active" id="tab_basic" role="tabpanel">
+                <div class="formGrid2">
+                    <div>
+                        <label class="label">Gênero
+                            <select id="f_gender">
+                                <option>Feminino</option><option>Masculino</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Idoso
+                            <select id="f_SeniorCitizen">
+                                <option value="0">0</option><option value="1">1</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Cônjuge
+                            <select id="f_Partner">
+                                <option>Sim</option><option>Não</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Dependentes
+                            <select id="f_Dependents">
+                                <option>Sim</option><option>Não</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="span2">
+                        <label class="label">Tempo de Contrato
+                            <input id="f_tenure" type="number" min="0" step="1" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Serviços -->
+            <div class="tabpanel" id="tab_services" role="tabpanel">
+                <div class="formGrid2">
+                    <div>
+                        <label class="label">Serviço de Telefone
+                            <select id="f_PhoneService">
+                                <option>Sim</option><option>Não</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Múltiplas Linhas de Telefone
+                            <select id="f_MultipleLines">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de telefone</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="span2">
+                        <label class="label">Serviço de Internet
+                            <select id="f_InternetService">
+                                <option>DSL</option><option>Fibra Ótica</option><option>Nenhum</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Segurança Online
+                            <select id="f_OnlineSecurity">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Backup Online
+                            <select id="f_OnlineBackup">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Proteção do Dispositivo
+                            <select id="f_DeviceProtection">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Suporte Técnico
+                            <select id="f_TechSupport">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Streaming de TV
+                            <select id="f_StreamingTV">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Streaming de Filmes
+                            <select id="f_StreamingMovies">
+                                <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Cobrança -->
+            <div class="tabpanel" id="tab_billing" role="tabpanel">
+                <div class="formGrid2">
+                    <div class="span2">
+                        <label class="label">Tipo de Contrato
+                            <select id="f_Contract">
+                                <option>Mensal</option><option>Anual</option><option>Bianual</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="span2">
+                        <label class="label">Fatura Online
+                            <select id="f_PaperlessBilling">
+                                <option>Sim</option><option>Não</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="span2">
+                        <label class="label">Método de Pagamento
+                            <select id="f_PaymentMethod">
+                                <option>Pix</option>
+                                <option>Ted</option>
+                                <option>Boleto</option>
+                                <option>Débito em conta</option>
+                                <option>Cartão de crédito</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Valor Mensal
+                            <input id="f_MonthlyCharges" type="number" min="0" step="0.01" />
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="label">Valor Anual
+                            <input id="f_TotalCharges" type="number" min="0" step="0.01" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="card">
+            <h2>Status e KPIs</h2>
+            <div class="muted">
+                1) Confirma Spring e DS (<code>/churn/health</code> e <code>/churn/ds-health</code>).<br/>
+                2) Presets vêm da FastAPI via proxy (<code>/churn/demo-examples</code>).<br/>
+                3) Clique em <b>Prever</b> para chamar <code>/churn/predict</code>.
+            </div>
+
+            <div class="kpi">
+                <div class="pill" id="kpiSpring">Spring: —</div>
+                <div class="pill" id="kpiDs">FastAPI: —</div>
+                <div class="pill" id="kpiDsLatency">Latência proxy: —</div>
+                <div class="pill" id="kpiThreshold">Threshold: —</div>
+                <div class="pill" id="kpiModel">Modelo: —</div>
+                <div class="pill" id="kpiPredictLatency">Latência predict: —</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h2>Resposta</h2>
+            <pre id="result">Aguardando…</pre>
+
+            <div class="row" style="margin-top:10px;">
+                <button class="btn ghost" id="btnCopyJson">Copiar JSON</button>
+                <button class="btn ghost" id="btnFormatJson">Formatar JSON</button>
+                <button class="btn ghost" id="btnApplyJson">Aplicar JSON → Form</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <details>
+                <summary>Modo avançado (JSON)</summary>
+                <label class="label">Request JSON (fonte alternativa)
+                    <textarea id="payloadJson" spellcheck="false"></textarea>
+                </label>
+                <div class="hint">
+                    Você pode editar o JSON manualmente e clicar em <b>Aplicar JSON → Form</b>.
+                    O botão <b>Formatar JSON</b> ajuda a normalizar.
+                </div>
+            </details>
+
+            <div class="footer">
+                ChurnInsight • Spring Boot UI • Endpoints:
+                <code>/churn/health</code> • <code>/churn/ds-health</code> • <code>/churn/demo-examples</code>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
