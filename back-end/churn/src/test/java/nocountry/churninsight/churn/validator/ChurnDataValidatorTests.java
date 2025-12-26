@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ChurnDataValidatorTest {
+class ChurnDataValidatorTests {
 
     // Instanciamos diretamente (Unitário Puro = Performance Máxima)
     private final ChurnDataValidator validator = new ChurnDataValidator();

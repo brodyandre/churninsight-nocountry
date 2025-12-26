@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AppConfigTest {
+class AppConfigTests {
 
     @Test
     @DisplayName("Deve configurar RestTemplate com timeouts corretos")
