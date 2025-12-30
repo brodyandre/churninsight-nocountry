@@ -78,7 +78,7 @@ class HealthResponse(BaseModel):
 # Carregamento do Modelo
 # ============================================================================
 
-MODEL_PATH = os.getenv("MODEL_PATH", "models/modelo_churn_final.pkl")
+MODEL_PATH = os.getenv("MODEL_PATH", "../model/churn_xgboost_pipeline_tuned.joblib")
 modelo = None
 model_loaded = False
 
@@ -88,7 +88,13 @@ def load_model():
     global modelo, model_loaded
     try:
         if os.path.exists(MODEL_PATH):
-            modelo = joblib.load(MODEL_PATH)
+            data_checkpoint = joblib.load(MODEL_PATH)
+
+            if isinstance(data_checkpoint, dict) and 'model' in data_checkpoint:
+                modelo = data_checkpoint['model']
+            else:
+                modelo = data_checkpoint
+
             model_loaded = True
             logger.info(f"✓ Modelo carregado com sucesso de {MODEL_PATH}")
         else:

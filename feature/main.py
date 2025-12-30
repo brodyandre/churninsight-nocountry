@@ -3,7 +3,7 @@ import joblib
 import pandas as pd
 
 # Carregamento do modelo serializado
-modelo = joblib.load('../models/modelo_churn_final.pkl')
+modelo = joblib.load('../model/churn_xgboost_pipeline_tuned.joblib')
 app = FastAPI(title="API de Predição de Churn")
 
 @app.post("/predict")
