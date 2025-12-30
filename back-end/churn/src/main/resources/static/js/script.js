@@ -253,7 +253,7 @@
         $("result").style.color = "var(--text)";
 
         // opcional: ao carregar demo, abre a aba mais relevante
-        if (demo.risk === "high" || demo.risk === "low" || demo.risl === "invalid") activateTab("tab_basic");
+        if (demo.risk === "high" || demo.risk === "low" || demo.risk === "invalid") activateTab("tab_basic");
       }
 
       const loadDemos = async () => {
