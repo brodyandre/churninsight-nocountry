@@ -288,10 +288,10 @@
           let dsJson;
           try {
             dsJson = JSON.parse(dsText);
-           } catch (e) {
-            console.error("O backend não enviou um JSON válido:", dsText);
-            dsJson = { };
-           }
+          } catch (e) {
+            console.error("Erro ao parsear o JSON: ", e);
+            dsJson = { status: "offline" };
+          }
 
           // Pega a URL do Data Science
           const dsUrl = dsJson.ds_service_url || dsJson.dsServiceUrl || "-";
@@ -307,23 +307,30 @@
           const proxyMs = dsResp.headers.get("X-Proxy-Latency-Ms");
           $("kpiDsLatency").textContent = `Latência proxy: ${proxyMs ? (proxyMs + " ms") : "—"}`;
 
-          // Status principal (verifica se o HTTP é 200)
-          if (dsResp.ok) {
-            $("kpiDs").textContent = `FastAPI: ${dsResp.ok ? "OK" : "ERRO"} (HTTP ${dsResp.status})`;
-            setHealthChip(dsResp.ok, (dsResp.ok ? "Health: OK" : "Health: DS falhou"));
+          // Lógica de status baseada no JSON retornado pelo Java
+          const isOnline = dsResp.ok && dsJson.status != "offline";
+
+          if (isOnline) {
+            $("kpiDs").textContent = `FastAPI: OK (HTTP ${dsResp.status})`;
+            setHealthChip(true, "Health: OK");
+          } else {
+            $("kpiDs").textContent = "FastAPI: OFFLINE";
+            $("kpiDs").style.color = "var(--danger)";
+            setHealthChip(false, "Health: DS off");
           }
 
           // Atualiza KPIs de Threshold e Modelo
-          const thrNum = Number(dsJson && dsJson.threshold);
-          $("kpiThreshold").textContent = `Threshold: ${Number.isFinite(thrNum) ? thrNum.toFixed(2) : "—"}`;
+          const thrNum = parseFloat(dsJson && dsJson.threshold);
+          $("kpiThreshold").textContent = `Threshold: ${(!isNaN(thrNum) && Number.isFinite(thrNum)) ? thrNum.toFixed(2) : "—"}`;
 
           // KPI modelo
-          const rawPath = dsJson["modelo_path"] || dsJson.modelo_path || "";
-          const modelName = rawPath ? rawPath.split(/[\\/]/).pop() : "—";
+          const rawPath = dsJson.model_path || "";
+          const modelName = (rawPath && rawPath !== "indisponível" && rawPath !== "nenhum")
+            ? rawPath.split(/[\\/]/).pop() 
+            : "—";
           $("kpiModel").textContent = `Modelo: ${modelName}`;
 
         } catch(e){
-          setHealthChip(false, "Health: DS off");
           console.error("Erro fatal no fetch do Health: ", e);
           setHealthChip(false, "Health: DS off.");
           $("kpiDs").textContent = "FastAPI: indisponível";
