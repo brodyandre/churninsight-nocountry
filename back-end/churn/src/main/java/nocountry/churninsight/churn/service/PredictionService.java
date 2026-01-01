@@ -1,7 +1,6 @@
 package nocountry.churninsight.churn.service;
 
 import nocountry.churninsight.churn.dto.ChurnDataDTO;
-import nocountry.churninsight.churn.dto.DemoExampleDTO;
 import nocountry.churninsight.churn.dto.PredictDTO;
 import nocountry.churninsight.churn.dto.StatsDTO;
 import nocountry.churninsight.churn.exception.IntegrationException;
@@ -13,21 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PredictionService {
@@ -91,6 +87,11 @@ public class PredictionService {
 
             return resultado;
 
+        } catch (HttpStatusCodeException e) {
+            logger.error("O motor de predição retornou: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+
+            throw e;
+        
         } catch (RestClientException e) {
             // Erro de comunicação com o microsserviço
             logger.error("Falha ao conectar com microsserviço Python em {}: {}",
