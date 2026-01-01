@@ -72,6 +72,8 @@ class HealthResponse(BaseModel):
     status: str
     model_loaded: bool
     service_version: str
+    threshold: Optional[float] = None
+    model_path: Optional[str] = None
 
 
 # ============================================================================
@@ -80,20 +82,23 @@ class HealthResponse(BaseModel):
 
 MODEL_PATH = os.getenv("MODEL_PATH", "../model/churn_xgboost_pipeline_tuned.joblib")
 modelo = None
+model_metadata = {}
 model_loaded = False
 
 
 def load_model():
     """Carrega o modelo treinado"""
-    global modelo, model_loaded
+    global modelo, model_loaded, model_metadata
     try:
         if os.path.exists(MODEL_PATH):
             data_checkpoint = joblib.load(MODEL_PATH)
 
             if isinstance(data_checkpoint, dict) and 'model' in data_checkpoint:
                 modelo = data_checkpoint['model']
+                model_metadata = {k: v for k, v in data_checkpoint.items() if k != 'model'}
             else:
                 modelo = data_checkpoint
+                model_metadata = {}
 
             model_loaded = True
             logger.info(f"✓ Modelo carregado com sucesso de {MODEL_PATH}")
@@ -119,7 +124,9 @@ async def health_check():
     return HealthResponse(
         status="healthy" if model_loaded else "degraded",
         model_loaded=model_loaded,
-        service_version="1.0.0"
+        service_version="1.0.0",
+        threshold=model_metadata.get('threshold', 0.5),
+        model_path=MODEL_PATH
     )
 
 
