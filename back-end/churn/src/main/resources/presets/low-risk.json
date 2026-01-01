@@ -1,0 +1,28 @@
+{
+    "id": "low-risk",
+    "order": 1,
+    "label": "Cliente Fiel (Risco Baixo)",
+    "risk": "low",
+    "description": "Contrato Bianual com todos os serviços de suporte.",
+    "payload": {
+        "gender": "Masculino",
+        "SeniorCitizen": 0,
+        "Partner": "Sim",
+        "Dependents": "Sim",
+        "tenure": 65,
+        "PhoneService": "Sim",
+        "MultipleLines": "Sim",
+        "InternetService": "DSL",
+        "OnlineSecurity": "Sim",
+        "OnlineBackup": "Sim",
+        "DeviceProtection": "Sim",
+        "TechSupport": "Sim",
+        "StreamingTV": "Não",
+        "StreamingMovies": "Não",
+        "Contract": "Bianual",
+        "PaperlessBilling": "Não",
+        "PaymentMethod": "Cartão de crédito",
+        "MonthlyCharges": 60.00,
+        "TotalCharges": 3900.00
+    }
+}

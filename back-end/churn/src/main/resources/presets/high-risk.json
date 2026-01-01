@@ -1,0 +1,28 @@
+{
+    "id": "high-risk",
+    "order": 2,
+    "label": "Novo Cliente (Risco Alto)",
+    "risk": "high",
+    "description": "Contrato mensal, Fibra Ótica e sem serviços de segurança.",
+    "payload": {
+        "gender": "Feminino",
+        "SeniorCitizen": 0,
+        "Partner": "Não",
+        "Dependents": "Não",
+        "tenure": 2,
+        "PhoneService": "Sim",
+        "MultipleLines": "Não",
+        "InternetService": "Fibra Ótica",
+        "OnlineSecurity": "Não",
+        "OnlineBackup": "Não",
+        "DeviceProtection": "Não",
+        "TechSupport": "Não",
+        "StreamingTV": "Sim",
+        "StreamingMovies": "Sim",
+        "Contract": "Mensal",
+        "PaperlessBilling": "Sim",
+        "PaymentMethod": "Boleto",
+        "MonthlyCharges": 85.0,
+        "TotalCharges": 170.0
+    }
+}
