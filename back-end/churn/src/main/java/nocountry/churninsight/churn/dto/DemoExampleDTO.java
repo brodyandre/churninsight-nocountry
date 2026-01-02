@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class DemoExampleDTO {
     public String id;
+    public int order;
     public String label;
     public String risk;
     public String description;

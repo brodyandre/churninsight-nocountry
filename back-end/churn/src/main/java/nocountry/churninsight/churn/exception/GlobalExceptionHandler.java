@@ -11,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -35,11 +36,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError -> fieldError.getDefaultMessage() != null
                                 ? fieldError.getDefaultMessage()
                                 : "Erro sem mensagem definida.",
-                        (existingValue, newValue) -> existingValue));
+                        (existingValue, newValue) -> existingValue + "\n" + newValue));
 
         return buildResponse(HttpStatus.valueOf(status.value()),
                 "Erro de validação dos campos.",
-                errors);
+                String.join("\n", errors.values()));
     }
 
     // Status 400 - Erro de Validação (Service)
@@ -119,6 +120,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponse(HttpStatus.GATEWAY_TIMEOUT,
                 "O serviço de predição demorou muito para responder.",
                 "Tente novamente em instantes ou reduza o volume de dados.");
+    }
+
+    @ExceptionHandler(HttpStatusCodeException.class)
+    public ResponseEntity<Object> handleRestClientException(HttpStatusCodeException ex) {
+        return buildResponse(HttpStatus.valueOf(ex.getStatusCode().value()),
+                "O motor de predição recusou os dados (Erro Externo)",
+                ex.getResponseBodyAsString());
     }
 
     private ResponseEntity<Object> buildResponse(HttpStatus status, String message, Object details) {

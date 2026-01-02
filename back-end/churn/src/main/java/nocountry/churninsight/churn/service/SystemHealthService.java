@@ -78,11 +78,13 @@ public class SystemHealthService {
             logger.warn("FastAPI indisponível, usando fallback. Motivo: {}", e.getMessage());
 
             Map<String, Object> fallback = new HashMap<>();
-            fallback.put("status", "offline (simulado)");
+            fallback.put("status", "offline");
+            fallback.put("model_loaded", false);
             fallback.put("ds_service_url", dsServiceUrl);
-            fallback.put("internal_latency", 0L);
-            fallback.put("modelo_path", "nenhum");
-            fallback.put("threshold", 0.5);
+            fallback.put("internal_latency", -1L);
+            fallback.put("threshold", "-");
+            fallback.put("model_path", "indisponível");
+            fallback.put("error_message", e.getMessage());
 
             return fallback;
         }

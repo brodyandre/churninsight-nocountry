@@ -1,0 +1,28 @@
+{
+    "id": "invalid-logic-error",
+    "order": 4,
+    "label": "Inválido (Erro de regra de negócio)",
+    "risk": "invalid",
+    "description": "Simula erro de lógica de negócio: Internet='Nenhum' mas Segurança='Sim'. Gera 422 via Validator Java.",
+    "payload": {
+        "gender": "Feminino",
+        "SeniorCitizen": 0,
+        "Partner": "Não",
+        "Dependents": "Não",
+        "tenure": 12,
+        "PhoneService": "Sim",
+        "MultipleLines": "Não",
+        "InternetService": "Nenhum",
+        "OnlineSecurity": "Sim",
+        "OnlineBackup": "Sem serviço de internet",
+        "DeviceProtection": "Sem serviço de internet",
+        "TechSupport": "Sem serviço de internet",
+        "StreamingTV": "Sem serviço de internet",
+        "StreamingMovies": "Sem serviço de internet",
+        "Contract": "Anual",
+        "PaperlessBilling": "Sim",
+        "PaymentMethod": "Boleto",
+        "MonthlyCharges": 50.0,
+        "TotalCharges": 600.0
+    }
+}

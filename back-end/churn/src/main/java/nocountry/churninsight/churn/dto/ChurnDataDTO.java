@@ -9,96 +9,100 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChurnDataDTO {
     @JsonProperty("gender")
-    @NotBlank(message = "Gênero é obrigatório")
+    @NotBlank(message = "O campo 'gênero' é obrigatório")
     @Pattern(regexp = "Masculino|Feminino", message = "Gênero deve ser 'Masculino' ou 'Feminino'")
     private String genero;
 
     @JsonProperty("SeniorCitizen")
+    @NotNull(message = "O campo 'idoso' é obrigatório")
     @Min(value = 0, message = "Idoso deve ser 0 ou 1")
     @Max(value = 1, message = "Idoso deve ser 0 ou 1")
     private Integer idoso;
 
     @JsonProperty("Partner")
-    @NotBlank(message = "Cônjuge é obrigatório")
+    @NotBlank(message = "O campo 'cônjuge' é obrigatório")
     @Pattern(regexp = "Sim|Não", message = "Cônjuge deve ser 'Sim' ou 'Não'")
     private String conjuge;
 
     @JsonProperty("Dependents")
-    @NotBlank(message = "Dependentes é obrigatório")
+    @NotBlank(message = "O campo 'dependentes' é obrigatório")
     @Pattern(regexp = "Sim|Não", message = "Dependentes deve ser 'Sim' ou 'Não'")
     private String dependentes;
 
     @JsonProperty("tenure")
+    @NotNull(message = "O campo 'tempo de contrato' é obrigatório")
     @Min(value = 0, message = "Tempo de contrato não pode ser negativo")
     @Max(value = 72, message = "Tempo de contrato não pode exceder 72 meses")
     private Integer tempoContrato;
 
     @JsonProperty("PhoneService")
-    @NotBlank(message = "Serviço de Telefone é obrigatório")
+    @NotBlank(message = "O campo 'serviço de telefone' é obrigatório")
     @Pattern(regexp = "Sim|Não", message = "Serviço de Telefone deve ser 'Sim' ou 'Não'")
     private String servicoTelefone;
 
     @JsonProperty("MultipleLines")
-    @NotBlank(message = "Múltiplas Linhas é obrigatório")
+    @NotBlank(message = "O campo 'múltiplas linhas' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de telefone", message = "Múltiplas Linhas deve ser 'Sim', 'Não' ou 'Sem serviço de telefone'")
     private String multiplasLinhasTel;
 
     @JsonProperty("InternetService")
-    @NotBlank(message = "Serviço de Internet é obrigatório")
+    @NotBlank(message = "O campo 'serviço de internet' é obrigatório")
     @Pattern(regexp = "DSL|Fibra Ótica|Nenhum", message = "Serviço de Internet deve ser 'DSL', 'Fibra Ótica' ou 'Nenhum'")
     private String servicoInternet;
 
     @JsonProperty("OnlineSecurity")
-    @NotBlank(message = "Segurança Online é obrigatória")
+    @NotBlank(message = "O campo 'segurança online' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Segurança Online deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String segurancaOnline;
 
     @JsonProperty("OnlineBackup")
-    @NotBlank(message = "Backup Online é obrigatório")
+    @NotBlank(message = "O campo 'backup online' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Backup Online deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String backupOnline;
 
     @JsonProperty("DeviceProtection")
-    @NotBlank(message = "Proteção de Dispositivo é obrigatória")
+    @NotBlank(message = "O campo 'proteção de dispositivo' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Proteção de Dispositivo deve ser 'Sim', 'No' ou 'Sem serviço de internet'")
     private String protecaoDispositivo;
 
     @JsonProperty("TechSupport")
-    @NotBlank(message = "Suporte Técnico é obrigatório")
+    @NotBlank(message = "O campo 'suporte técnico' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Suporte Técnico deve ser 'Sim', 'Não' ou 'Sem serviço de internete'")
     private String suporteTecnico;
 
     @JsonProperty("StreamingTV")
-    @NotBlank(message = "TV Streaming é obrigatória")
+    @NotBlank(message = "O campo 'streaming de TV' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "TV Streaming deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String tvStreaming;
 
     @JsonProperty("StreamingMovies")
-    @NotBlank(message = "Filmes Streaming é obrigatório")
+    @NotBlank(message = "O campo 'streaming de filmes' é obrigatório")
     @Pattern(regexp = "Sim|Não|Sem serviço de internet", message = "Filmes Streaming deve ser 'Sim', 'Não' ou 'Sem serviço de internet'")
     private String filmesStreaming;
 
     @JsonProperty("Contract")
-    @NotBlank(message = "Tipo de Contrato é obrigatório")
+    @NotBlank(message = "O campo 'tipo de contrato' é obrigatório")
     @Pattern(regexp = "Mensal|Anual|Bianual", message = "Tipo de Contrato deve ser 'Mensal', 'Anual' ou 'Bianual'")
     private String tipoContrato;
 
     @JsonProperty("PaperlessBilling")
-    @NotBlank(message = "Fatura Online é obrigatória")
+    @NotBlank(message = "O campo 'fatura online' é obrigatório")
     @Pattern(regexp = "Sim|Não", message = "Fatura Online deve ser 'Sim' ou 'Não'")
     private String faturaOnline;
 
     @JsonProperty("PaymentMethod")
-    @NotBlank(message = "Método de Pagamento é obrigatório")
+    @NotBlank(message = "O campo 'método de pagamento' é obrigatório")
     @Pattern(regexp = "Pix|Ted|Boleto|Débito em conta|Cartão de crédito", message = "Método de Pagamento inválido")
     private String metodoPagamento;
 
     @JsonProperty("MonthlyCharges")
+    @NotNull(message = "O campo 'valor mensal' é obrigatório")
     @DecimalMin(value = "0.0", inclusive = true, message = "Valor mensal não pode ser negativo")
     @DecimalMax(value = "9999.99", message = "Valor mensal muito alto")
     private Double valorMensal;
 
     @JsonProperty("TotalCharges")
+    @NotNull(message = "O campo 'valor total' é obrigatório")
     @DecimalMin(value = "0.0", inclusive = true, message = "Valor total não pode ser negativo")
     @DecimalMax(value = "99999.99", message = "Valor total muito alto")
     private Double valorTotal;
@@ -113,11 +117,11 @@ public class ChurnDataDTO {
         this.genero = genero;
     }
 
-    public int getIdoso() {
+    public Integer getIdoso() {
         return idoso;
     }
 
-    public void setIdoso(int idoso) {
+    public void setIdoso(Integer idoso) {
         this.idoso = idoso;
     }
 
@@ -241,7 +245,7 @@ public class ChurnDataDTO {
         this.metodoPagamento = metodoPagamento;
     }
 
-    public double getValorMensal() {
+    public Double getValorMensal() {
         return valorMensal;
     }
 
@@ -249,7 +253,7 @@ public class ChurnDataDTO {
         this.valorMensal = valorMensal;
     }
 
-    public double getValorTotal() {
+    public Double getValorTotal() {
         return valorTotal;
     }
 

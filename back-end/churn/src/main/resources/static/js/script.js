@@ -1,445 +1,289 @@
 (() => {
-      const $ = (id) => document.getElementById(id);
+    // --- 1. SELETORES E UTILITÁRIOS ---
+    const $ = (id) => document.getElementById(id);
+    
+    const UI = {
+        setTxt: (id, txt) => { const el = $(id); if(el) el.textContent = txt; },
+        setHtml: (id, html) => { const el = $(id); if(el) el.innerHTML = html; },
+        setColor: (id, color) => { const el = $(id); if(el) el.style.color = `var(--${color})`; },
+        pretty: (obj) => JSON.stringify(obj, null, 2)
+    };
 
-      const setText = (id, txt) => { $(id).textContent = txt; };
-      const setHtml = (id, html) => { $(id).innerHTML = html; };
-      const pretty = (obj) => JSON.stringify(obj, null, 2);
-
-      const safeJsonParse = (text) => {
-        try { return { ok:true, value: JSON.parse(text) }; }
-        catch(e){ return { ok:false, error: e.message }; }
-      };
-
-      const setHealthChip = (ok, text) => {
-        const el = $("chipHealth");
-        if (!el) return;
-        el.textContent = text;
-        el.classList.remove("warn","ok","bad");
-        el.classList.add(ok ? "ok" : "bad");
-      };
-
-      const setRiskTag = (risk) => {
-        const tag = $("riskTag");
-        const txt = $("riskText");
-        if (!tag | !txt) return;
-        tag.classList.remove("high", "low", "invalid", "custom");
-
-        if (risk === "high"){
-          tag.classList.add("high"); txt.textContent = "Alto risco";
-        } else if (risk === "low"){
-          tag.classList.add("low"); txt.textContent = "Baixo risco";
-        } else if (risk === "invalid"){
-          tag.classList.add("invalid"); txt.textContent = "Inválido";
-        } else {
-          tag.classList.add("custom"); txt.textContent = "Customizado";
-        }
-      };
-
-      // Tabs
-      const activateTab = (tabId) => {
-        document.querySelectorAll(".tabbtn").forEach(b => {
-          b.classList.toggle("active", b.dataset.tab === tabId);
-        });
-
-        document.querySelectorAll(".tabpanel").forEach(p => {
-          p.classList.toggle("active", p.id === tabId);
-        });
-      };
-
-      // State
-      const state = {
-        demos: [],
-        currentDemo: null,
-        payload: null
-      };
-
-      // Form map
-      const FIELD_MAP = [
-        ["gender", "f_gender", "string"],
-        ["SeniorCitizen", "f_SeniorCitizen", "int"],
-        ["Partner", "f_Partner", "string"],
-        ["Dependents", "f_Dependents", "string"],
-        ["tenure", "f_tenure", "int"],
-        ["PhoneService", "f_PhoneService", "string"],
-        ["MultipleLines", "f_MultipleLines", "string"],
-        ["InternetService", "f_InternetService", "string"],
-        ["OnlineSecurity", "f_OnlineSecurity", "string"],
-        ["OnlineBackup", "f_OnlineBackup", "string"],
-        ["DeviceProtection", "f_DeviceProtection", "string"],
-        ["TechSupport", "f_TechSupport", "string"],
-        ["StreamingTV", "f_StreamingTV", "string"],
-        ["StreamingMovies", "f_StreamingMovies", "string"],
-        ["Contract", "f_Contract", "string"],
-        ["PaperlessBilling", "f_PaperlessBilling", "string"],
-        ["PaymentMethod", "f_PaymentMethod", "string"],
-        ["MonthlyCharges", "f_MonthlyCharges", "float"],
+    // --- 2. CONFIGURAÇÃO DE MAPEAMENTO DO FORMULÁRIO ---
+    const FIELD_MAP = [
+        ["gender", "f_gender", "string"], ["SeniorCitizen", "f_SeniorCitizen", "int"],
+        ["Partner", "f_Partner", "string"], ["Dependents", "f_Dependents", "string"],
+        ["tenure", "f_tenure", "int"], ["PhoneService", "f_PhoneService", "string"],
+        ["MultipleLines", "f_MultipleLines", "string"], ["InternetService", "f_InternetService", "string"],
+        ["OnlineSecurity", "f_OnlineSecurity", "string"], ["OnlineBackup", "f_OnlineBackup", "string"],
+        ["DeviceProtection", "f_DeviceProtection", "string"], ["TechSupport", "f_TechSupport", "string"],
+        ["StreamingTV", "f_StreamingTV", "string"], ["StreamingMovies", "f_StreamingMovies", "string"],
+        ["Contract", "f_Contract", "string"], ["PaperlessBilling", "f_PaperlessBilling", "string"],
+        ["PaymentMethod", "f_PaymentMethod", "string"], ["MonthlyCharges", "f_MonthlyCharges", "float"],
         ["TotalCharges", "f_TotalCharges", "float"]
-      ];
+    ];
 
-      const readFormToPayload = () => {
-        const p = {};
-
-        FIELD_MAP.forEach(([k, id, t]) => {
-          const el = $(id);
-          if (!el) return;
-
-          let v = el.value;
-          if (t === "int") {
-            v = (v === "" || v === null) ? 0 : parseInt(v, 10);
-
-            if (!Number.isFinite(v)) v = 0;
-          }
-
-          if (t === "float") {
-            v = (v === "" || v === null) ? 0 : parseFloat(v);
-
-            if (!Number.isFinite(v)) v = 0;
-          }
-
-          p[k] = v;
-        });
-
-        return p;
-      };
-
-      const applyPayloadToForm = (payload) => {
-        if (!payload) return;
-
-        FIELD_MAP.forEach(([k, id]) => {
-          if (!(k in payload)) return;
-
-          const el = $(id);
-          if (el) {
-            el.value = (payload[k] === null || payload[k] === undefined) ? "" : String(payload[k]);
-          }
-        });
-      };
-
-      const syncPayloadToJson = () => {
-        const el = $("payloadJson");
-        if (el) el.value = pretty(state.payload ?? {});
-      };
-
-      const syncJsonToPayload = () => {
-        const jsonValue = $("payloadJson").value || "";
-        const parsed = safeJsonParse(jsonValue);
-
-        if (!parsed.ok) return { ok: false, error: parsed.error };
-
-        state.payload = parsed.value;
-        applyPayloadToForm(state.payload);
-
-        setRiskTag("custom");
-        $("demoHint").textContent = "Payload customizado aplicado a partir do JSON.";
-
-        return { ok:true };
-      };
-
-      // Predict (CORRIGIDO: preset inválido deve enviar payload RAW e retornar 422/Inválido)
-      const predict = async () => {
-        const selected = getSelectedDemo();
-        const isInvalidPreset = !!(selected && (selected.risk === "invalid"));
-
-        let payloadToSend;
-
-        const isAdvancedMode = document.querySelector("details").open;
-
-        if (isInvalidPreset || isAdvancedMode) {
-          const jsonText = $("payloadJson").value;
-          const parsed = safeJsonParse(jsonText);
-
-          if (!parsed.ok) {
-            $("result").style.color = "var(--bad)";
-            $("result").textContent = "Erro: o JSON que você editou está com erro de sintaxe.\n" + parsed.error;
-
-            return;
-          }
-
-          payloadToSend = parsed.value;
-        } else {
-          payloadToSend = readFormToPayload();
+    // --- 3. ESTADO GLOBAL DA APLICAÇÃO ---
+    const state = {
+        demos: [],
+        payload: {},
+        get currentSelectedDemo() {
+            return this.demos.find(d => d.id === $("demoSelect")?.value);
         }
+    };
 
-        state.payload = payloadToSend;
+    // --- 4. FUNÇÕES DE AÇÃO (LOGICA DE NEGÓCIO) ---
+    const Actions = {
+        // Sincroniza o que está nos inputs para o objeto state.payload e para o textarea JSON
+        syncFormToPayload() {
+            FIELD_MAP.forEach(([key, id, type]) => {
+                const el = $(id);
+                if (!el) return;
+                let val = el.value;
+                if (type === "int") val = parseInt(val) || 0;
+                if (type === "float") val = parseFloat(val) || 0;
+                state.payload[key] = val;
+            });
+            const jsonEl = $("payloadJson");
+            if (jsonEl) jsonEl.value = UI.pretty(state.payload);
+            
+            // Quando o usuário mexe no form, o risco torna-se "custom"
+            Actions.setRiskTag("custom");
+        },
 
-        if (!isInvalidPreset) setRiskTag("custom");
+        // Aplica um objeto JSON nos inputs do formulário
+        applyPayloadToForm(payload) {
+            if (!payload) return;
+            state.payload = { ...payload };
+            FIELD_MAP.forEach(([key, id]) => {
+                const el = $(id);
+                if (el) el.value = (payload[key] === null || payload[key] === undefined) ? "" : String(payload[key]);
+            });
+            const jsonEl = $("payloadJson");
+            if (jsonEl) jsonEl.value = UI.pretty(state.payload);
+        },
 
-        $("result").textContent = "Chamando /churn/predict ...";
-        $("result").style.color = "var(--text)";
+        // Gerencia as classes CSS das tags de risco
+        setRiskTag(risk) {
+            const tag = $("riskTag");
+            const txt = $("riskText");
+            if (!tag || !txt) return;
+            tag.classList.remove("high", "low", "invalid", "custom");
 
-        const t0 = performance.now();
+            const map = {
+                high: "Alto risco",
+                low: "Baixo risco",
+                invalid: "Inválido",
+                custom: "Customizado"
+            };
 
-        try{
-          const resp = await fetch("/churn/predict", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payloadToSend)
-          });
+            tag.classList.add(risk || "custom");
+            txt.textContent = map[risk] || "Customizado";
+        },
 
-          const body = await resp.json();
+        // Atualiza os indicadores de saúde (Spring e FastAPI)
+        async updateHealth() {
+            UI.setColor("result", "text");
 
-          const t1 = performance.now();
-          const clientMs = Math.max(0, t1 - t0);
-          $("kpiPredictLatency").textContent = `Latência predict: ${clientMs.toFixed(0)} ms`;
+            // 1. Health do Spring (Java)
+            try {
+                const sResp = await fetch("/churn/health", { cache: "no-store" });
+                UI.setTxt("kpiSpring", `Spring: ${sResp.ok ? "OK" : "(ERRO)"} (HTTP ${sResp.status})`);
+                UI.setColor("kpiSpring", sResp.ok ? "ok" : "bad");
+            } catch(e) { UI.setTxt("kpiSpring", "Spring: indisponível"); }
 
-          const header = `HTTP ${resp.status} ${resp.ok ? "(OK)" : "(ERRO)"} • ${clientMs.toFixed(0)} ms`;
+            // 2. Health do DS (FastAPI via Java)
+            try {
+                const resp = await fetch("/churn/ds-health", { cache: "no-store" });
+                const data = await resp.json();
+                const isOnline = resp.ok && data.status !== "offline";
 
-          if (!resp.ok) {
-            $("result").style.color = "var(--bad)";
+                UI.setTxt("kpiDs", isOnline ? `FastAPI: OK (HTTP ${resp.status})` : "FastAPI: OFFLINE");
+                UI.setColor("kpiDs", isOnline ? "ok" : "bad");
+                
+                const chip = $("chipHealth");
+                if (chip) {
+                    chip.textContent = isOnline ? "Health: OK" : "Health: DS off";
+                    chip.className = `chip ${isOnline ? "ok" : "bad"}`;
+                }
 
-            let errorDetail = "";
-            if (Array.isArray(body.details)) {
-              errorDetail = "\n" + body.details
-                .map(m => ` - ${m}`)
-                .join("\n");
-            } else if (body.details && typeof body.details === "object"){
-              // Erro de validação de campos (MethodArgumentNotValidException)
-              errorDetail = "nCampos inválidos:\n" + Object.entries(body.details)
-                  .map(([field, msg]) => ` - ${field}: ${msg}`)
-                  .join("\n");
-            } else {
-              // Erro genérico ou de integração (IntegrationException)
-              errorDetail = `\nDetalhe: ${body.details || "Sem detalhes adicionais"}`;
+                if (isOnline) {
+                    UI.setHtml("chipDsUrl", `DS URL: <code>${data.ds_service_url || "-"}</code>`);
+                } else {
+                    UI.setHtml("chipDsUrl", `DS URL: <span>—</span>`)
+                }
+                
+                const proxyMs = resp.headers.get("X-Proxy-Latency-Ms");
+                UI.setTxt("kpiDsLatency", `Latência proxy: ${proxyMs ? (proxyMs + " ms") : "—"}`);
+
+                const thr = parseFloat(data.threshold);
+                UI.setTxt("kpiThreshold", `Threshold: ${(!isNaN(thr) && isFinite(thr)) ? thr.toFixed(2) : "—"}`);
+
+                const rawPath = data.modelo_path || data.model_path || "";
+                const modelName = (rawPath && rawPath !== "indisponível") ? rawPath.split(/[\\/]/).pop() : "—";
+                UI.setTxt("kpiModel", `Modelo: ${modelName}`);
+            } catch(e) {
+                UI.setTxt("kpiDs", "FastAPI: indisponível");
+                UI.setColor("kpiDs", "bad");
+
+                const chip = $("chipHealth");
+                if (chip) { chip.textContent = "Health: DS off"; chip.className = "chip bad"; }
+
+                const chipDsUrl = $("chipDsUrl");
+                if (chipDsUrl) { chipDsUrl.innerHTML = "DS: —"; }
+            }
+        }
+    };
+
+    // --- 5. EVENTOS ---
+    const bindEvents = () => {
+        // Predict
+        $("btnPredict")?.addEventListener("click", async () => {
+            UI.setTxt("result", "Processando predição...");
+            UI.setColor("result", "text");
+
+            const isAdvanced = document.querySelector("details")?.open;
+            let payload;
+
+            try {
+                payload = isAdvanced ? JSON.parse($("payloadJson").value) : state.payload;
+            } catch (e) {
+                UI.setColor("result", "bad");
+                UI.setTxt("result", "Erro: JSON inválido no editor.\n" + e.message);
+                return;
             }
 
-            $("result").textContent = `${header}\n${body.message || "Erro: "}${errorDetail}`;
+            const t0 = performance.now();
+            try {
+                const resp = await fetch("/churn/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
 
-            return;
-          }
+                const body = await resp.json();
+                const ms = (performance.now() - t0).toFixed(0);
+                UI.setTxt("kpiPredictLatency", `Latência predict: ${ms} ms`);
 
-          // Sucesso
-          if (body && "probabilidade" in body){
-            const p = Number(body.probabilidade);
-            const pct = (p * 100).toFixed(2).replace(".", ",") + "%";
+                if (!resp.ok) {
+                    UI.setColor("result", "bad");
+                    const detail = body.details
+                        ? UI.pretty(body.details).replace(/\\n/g, "\n").replace(/^"|"$/g, '')
+                        : "Sem detalhes";
+                    UI.setTxt("result", `Erro ${resp.status}: ${body.message || "Erro"}\n${detail}`);
+                    return;
+                }
 
-            $("result").textContent = `${header}\n\n${pretty(body)}\n\nResumo:\n- Previsão: ${body.previsao}\n- Probabilidade: ${pct}`;
-          } else {
-            $("result").textContent = `${header}\n\n${pretty(body)}`;
-          }
-
-        } catch(e){
-          $("result").style.color = "var(--bad)";
-          $("result").textContent = "Falha crítica na requisição.\n\nDetalhe: " + e.message;
-        }
-      }
-
-      // Demos
-      const getSelectedDemo = () => $("demoSelect") ? state.demos.find(d => d.id === $("demoSelect").value) : null;
-
-      const fillSelect = () => {
-        const sel = $("demoSelect");
-
-        if (!sel) return;
-
-        sel.innerHTML = "";
-        state.demos.forEach(d => {
-          const opt = document.createElement("option");
-          opt.value = d.id;
-          opt.textContent = d.label || d.id;
-          sel.appendChild(opt);
+                if (body && body.probabilidade !== undefined) {
+                    const prob = (Number(body.probabilidade) * 100).toFixed(2).replace(".", ",") + "%";
+                    UI.setTxt("result", `Sucesso! [${ms}ms]\n\nPrevisão: ${body.previsao}\nProbabilidade de cancelar: ${prob}\n\nJSON Response:\n${UI.pretty(body)}`);
+                } else {
+                    UI.setTxt("result", UI.pretty(body));
+                }
+            } catch (e) {
+                UI.setColor("result", "bad");
+                UI.setTxt("result", "Falha na conexão: " + e.message);
+            }
         });
-      };
 
-      const applyDemo = (demo) => {
-        if (!demo) return;
+        // BOTÃO RESET
+        $("btnReset")?.addEventListener("click", () => {
+            UI.setColor("result", "text");
+            const demo = state.currentSelectedDemo;
+            if (demo) {
+                Actions.applyPayloadToForm(demo.payload);
+                Actions.setRiskTag(demo.risk);
+                UI.setTxt("result", "Formulário resetado para o preset atual.");
+            } else {
+                Actions.applyPayloadToForm({});
+                Actions.setRiskTag("custom");
+                UI.setTxt("result", "Formulário limpo.");
+            }
+        });
 
-        state.payload = JSON.parse(JSON.stringify(demo.payload));
+        // Abas
+        document.querySelectorAll(".tab").forEach(tabLabel => {
+            tabLabel.addEventListener("click", () => {
+                const tabId = tabLabel.getAttribute("data-tab");
+                
+                document.querySelectorAll(".tabpanel").forEach(p => p.classList.remove("active"));
 
-        applyPayloadToForm(state.payload);
-        syncPayloadToJson();
+                const activePanel = $(tabId);
+                if (activePanel) activePanel.classList.add("active");
+            });
+        });
 
-        setRiskTag(demo.risk || "custom");
-        $("result").textContent = "Preset carregado. Clique em Prever.";
-        $("result").style.color = "var(--text)";
+        // Carregar Preset
+        $("btnLoad")?.addEventListener("click", () => {
+            const demo = state.currentSelectedDemo;
+            if (demo) {
+                Actions.applyPayloadToForm(demo.payload);
+                Actions.setRiskTag(demo.risk);
+                UI.setTxt("result", "Preset carregado.");
+                UI.setColor("result", "text");
+            }
+        });
 
-        // opcional: ao carregar demo, abre a aba mais relevante
-        if (demo.risk === "high" || demo.risk === "low" || demo.risk === "invalid") activateTab("tab_basic");
-      }
+        // Utilitários JSON
+        $("btnSyncJson")?.addEventListener("click", async () => {
+            const jsonEl = $("payloadJson");
 
-      const loadDemos = async () => {
-        const resp = await fetch("/churn/demo-examples");
+            UI.setColor("result", "text");
 
-        return await resp.json();
-      }
+            try {
+                const currentObj = JSON.parse(jsonEl.value);
+                const formattedJson = UI.pretty(currentObj);
 
-      // Health
-      const checkHealth = async () => {
-        // Check Spring Boot
-        try{
-          const springResp = await fetch("/churn/health", { cache: "no-store" });
-          const springJson = await springResp.json().catch(() => ({}));
+                Actions.applyPayloadToForm(currentObj);
 
-          $("kpiSpring").textContent = `Spring: ${springResp.ok
-            ? "OK"
-            : "(ERRO)"} (HTTP ${springResp.status})`;
+                await navigator.clipboard.writeText(formattedJson);
 
-        } catch(e){
-          $("kpiSpring").textContent = "Spring: indisponível";
-          setHealthChip(false, "Spring OFF");
+                UI.setTxt("result", "JSON formatado e aplicado ao formulário.");
 
-          return;
-        }
+            } catch (error) {
+                UI.setColor("result", "bad");
+                UI.setColor("result", "Erro no processamento: JSON inválido.")
+            }
+        });
 
-        // Check DS (FastAPI) via Proxy Java
+        $("btnHealth")?.addEventListener("click", async () => {
+            UI.setColor("result", "text");
+            UI.setTxt("result", "Atualizando health...");
+            await Actions.updateHealth();
+            UI.setTxt("result", "Health atualizado.");
+        });
+
+        // Sincronização automática do formulário
+        FIELD_MAP.forEach(([, id]) => {
+            $(id)?.addEventListener("change", Actions.syncFormToPayload);
+        });
+
+        // Sincronização automática do editor JSON
+        $("payloadJson")?.addEventListener("input", () => {
+            Actions.setRiskTag("custom");
+        });
+    };
+
+    // --- 6. INICIALIZAÇÃO ---
+    (async () => {
+        if (state.demos.length > 0) return;
+
+        bindEvents();
+        await Actions.updateHealth();
+        
         try {
-          const dsResp = await fetch("/churn/ds-health", { cache: "no-store" });
-          const dsText = await dsResp.text();
-
-          let dsJson;
-          try {
-            dsJson = JSON.parse(dsText);
-           } catch (e) {
-            console.error("O backend não enviou um JSON válido:", dsText);
-            dsJson = { };
-           }
-
-          // Pega a URL do Data Science
-          const dsUrl = dsJson.ds_service_url || dsJson.dsServiceUrl || "-";
-          const el = document.getElementById("chipDsUrl");
-
-          if (el) {
-            el.innerHTML = `DS: <code>${dsUrl}</code>`;
-          } else {
-            console.error("Erro: O elemento com ID 'chipDsUrl' não foi encontrado no HTML.");
-          }
-
-          // Pega latência injetada no Header
-          const proxyMs = dsResp.headers.get("X-Proxy-Latency-Ms");
-          $("kpiDsLatency").textContent = `Latência proxy: ${proxyMs ? (proxyMs + " ms") : "—"}`;
-
-          // Status principal (verifica se o HTTP é 200)
-          if (dsResp.ok) {
-            $("kpiDs").textContent = `FastAPI: ${dsResp.ok ? "OK" : "ERRO"} (HTTP ${dsResp.status})`;
-            setHealthChip(dsResp.ok, (dsResp.ok ? "Health: OK" : "Health: DS falhou"));
-          }
-
-          // Atualiza KPIs de Threshold e Modelo
-          const thrNum = Number(dsJson && dsJson.threshold);
-          $("kpiThreshold").textContent = `Threshold: ${Number.isFinite(thrNum) ? thrNum.toFixed(2) : "—"}`;
-
-          // KPI modelo
-          const rawPath = dsJson["modelo_path"] || dsJson.modelo_path || "";
-          const modelName = rawPath ? rawPath.split(/[\\/]/).pop() : "—";
-          $("kpiModel").textContent = `Modelo: ${modelName}`;
-
-        } catch(e){
-          setHealthChip(false, "Health: DS off");
-          console.error("Erro fatal no fetch do Health: ", e);
-          setHealthChip(false, "Health: DS off.");
-          $("kpiDs").textContent = "FastAPI: indisponível";
-          $("kpiDsLatency").textContent = "Latência proxy: —";
-        }
-      };
-
-      // Eventos de Botões
-      $("btnPredict").addEventListener("click", predict);
-
-      $("btnLoad").addEventListener("click", () => applyDemo(getSelectedDemo()));
-
-      $("demoSelect").addEventListener("change", () => {
-        const d = getSelectedDemo();
-        if (!d) return;
-        $("demoHint").textContent = `Selecionado: ${d.label || d.id}. Clique em “Carregar”.`;
-      });
-
-      $("btnHealth").addEventListener("click", async () => {
-        $("result").textContent = "Rechecando health...";
-        await checkHealth();
-        $("result").textContent = "Health atualizado.";
-      });
-
-      $("btnReset").addEventListener("click", () => {
-        if (state.currentDemo) {
-          applyDemo(state.currentDemo);
-          return;
-        } else {
-          state.payload = readFormToPayload();
-          syncPayloadToJson();
-          setRiskTag("custom");
-        }
-
-        $("result").textContent = "Formulário resetado.";
-        $("result").style.color = "var(--text)";
-      });
-
-      // Funções auxiliares do JSON
-      $("btnCopyJson").addEventListener("click", async () => {
-        try {
-          await navigator.clipboard.writeText($("payloadJson").value);
-          $("result").style.color = "var(--text)";
-          $("result").textContent = "JSON copiado para a área de transferência.";
-
-        } catch(e){
-          $("result").style.color = "var(--bad)";
-          $("result").textContent = "Erro ao copiar JSON.";
-        }
-      });
-
-      $("btnFormatJson").addEventListener("click", () => {
-        const parsed = safeJsonParse($("payloadJson").value);
-
-        if (parsed.ok) $("payloadJson").value = pretty(parsed.value);
-      });
-
-      $("btnApplyJson").addEventListener("click", () => {
-        const p = safeJsonParse($("payloadJson").value);
-        if (p.ok) {
-          state.payload = p.value;
-          applyPayloadToForm(state.payload);
-          $("result").style.color = "var(--text)";
-          $("result").textContent = "JSON aplicado!";
-        } else {
-          $("result").textContent = "Erro: JSON inválido.\n\nDetalhe: " + p.error;
-          $("result").style.color = "var(--bad)";
-        }
-      });
-
-      // Observadores de mudança no formulário
-      // Form change -> custom + sync JSON
-      for (const [, id] of FIELD_MAP){
-        const el = $(id);
-        if (el) {
-          el.addEventListener("change", () => {
-            state.payload = readFormToPayload();
-            syncPayloadToJson();
-            setRiskTag("custom");
-          });
-        }
-      }
-
-      // Tab buttons
-      document.querySelectorAll(".tabbtn").forEach(b => {
-        b.addEventListener("click", () => activateTab(b.dataset.tab));
-      });
-
-      // Inicialização (self-invoking)
-      (async () => {
-        try {
-          $("result").textContent = "Iniciando sistema...";
-
-          await checkHealth().catch(err => console.log("Health offline, usando modo manual."));
-
-          try {
-            const data = await loadDemos();
-
+            const resp = await fetch("/churn/demo-examples");
+            const data = await resp.json();
             state.demos = Array.isArray(data) ? data : [];
-
-            if (state.demos.length > 0){
-              fillSelect();
-              $("demoSelect").value = state.demos[0].id;
-              applyDemo(state.demos[0]);
-              $("result").textContent = "Presets carregados com sucesso.";
-            } else {
-              $("result").textContent = "Nenhum preset retornado por /churn/demo-examples.";
+            
+            if (state.demos.length > 0) {
+                const sel = $("demoSelect");
+                sel.innerHTML = "";
+                state.demos.forEach(d => sel.add(new Option(d.label || d.id, d.id)));
+                Actions.applyPayloadToForm(state.demos[0].payload);
+                Actions.setRiskTag(state.demos[0].risk);
+                UI.setTxt("result", "Presets carregados.");
             }
-          } catch(demoErr) {
-            console.warn("Sem presets disponíveis: ", demoErr);
-            $("result").textContent = "Pronto para entrada manual.";
-          }
-
-        } catch(e){
-          setHealthChip(false, "Falha na inicialização.");
-          $("result").textContent = "Erro:" + e.message;
-        }
-      })();
+        } catch(e) { UI.setTxt("result", "Pronto."); }
     })();
+})();

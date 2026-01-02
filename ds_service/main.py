@@ -37,6 +37,7 @@ app.add_middleware(
 # DTOs (Pydantic Models)
 # ============================================================================
 
+
 class ChurnPredictRequest(BaseModel):
     """Request DTO para predição de churn"""
     gender: str = Field(..., description="Gênero: Masculino ou Feminino")
@@ -67,11 +68,40 @@ class ChurnPredictResponse(BaseModel):
     confianca: float = Field(..., ge=0, le=1, description="Nível de confiança")
 
 
+TRADUCAO_INPUTS = {
+    # Gênero
+    "Masculino": "Male",
+    "Feminino": "Female",
+
+    # Sim / Não genéricos
+    "Sim": "Yes",
+    "Não": "No",
+
+    # Serviço de internet
+    "Fibra Ótica": "Fiber optic",
+    "Nenhum": "No",
+
+    # Contrato
+    "Mensal": "Month-to-month",
+    "Anual": "One year",
+    "Bianual": "Two year",
+
+    # Método de pagamento
+    "Cartão de crédito": "Credit card (automatic)",
+    "Débito em conta": "Bank transfer (automatic)",
+    "Ted": "Bank transfer (automatic)",
+    "Boleto": "Mailed check",
+    "Pix": "Electronic check"
+}
+
+
 class HealthResponse(BaseModel):
     """Response DTO para health check"""
     status: str
     model_loaded: bool
     service_version: str
+    threshold: Optional[float] = None
+    model_path: Optional[str] = None
 
 
 # ============================================================================
@@ -80,20 +110,23 @@ class HealthResponse(BaseModel):
 
 MODEL_PATH = os.getenv("MODEL_PATH", "../model/churn_xgboost_pipeline_tuned.joblib")
 modelo = None
+model_metadata = {}
 model_loaded = False
 
 
 def load_model():
     """Carrega o modelo treinado"""
-    global modelo, model_loaded
+    global modelo, model_loaded, model_metadata
     try:
         if os.path.exists(MODEL_PATH):
             data_checkpoint = joblib.load(MODEL_PATH)
 
             if isinstance(data_checkpoint, dict) and 'model' in data_checkpoint:
                 modelo = data_checkpoint['model']
+                model_metadata = {k: v for k, v in data_checkpoint.items() if k != 'model'}
             else:
                 modelo = data_checkpoint
+                model_metadata = {}
 
             model_loaded = True
             logger.info(f"✓ Modelo carregado com sucesso de {MODEL_PATH}")
@@ -119,7 +152,9 @@ async def health_check():
     return HealthResponse(
         status="healthy" if model_loaded else "degraded",
         model_loaded=model_loaded,
-        service_version="1.0.0"
+        service_version="1.0.0",
+        threshold=model_metadata.get('threshold', 0.5),
+        model_path=MODEL_PATH
     )
 
 
@@ -140,9 +175,14 @@ async def predict(request: ChurnPredictRequest):
         # Converter request para dicionário
         data_dict = request.dict()
         
+        data_traduzido = {
+            k: (TRADUCAO_INPUTS.get(v, v) if isinstance(v, str) else v)
+            for k, v in data_dict.items()
+        }
+
         # Converter para DataFrame (mesmo formato usado no treinamento)
-        df_input = pd.DataFrame([data_dict])
-        
+        df_input = pd.DataFrame([data_traduzido])
+
         logger.info(f"Processando predição para cliente com {df_input.shape[0]} registro(s)")
         
         # Realizar predição

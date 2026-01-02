@@ -1,0 +1,28 @@
+{
+    "id": "invalid-validation",
+    "order": 3,
+    "label": "Inválido (Erro de validação)",
+    "risk": "invalid",
+    "description": "Simula erro de validação: campos vazios e valores negativos.",
+    "payload": {
+        "gender": "",
+        "SeniorCitizen": 99,
+        "Partner": null,
+        "Dependents": null,
+        "tenure": -5,
+        "PhoneService": null,
+        "MultipleLines": null,
+        "InternetService": null,
+        "OnlineSecurity": null,
+        "OnlineBackup": null,
+        "DeviceProtection": null,
+        "TechSupport": null,
+        "StreamingTV": null,
+        "StreamingMovies": null,
+        "Contract": "",
+        "PaperlessBilling": null,
+        "PaymentMethod": null,
+        "MonthlyCharges": -100.0,
+        "TotalCharges": 0.0
+    }
+}
