@@ -36,11 +36,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError -> fieldError.getDefaultMessage() != null
                                 ? fieldError.getDefaultMessage()
                                 : "Erro sem mensagem definida.",
-                        (existingValue, newValue) -> existingValue + " | " + newValue));
+                        (existingValue, newValue) -> existingValue + "\n" + newValue));
 
         return buildResponse(HttpStatus.valueOf(status.value()),
                 "Erro de validação dos campos.",
-                errors);
+                String.join("\n", errors.values()));
     }
 
     // Status 400 - Erro de Validação (Service)

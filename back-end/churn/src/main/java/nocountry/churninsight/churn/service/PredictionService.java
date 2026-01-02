@@ -62,7 +62,7 @@ public class PredictionService {
         List<String> businessErrors = churnDataValidator.validate(data);
         if (!businessErrors.isEmpty()) {
             throw new InvalidChurnDataException(
-                "Erro de consistência nos dados de churn" + String.join(" | ", businessErrors)
+                "Erro de consistência nos dados de churn. " + String.join(" ", businessErrors)
             );
         }
 
