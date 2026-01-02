@@ -37,6 +37,7 @@ app.add_middleware(
 # DTOs (Pydantic Models)
 # ============================================================================
 
+
 class ChurnPredictRequest(BaseModel):
     """Request DTO para predição de churn"""
     gender: str = Field(..., description="Gênero: Masculino ou Feminino")
@@ -65,6 +66,33 @@ class ChurnPredictResponse(BaseModel):
     previsao: str = Field(..., description="Predição: 'Vai cancelar' ou 'Vai continuar'")
     probabilidade: float = Field(..., ge=0, le=1, description="Probabilidade da predição (0-1)")
     confianca: float = Field(..., ge=0, le=1, description="Nível de confiança")
+
+
+TRADUCAO_INPUTS = {
+    # Gênero
+    "Masculino": "Male",
+    "Feminino": "Female",
+
+    # Sim / Não genéricos
+    "Sim": "Yes",
+    "Não": "No",
+
+    # Serviço de internet
+    "Fibra Ótica": "Fiber optic",
+    "Nenhum": "No",
+
+    # Contrato
+    "Mensal": "Month-to-month",
+    "Anual": "One year",
+    "Bianual": "Two year",
+
+    # Método de pagamento
+    "Cartão de crédito": "Credit card (automatic)",
+    "Débito em conta": "Bank transfer (automatic)",
+    "Ted": "Bank transfer (automatic)",
+    "Boleto": "Mailed check",
+    "Pix": "Electronic check"
+}
 
 
 class HealthResponse(BaseModel):
@@ -147,9 +175,14 @@ async def predict(request: ChurnPredictRequest):
         # Converter request para dicionário
         data_dict = request.dict()
         
+        data_traduzido = {
+            k: (TRADUCAO_INPUTS.get(v, v) if isinstance(v, str) else v)
+            for k, v in data_dict.items()
+        }
+
         # Converter para DataFrame (mesmo formato usado no treinamento)
-        df_input = pd.DataFrame([data_dict])
-        
+        df_input = pd.DataFrame([data_traduzido])
+
         logger.info(f"Processando predição para cliente com {df_input.shape[0]} registro(s)")
         
         # Realizar predição
