@@ -9,7 +9,7 @@
         "SeniorCitizen": 0,
         "Partner": "Sim",
         "Dependents": "Sim",
-        "tenure": 65,
+        "tenure": 60,
         "PhoneService": "Sim",
         "MultipleLines": "Sim",
         "InternetService": "DSL",
@@ -22,7 +22,7 @@
         "Contract": "Bianual",
         "PaperlessBilling": "Não",
         "PaymentMethod": "Cartão de crédito",
-        "MonthlyCharges": 60.00,
-        "TotalCharges": 3900.00
+        "MonthlyCharges": 29.00,
+        "TotalCharges": 1700.00
     }
 }

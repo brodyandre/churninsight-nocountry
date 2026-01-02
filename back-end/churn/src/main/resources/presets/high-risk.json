@@ -9,7 +9,7 @@
         "SeniorCitizen": 0,
         "Partner": "Não",
         "Dependents": "Não",
-        "tenure": 2,
+        "tenure": 1,
         "PhoneService": "Sim",
         "MultipleLines": "Não",
         "InternetService": "Fibra Ótica",
@@ -21,8 +21,8 @@
         "StreamingMovies": "Sim",
         "Contract": "Mensal",
         "PaperlessBilling": "Sim",
-        "PaymentMethod": "Boleto",
-        "MonthlyCharges": 85.0,
-        "TotalCharges": 170.0
+        "PaymentMethod": "Pix",
+        "MonthlyCharges": 99.0,
+        "TotalCharges": 99.0
     }
 }
