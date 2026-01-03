@@ -1,30 +1,26 @@
 """
 FastAPI Microservice para Predição de Churn
-Integra o modelo treinado em Python com a API Java
 """
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional
 import joblib
 import pandas as pd
 import logging
 import os
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-# Configuração de logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Inicializar FastAPI
 app = FastAPI(
     title="ChurnInsight - Microserviço de Predição",
     description="Microserviço Python que expõe o modelo de predição de churn",
-    version="1.0.0"
+    version="1.0.0",
 )
 
-# CORS - Permitir requisições da API Java
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,39 +29,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ============================================================================
-# DTOs (Pydantic Models)
-# ============================================================================
+# =========================
+# DTOs
+# =========================
 
 
 class ChurnPredictRequest(BaseModel):
-    """Request DTO para predição de churn"""
-    gender: str = Field(..., description="Gênero: Masculino ou Feminino")
-    SeniorCitizen: int = Field(..., ge=0, le=1, description="Idoso: 0 ou 1")
-    Partner: str = Field(..., description="Cônjuge: Sim ou Não")
-    Dependents: str = Field(..., description="Dependentes: Sim ou Não")
-    tenure: int = Field(..., ge=0, le=72, description="Tempo de contrato em meses")
-    PhoneService: str = Field(..., description="Serviço de Telefone: Sim ou Não")
-    MultipleLines: str = Field(..., description="Múltiplas Linhas")
-    InternetService: str = Field(..., description="Serviço de Internet")
-    OnlineSecurity: str = Field(..., description="Segurança Online")
-    OnlineBackup: str = Field(..., description="Backup Online")
-    DeviceProtection: str = Field(..., description="Proteção de Dispositivo")
-    TechSupport: str = Field(..., description="Suporte Técnico")
-    StreamingTV: str = Field(..., description="TV Streaming")
-    StreamingMovies: str = Field(..., description="Filmes Streaming")
-    Contract: str = Field(..., description="Tipo de Contrato")
-    PaperlessBilling: str = Field(..., description="Fatura Online")
-    PaymentMethod: str = Field(..., description="Método de Pagamento")
-    MonthlyCharges: float = Field(..., ge=0, description="Valor mensal")
-    TotalCharges: float = Field(..., ge=0, description="Valor total")
+    gender: str
+    SeniorCitizen: int = Field(..., ge=0, le=1)
+    Partner: str
+    Dependents: str
+    tenure: int = Field(..., ge=0, le=72)
+    PhoneService: str
+    MultipleLines: str
+    InternetService: str
+    OnlineSecurity: str
+    OnlineBackup: str
+    DeviceProtection: str
+    TechSupport: str
+    StreamingTV: str
+    StreamingMovies: str
+    Contract: str
+    PaperlessBilling: str
+    PaymentMethod: str
+    MonthlyCharges: float = Field(..., ge=0)
+    TotalCharges: float = Field(..., ge=0)
 
 
 class ChurnPredictResponse(BaseModel):
-    """Response DTO com predição de churn"""
-    previsao: str = Field(..., description="Predição: 'Vai cancelar' ou 'Vai continuar'")
-    probabilidade: float = Field(..., ge=0, le=1, description="Probabilidade da predição (0-1)")
-    confianca: float = Field(..., ge=0, le=1, description="Nível de confiança")
+    previsao: str
+    probabilidade: float = Field(..., ge=0, le=1)
+    confianca: float = Field(..., ge=0, le=1)
 
 
 TRADUCAO_INPUTS = {
@@ -96,24 +90,51 @@ TRADUCAO_INPUTS = {
 
 
 class HealthResponse(BaseModel):
-    """Response DTO para health check"""
     status: str
     model_loaded: bool
     service_version: str
+<<<<<<< Updated upstream
     threshold: Optional[float] = None
     model_path: Optional[str] = None
+=======
+    modelo_path: Optional[str] = None
+    threshold: float = 0.5
+>>>>>>> Stashed changes
 
 
-# ============================================================================
-# Carregamento do Modelo
-# ============================================================================
+def _to_dict(model: BaseModel) -> Dict[str, Any]:
+    # compatível com pydantic v1/v2
+    if hasattr(model, "model_dump"):
+        return model.model_dump()
+    return model.dict()
 
+def _as_float(value: str, default: float) -> float:
+    try:
+        return float(str(value).replace(",", "."))
+    except Exception:
+        return default
+
+
+# =========================
+# Modelo: caminho correto
+# =========================
+
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_MODEL_PATH = BASE_DIR.parent / "model" / "churn_xgboost_pipeline_tuned.joblib"
+
+MODEL_PATH = Path(os.getenv("MODEL_PATH", str(DEFAULT_MODEL_PATH))).expanduser()
+THRESHOLD = _as_float(os.getenv("THRESHOLD", "0.5"), 0.5)
+
+<<<<<<< Updated upstream
 MODEL_PATH = os.getenv("MODEL_PATH", "../model/churn_xgboost_pipeline_tuned.joblib")
+=======
+>>>>>>> Stashed changes
 modelo = None
 model_metadata = {}
 model_loaded = False
 
 
+<<<<<<< Updated upstream
 def load_model():
     """Carrega o modelo treinado"""
     global modelo, model_loaded, model_metadata
@@ -128,46 +149,101 @@ def load_model():
                 modelo = data_checkpoint
                 model_metadata = {}
 
+=======
+def load_model() -> None:
+    global modelo, model_loaded
+    try:
+        if MODEL_PATH.exists():
+            modelo = joblib.load(MODEL_PATH)
+>>>>>>> Stashed changes
             model_loaded = True
-            logger.info(f"✓ Modelo carregado com sucesso de {MODEL_PATH}")
+            logger.info(f"✓ Modelo carregado: {MODEL_PATH}")
         else:
-            logger.warning(f"⚠ Arquivo de modelo não encontrado em {MODEL_PATH}")
             model_loaded = False
+            logger.warning(f"⚠ Modelo não encontrado em: {MODEL_PATH}")
     except Exception as e:
-        logger.error(f"✗ Erro ao carregar modelo: {str(e)}")
         model_loaded = False
+        logger.error(f"✗ Erro ao carregar modelo: {e}")
 
 
-# Carregar modelo na inicialização
 load_model()
 
+# =========================
+# (Opcional) Normalização PT -> EN
+# =========================
 
-# ============================================================================
+YES_NO = {"Sim": "Yes", "Não": "No", "Yes": "Yes", "No": "No"}
+
+MAPS = {
+    "gender": {"Feminino": "Female", "Masculino": "Male", "Female": "Female", "Male": "Male"},
+    "Partner": YES_NO,
+    "Dependents": YES_NO,
+    "PhoneService": YES_NO,
+    "PaperlessBilling": YES_NO,
+    "MultipleLines": {"Sim": "Yes", "Não": "No", "Sem serviço de telefone": "No phone service",
+                      "Yes": "Yes", "No": "No", "No phone service": "No phone service"},
+    "InternetService": {"DSL": "DSL", "Fibra Ótica": "Fiber optic", "Nenhum": "No",
+                        "Fiber optic": "Fiber optic", "No": "No"},
+    "OnlineSecurity": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                       "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "OnlineBackup": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                     "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "DeviceProtection": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                         "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "TechSupport": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                    "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "StreamingTV": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                    "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "StreamingMovies": {"Sim": "Yes", "Não": "No", "Sem serviço de internet": "No internet service",
+                        "Yes": "Yes", "No": "No", "No internet service": "No internet service"},
+    "Contract": {"Mensal": "Month-to-month", "Anual": "One year", "Bianual": "Two year",
+                 "Month-to-month": "Month-to-month", "One year": "One year", "Two year": "Two year"},
+    "PaymentMethod": {
+        "Boleto": "Mailed check",
+        "Débito em conta": "Bank transfer (automatic)",
+        "Ted": "Bank transfer (automatic)",
+        "Cartão de crédito": "Credit card (automatic)",
+        "Pix": "Electronic check",
+        "Mailed check": "Mailed check",
+        "Bank transfer (automatic)": "Bank transfer (automatic)",
+        "Credit card (automatic)": "Credit card (automatic)",
+        "Electronic check": "Electronic check",
+    },
+}
+
+def normalize_payload(data: Dict[str, Any]) -> Dict[str, Any]:
+    out = dict(data)
+    for k, v in data.items():
+        if k in MAPS and isinstance(v, str):
+            out[k] = MAPS[k].get(v, v)
+    return out
+
+
+# =========================
 # Endpoints
-# ============================================================================
+# =========================
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    """Verifica o status do microserviço"""
     return HealthResponse(
-        status="healthy" if model_loaded else "degraded",
+        status="UP" if model_loaded else "DEGRADED",
         model_loaded=model_loaded,
         service_version="1.0.0",
+<<<<<<< Updated upstream
         threshold=model_metadata.get('threshold', 0.5),
         model_path=MODEL_PATH
+=======
+        modelo_path=str(MODEL_PATH),
+        threshold=THRESHOLD,
+>>>>>>> Stashed changes
     )
-
 
 @app.post("/predict", response_model=ChurnPredictResponse)
 async def predict(request: ChurnPredictRequest):
-    """
-    Endpoint principal de predição de churn
-    
-    Recebe dados do cliente e retorna predição de churn com probabilidade.
-    """
     if not model_loaded:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+<<<<<<< Updated upstream
             detail="Modelo não carregado. Verifique a configuração."
         )
     
@@ -224,56 +300,41 @@ async def predict(request: ChurnPredictRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erro interno do servidor: {str(e)}"
+=======
+            detail=f"Modelo não carregado. MODEL_PATH atual: {MODEL_PATH}",
+>>>>>>> Stashed changes
         )
 
+    data = _to_dict(request)
+    data = normalize_payload(data)
+
+    try:
+        df_input = pd.DataFrame([data])
+
+        pred = modelo.predict(df_input)[0]
+
+        try:
+            proba = modelo.predict_proba(df_input)[0]
+            prob_churn = float(proba[1])
+        except Exception:
+            prob_churn = float(pred)
+
+        previsao_texto = "Vai cancelar" if int(pred) == 1 else "Vai continuar"
+        confianca = abs(prob_churn - 0.5) * 2
+
+        return ChurnPredictResponse(
+            previsao=previsao_texto,
+            probabilidade=prob_churn,
+            confianca=confianca,
+        )
+
+    except Exception as e:
+        logger.exception("Erro ao predizer")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
 
 @app.get("/")
 async def root():
-    """Endpoint raiz com informações do serviço"""
-    return {
-        "service": "ChurnInsight - Microserviço de Predição",
-        "version": "1.0.0",
-        "status": "running",
-        "docs": "/docs",
-        "health": "/health",
-        "predict_endpoint": "/predict"
-    }
-
-
-# ============================================================================
-# Event Handlers
-# ============================================================================
-
-@app.on_event("startup")
-async def startup_event():
-    """Executado na inicialização do microserviço"""
-    logger.info("🚀 Inicializando microserviço ChurnInsight...")
-    if model_loaded:
-        logger.info("✓ Modelo pronto para predições")
-    else:
-        logger.warning("⚠ Microserviço iniciado mas modelo não está disponível")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Executado no encerramento do microserviço"""
-    logger.info("🛑 Encerrando microserviço ChurnInsight")
-
-
-if __name__ == "__main__":
-    import uvicorn
-    
-    # Configurações do servidor
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", "8001"))
-    reload = os.getenv("RELOAD", "False").lower() == "true"
-    
-    logger.info(f"Iniciando servidor em {host}:{port}")
-    
-    uvicorn.run(
-        "main:app",
-        host=host,
-        port=port,
-        reload=reload,
-        log_level="info"
-    )
+    return {"service": "ChurnInsight DS", "docs": "/docs", "health": "/health", "predict": "/predict"}
