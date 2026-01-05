@@ -52,14 +52,8 @@
 
 		<!-- Database Migration -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-flyway</artifactId>
-			<version>3.2.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-database-postgresql</artifactId>
-			<version>9.22.3</version>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -81,12 +75,7 @@
 			<version>1.10.0</version>
 		</dependency>
 
-		<!-- Test Dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 	</dependencies>
 
 	<build>
