@@ -1,3 +1,4 @@
+
 package nocountry.churninsight.churn.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // Status 400 - Erro de Validação (Service)
     @ExceptionHandler(ValidationBusinessException.class)
     public ResponseEntity<Object> handleValidationBusinessException(ValidationBusinessException ex) {
-        
+
         return buildResponse(HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 ex.getErrors());
@@ -90,10 +91,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "O método correto é " + ex.getSupportedHttpMethods());
     }
 
-    // Status 422 - Erro de Negócio
+    // Status 422 - Erro de Negócio (CORRIGIDO)
     @ExceptionHandler(InvalidChurnDataException.class)
     public ResponseEntity<Object> handleInvalidChurnDta(InvalidChurnDataException ex) {
-        return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT,
+        return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY,  // ← CORRIGIDO AQUI
                 "Dados inconsistentes para análise de churn.",
                 ex.getMessage());
     }

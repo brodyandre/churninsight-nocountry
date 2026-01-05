@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,25 +30,25 @@ class ChurnDataDTOTests {
     // --- HELPER: Cria um objeto 100% válido para usar de base ---
     private ChurnDataDTO criarDtoValido() {
         return new ChurnDataDTO(
-                "Masculino",                // genero
-                0,                          // idoso
-                "Sim",                      // conjuge
-                "Não",                      // dependentes
-                12,                         // tempoContrato
-                "Sim",                      // servicoTelefone
-                "Não",                      // multiplasLinhasTel
-                "Fibra Ótica",              // servicoInternet
-                "Sim",                      // segurancaOnline
-                "Sim",                      // backupOnline
-                "Sim",                      // protecaoDispositivo
-                "Sim",                      // suporteTecnico
-                "Sim",                      // tvStreaming
-                "Sim",                      // filmesStreaming
-                "Mensal",                   // tipoContrato
-                "Sim",                      // faturaOnline
-                "Pix",                      // metodoPagamento
-                100.00,                     // valorMensal
-                1200.00                     // valorTotal
+                "Masculino", // genero
+                0, // idoso
+                "Sim", // conjuge
+                "Não", // dependentes
+                12, // tempoContrato
+                "Sim", // servicoTelefone
+                "Não", // multiplasLinhasTel
+                "Fibra Ótica", // servicoInternet
+                "Sim", // segurancaOnline
+                "Sim", // backupOnline
+                "Sim", // protecaoDispositivo
+                "Sim", // suporteTecnico
+                "Sim", // tvStreaming
+                "Sim", // filmesStreaming
+                "Mensal", // tipoContrato
+                "Sim", // faturaOnline
+                "Pix", // metodoPagamento
+                100.00, // valorMensal
+                1200.00 // valorTotal
         );
     }
 
@@ -77,18 +78,18 @@ class ChurnDataDTOTests {
     @DisplayName("Deve falhar quando valores numéricos (Idoso/Tempo) estão fora do limite")
     void deveRejeitarNumerosForaDosLimites() {
         ChurnDataDTO dto = criarDtoValido();
-        dto.setIdoso(2);         // Máximo é 1
+        dto.setIdoso(2); // Máximo é 1
         dto.setTempoContrato(-5); // Mínimo é 0
 
         Set<ConstraintViolation<ChurnDataDTO>> violations = validator.validate(dto);
 
         assertThat(violations).hasSize(2);
-        
+
         // Verifica mensagens específicas
         List<String> mensagens = violations.stream()
-                                           .map(ConstraintViolation::getMessage)
-                                           .collect(Collectors.toList());
-        
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toList());
+
         assertThat(mensagens).contains("Idoso deve ser 0 ou 1");
         assertThat(mensagens).contains("Tempo de contrato não pode ser negativo");
     }
@@ -97,7 +98,7 @@ class ChurnDataDTOTests {
     @DisplayName("Deve falhar quando campos obrigatórios estão em branco ou nulos")
     void deveRejeitarCamposEmBranco() {
         ChurnDataDTO dto = criarDtoValido();
-        dto.setServicoInternet("");   // @NotBlank falha aqui
+        dto.setServicoInternet(""); // @NotBlank falha aqui
         dto.setMetodoPagamento(null); // @NotBlank falha aqui também
 
         Set<ConstraintViolation<ChurnDataDTO>> violations = validator.validate(dto);
@@ -111,16 +112,18 @@ class ChurnDataDTOTests {
     @DisplayName("Deve validar regex complexo de Pagamento e Contrato")
     void deveValidarListasDeOpcoes() {
         ChurnDataDTO dto = criarDtoValido();
-        
+
         // Testando valores que NÃO estão na lista permitida
-        dto.setMetodoPagamento("Bitcoin"); 
+        dto.setMetodoPagamento("Bitcoin");
         dto.setTipoContrato("Vitalício");
 
         Set<ConstraintViolation<ChurnDataDTO>> violations = validator.validate(dto);
 
         assertThat(violations).anyMatch(v -> v.getMessage().contains("Método de Pagamento inválido"));
-        // Nota: A mensagem no seu código diz 'Month-to-month', mas o regex aceita 'Mensal'.
-        // O teste valida se o REGEX funcionou, independente da mensagem estar em inglês ou português.
+        // Nota: A mensagem no seu código diz 'Month-to-month', mas o regex aceita
+        // 'Mensal'.
+        // O teste valida se o REGEX funcionou, independente da mensagem estar em inglês
+        // ou português.
         assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("tipoContrato"));
     }
 }

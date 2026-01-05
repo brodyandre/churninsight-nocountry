@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ChurnApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ChurnApplication.class, args);
+		SpringApplication.run(ChurnApplication.class,
+				args);
 	}
 
 }

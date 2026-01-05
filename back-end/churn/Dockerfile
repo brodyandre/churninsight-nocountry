@@ -13,7 +13,6 @@ RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine-3.23
 WORKDIR /app
 
-# Se o seu JAR realmente se chama churn-0.0.1-SNAPSHOT.jar, use explícito:
 COPY --from=build /app/target/churn-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080

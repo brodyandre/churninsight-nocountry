@@ -1,7 +1,11 @@
+
 package nocountry.churninsight.churn.config;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;  // ← ADICIONADO
+import org.springframework.boot.test.context.SpringBootTest;  // ← ADICIONADO
+import org.springframework.context.ApplicationContext;        // ← ADICIONADO
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,7 +26,7 @@ class AppConfigTests {
 
         // 3. Verificações básicas
         assertThat(restTemplate).isNotNull();
-        
+
         // Verificamos se a fábrica de requisições é do tipo simples (padrão JDK)
         ClientHttpRequestFactory requestFactory = restTemplate.getRequestFactory();
         assertThat(requestFactory).isInstanceOf(SimpleClientHttpRequestFactory.class);
@@ -30,7 +34,7 @@ class AppConfigTests {
         // 4. Verificação Avançada (Reflection)
         // Como 'connectTimeout' e 'readTimeout' são privados na fábrica,
         // usamos o ReflectionTestUtils para garantir que você configurou os 10s e 30s.
-        
+
         int connectTimeout = (int) ReflectionTestUtils.getField(requestFactory, "connectTimeout");
         int readTimeout = (int) ReflectionTestUtils.getField(requestFactory, "readTimeout");
 

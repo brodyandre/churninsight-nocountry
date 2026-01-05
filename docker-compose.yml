@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: churnuser
       POSTGRES_PASSWORD: churnpass123
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -32,7 +32,7 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 8001
-      MODEL_PATH: models/modelo_churn_final.pkl
+      MODEL_PATH: models/churn_xgboost_pipeline_tuned.joblib
       RELOAD: "False"
     volumes:
       - ./ds_service/models:/app/models
@@ -49,7 +49,7 @@ services:
   # Java Spring Boot API
   java-api:
     build:
-      context: ./back-end/churn
+      context: ./back-end/churn/ # ← ALTERADO: Tentativa com a pasta churn na raiz
       dockerfile: Dockerfile
     container_name: churninsight-java-api
     ports:
@@ -65,8 +65,6 @@ services:
         condition: service_healthy
       ds-service:
         condition: service_healthy
-    volumes:
-      - ./back-end/churn/src:/app/src
     networks:
       - churninsight-network
     restart: unless-stopped
