@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U churnuser"]
+      test: [ "CMD-SHELL", "pg_isready -U churnuser -d churninsight_db" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,7 +38,7 @@ services:
       - ./ds_service/models:/app/models
       - ./ds_service/main.py:/app/main.py
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8001/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -71,6 +71,7 @@ services:
 
 volumes:
   postgres_data:
+
 
 networks:
   churninsight-network:
