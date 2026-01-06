@@ -96,7 +96,7 @@
             try {
                 const resp = await fetch("/churn/ds-health", { cache: "no-store" });
                 const data = await resp.json();
-                const isOnline = resp.ok && data.status !== "OFFLINE";
+                const isOnline = resp.ok && data.status === "UP";
 
                 UI.setTxt("kpiDs", isOnline ? `FastAPI: OK (HTTP ${resp.status})` : "FastAPI: OFFLINE");
                 UI.setColor("kpiDs", isOnline ? "ok" : "bad");
