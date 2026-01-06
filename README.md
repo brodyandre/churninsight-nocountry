@@ -80,6 +80,7 @@ A solução combina:
 
 ---
 
+<a id="resumo-rapido"></a>
 ## Resumo rápido
 
 | Camada | O que entrega |
@@ -94,30 +95,38 @@ A solução combina:
 
 ---
 
+<a id="descricao-do-desafio-hackathon-nocountry"></a>
 ## Descrição do desafio (Hackathon NoCountry)
 
+<a id="setor-de-negocio"></a>
 ### Setor de negócio
 Serviços e assinaturas (Telecom, Fintech, Streaming, E-commerce) - empresas que dependem de clientes recorrentes e desejam reduzir cancelamentos.
 
+<a id="descricao-do-projeto"></a>
 ### Descrição do projeto
 O desafio do **ChurnInsight** consiste em criar uma solução que preveja se um cliente está propenso a cancelar um serviço (churn). O objetivo é que o time de Data Science desenvolva um modelo preditivo e que o time de Back-end construa uma API para disponibilizar essa previsão a outros sistemas, permitindo que o negócio aja antes que o cliente decida sair.
 
+<a id="necessidade-do-cliente-explicacao-nao-tecnica"></a>
 ### Necessidade do cliente (explicação não técnica)
 Toda empresa que vende por assinatura ou contrato recorrente sofre com cancelamentos. Manter clientes fiéis é mais barato do que conquistar novos. A empresa quer prever antecipadamente quem está prestes a cancelar, para poder agir e reter essas pessoas.
 
+<a id="validacao-de-mercado"></a>
 ### Validação de mercado
 Predição de churn é uma aplicação comum e valiosa da ciência de dados. Empresas de telecom, bancos digitais, academias, streaming e SaaS usam modelos de churn para reduzir perdas financeiras, entender comportamento e aumentar o lifetime value.
 
+<a id="expectativa-para-este-hackathon"></a>
 ### Expectativa para este hackathon
 Público: alunos iniciantes em tecnologia com base em Back-end (Java) e Data Science (Python).  
 Objetivo: construir, em grupo, um MVP capaz de prever churn e disponibilizar essa previsão via API funcional.
 
+<a id="entregaveis-desejados"></a>
 ### Entregáveis desejados
 - Notebook (EDA, features, treino, métricas e serialização do modelo).
 - API REST em Java com endpoint de previsão.
 - Documentação mínima (README com passos de execução e exemplos).
 - Demonstração funcional.
 
+<a id="funcionalidades-exigidas-mvp"></a>
 ### Funcionalidades exigidas (MVP)
 - Endpoint `POST /predict` com previsão e probabilidade.
 - Carregamento de modelo preditivo.
@@ -125,14 +134,17 @@ Objetivo: construir, em grupo, um MVP capaz de prever churn e disponibilizar ess
 - Resposta estruturada (previsão + probabilidade).
 - Exemplos de uso.
 
+<a id="funcionalidades-opcionais"></a>
 ### Funcionalidades opcionais
 Stats, persistência, dashboard simples, explicabilidade básica, batch prediction, containerização e testes automatizados.
 
+<a id="orientacoes-tecnicas-para-alunos"></a>
 ### Orientações técnicas para alunos
 Controlar o volume de dados e o uso de recursos (ex.: free tier de cloud).  
 Data Science: dataset limpo, modelo simples, features intuitivas, salvar pipeline com `joblib`.  
 Back-end: API REST, validação de entrada, integração com modelo (microserviço Python ou ONNX).
 
+<a id="contrato-de-integracao-json"></a>
 ### Contrato de integração (JSON)
 Entrada:
 ```json
@@ -156,6 +168,7 @@ Saída:
 
 ---
 
+<a id="visao-geral-da-solucao"></a>
 ## Visão geral da solução
 
 A solução é composta por:
@@ -170,6 +183,7 @@ A solução é composta por:
 
 ---
 
+<a id="arquitetura"></a>
 ## Arquitetura
 
 ```mermaid
@@ -187,6 +201,7 @@ Fluxo: a UI chama a API Java, que valida dados e delega a previsão ao microserv
 
 ---
 
+<a id="estrutura-do-repositorio"></a>
 ## Estrutura do repositório
 
 ```text
@@ -207,6 +222,7 @@ Fluxo: a UI chama a API Java, que valida dados e delega a previsão ao microserv
 
 ---
 
+<a id="tecnologias"></a>
 ## Tecnologias
 
 - **Java 21**, **Spring Boot**
@@ -218,8 +234,10 @@ Fluxo: a UI chama a API Java, que valida dados e delega a previsão ao microserv
 
 ---
 
+<a id="como-executar-local"></a>
 ## Como executar (local)
 
+<a id="data-science-python"></a>
 ### Data Science (Python)
 Opcional: treinar ou atualizar o modelo.
 
@@ -230,6 +248,7 @@ python -m venv .venv
 pip install -r ds_service\requirements.txt
 ```
 
+<a id="microservico-python-opcional"></a>
 ### Microserviço Python (opcional)
 Garanta o modelo no caminho esperado:
 
@@ -246,6 +265,7 @@ $env:MODEL_PATH="C:\Users\USER\Documents\Repositorios\churninsight-nocountry\ds_
 uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
+<a id="api-java-spring-boot"></a>
 ### API Java (Spring Boot)
 Defina variáveis de ambiente e rode o back-end:
 
@@ -255,6 +275,7 @@ $env:DS_SERVICE_URL="http://127.0.0.1:8001"
 .\mvnw.cmd spring-boot:run
 ```
 
+<a id="ui-web"></a>
 ### UI (Web)
 Abra no navegador:
 ```
@@ -265,6 +286,7 @@ http://localhost:8080/
 
 ---
 
+<a id="docker-compose-ui-completa"></a>
 ## Docker Compose (UI completa)
 
 Este modo sobe **PostgreSQL + Java API + DS Service**.
@@ -294,6 +316,7 @@ docker compose logs -f java-api ds-service
 
 ---
 
+<a id="endpoints-principais"></a>
 ## Endpoints principais
 
 API Java:
@@ -316,6 +339,7 @@ Exemplo de request:
 
 ---
 
+<a id="dataset-e-modelo"></a>
 ## Dataset e modelo
 
 - Dataset: localizado em `data/` (raw/processed).
@@ -328,6 +352,7 @@ Se o arquivo do modelo estiver com ~134 bytes, ele é um ponteiro LFS. Use um ar
 
 ---
 
+<a id="testes"></a>
 ## Testes
 
 A partir da raiz do repositório, rode os testes do back-end Java dentro de `back-end\churn`:
@@ -341,6 +366,7 @@ cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 
 ---
 
+<a id="troubleshooting"></a>
 ## Troubleshooting
 
 - **503 no /predict**: DS Service sem modelo carregado ou `xgboost` ausente.
@@ -351,6 +377,7 @@ cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 
 ---
 
+<a id="time"></a>
 ## Time
 
 - [brodyandre](https://github.com/brodyandre)
