@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo-churnguard.png" alt="ChurnGuard Analytics" width="220">
+  <img src="docs/logo-churnguard.png" alt="ChurnGuard Analytics" width="440">
 </p>
 
 <h1 align="center">ChurnInsight - Previsao de Churn (Hackathon NoCountry)</h1>
