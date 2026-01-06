@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nocountry.churninsight.churn.dto.ChurnDataDTO;
 import nocountry.churninsight.churn.dto.PredictDTO;
 import nocountry.churninsight.churn.dto.StatsDTO;
+import nocountry.churninsight.churn.exception.InvalidChurnDataException;
 import nocountry.churninsight.churn.service.PredictionService;
 import nocountry.churninsight.churn.service.StatsService;
 import org.junit.jupiter.api.DisplayName;
@@ -16,15 +17,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,9 +47,8 @@ class ChurnControllerTests {
     @DisplayName("POST /churn/predict - Deve retornar 200 OK e a previsão quando dados são válidos")
     void deveRetornarPrevisaoComSucesso() throws Exception {
         // 1. Preparar o cenário (Given)
-        ChurnDataDTO inputDTO = new ChurnDataDTO(); 
-        // (Preencha com dados fictícios se o DTO tiver validação @NotNull)
-        
+        ChurnDataDTO inputDTO = criarDtoValido();
+
         PredictDTO expectedOutput = new PredictDTO("Vai cancelar", 0.85);
 
         // Ensinamos o Mock: "Quando chamarem o predict, retorne expectedOutput"
@@ -68,16 +64,31 @@ class ChurnControllerTests {
     }
 
     @Test
-    @DisplayName("POST /churn/predict - Deve retornar 500 Erro Interno quando o serviço falhar")
-    void deveRetornar500QuandoServicoFalhar() throws Exception {
+    @DisplayName("POST /churn/predict - Deve retornar 422 quando houver erro de consistência")
+    void deveRetornar422QuandoDadosInconsistentes() throws Exception {
+        ChurnDataDTO inputDTO = criarDtoValido();
+
         // Simula uma exceção no serviço
-        when(predictionService.predict(any())).thenThrow(new RuntimeException("Erro de conexão com Python"));
+        when(predictionService.predict(any())).thenThrow(new InvalidChurnDataException("Erro de consistência"));
 
         mockMvc.perform(post("/churn/predict")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}"))
-                .andExpect(status().isInternalServerError());
+                .content(objectMapper.writeValueAsString(inputDTO)))
+                .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    @DisplayName("POST /churn/predict - Deve retornar 500 quando o serviço falhar")
+    void deveRetornar500QuandoServicoFalhar() throws Exception {
+        ChurnDataDTO inputDTO = criarDtoValido(); // DTO completo evita o 400
+
+        when(predictionService.predict(any())).thenThrow(new RuntimeException("Erro catastrófico"));
+
+        mockMvc.perform(post("/churn/predict")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputDTO)))
+                .andExpect(status().isInternalServerError()); // Espera 500
+        }
 
     // --- TESTES DE ESTATÍSTICAS (/stats) ---
 
@@ -85,14 +96,23 @@ class ChurnControllerTests {
     @DisplayName("GET /churn/stats - Deve retornar estatísticas corretamente")
     void deveRetornarStats() throws Exception {
         // Mock do retorno
-        StatsDTO stats = new StatsDTO(100L, 0.25); // Ex: 100 avaliados, 25% churn
+        StatsDTO stats = StatsDTO.builder()
+                .totalClients(100L)
+                .totalPredictions(150L)
+                .churnRate(0.25)
+                .retainedClients(75L)
+                .churnedClients(25L)
+                .build(); // Ex: 100 avaliados, 25% churn
         
         when(statsService.getBasicStats()).thenReturn(stats);
 
         mockMvc.perform(get("/churn/stats"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total_avaliados").value(100))
-                .andExpect(jsonPath("$.taxa_churn").value(0.25));
+                .andExpect(jsonPath("$.total_clientes").value(100))
+                .andExpect(jsonPath("$.total_previsoes").value(150))
+                .andExpect(jsonPath("$.taxa_churn").value(0.25))
+                .andExpect(jsonPath("$.clientes_retidos").value(75))
+                .andExpect(jsonPath("$.clientes_churn").value(25));
     }
 
     // --- TESTES DE UPLOAD CSV (/upload) ---
@@ -132,5 +152,29 @@ class ChurnControllerTests {
 
         mockMvc.perform(multipart("/churn/upload").file(emptyFile))
                 .andExpect(status().isBadRequest()); // O seu código tem if (file.isEmpty()) -> badRequest
-    }
+        }
+
+        private ChurnDataDTO criarDtoValido() {
+                ChurnDataDTO dto = new ChurnDataDTO();
+                dto.setGenero("Feminino"); // Padrão do Pattern
+                dto.setIdoso(0);           // Min 0, Max 1
+                dto.setConjuge("Sim");     // Pattern Sim|Não
+                dto.setDependentes("Não");
+                dto.setTempoContrato(12);  // Max 72
+                dto.setServicoTelefone("Sim");
+                dto.setMultiplasLinhasTel("Não"); // Note que o setter deve bater com o campo da classe
+                dto.setServicoInternet("Fibra Ótica"); // DSL|Fibra Ótica|Nenhum
+                dto.setSegurancaOnline("Sim");
+                dto.setBackupOnline("Sim");
+                dto.setProtecaoDispositivo("Sim");
+                dto.setSuporteTecnico("Sim");
+                dto.setTvStreaming("Sim");
+                dto.setFilmesStreaming("Sim");
+                dto.setTipoContrato("Mensal"); // Mensal|Anual|Bianual
+                dto.setFaturaOnline("Sim");
+                dto.setMetodoPagamento("Pix"); // Pix|Ted|Boleto...
+                dto.setValorMensal(100.0);
+                dto.setValorTotal(1200.0);
+                return dto;
+        }
 }
