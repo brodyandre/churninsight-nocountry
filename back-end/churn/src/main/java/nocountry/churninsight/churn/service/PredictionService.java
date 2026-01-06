@@ -29,19 +29,19 @@ import java.util.List;
 public class PredictionService {
     public static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
 
-    @Autowired
-    private ChurnDataValidator churnDataValidator;
-
+    private final ChurnDataValidator churnDataValidator;
     private final RestTemplate restTemplate;
+    private ClientRepository clientRepository;
 
     @Value("${ds.service.url}")
     private String dsServiceUrl;
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    public PredictionService(RestTemplate restTemplate) {
+    public PredictionService(ChurnDataValidator churnDataValidator,
+                            RestTemplate restTemplate,
+                            ClientRepository clientRepository) {
+        this.churnDataValidator = churnDataValidator;
         this.restTemplate = restTemplate;
+        this.clientRepository = clientRepository;
     }
 
     /**
