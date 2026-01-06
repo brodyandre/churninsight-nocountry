@@ -252,7 +252,20 @@ def load_model() -> None:
             )
             return
 
-        modelo = joblib.load(MODEL_PATH)
+        loaded_data = joblib.load(MODEL_PATH)
+        
+        if isinstance(loaded_data, dict) and "model" in loaded_data:
+            modelo = loaded_data["model"]
+            if "threshold" in loaded_data:
+                try:
+                    global THRESHOLD
+                    THRESHOLD = float(loaded_data["threshold"])
+                    logger.info(f"✓ Threshold atualizado pelo modelo: {THRESHOLD}")
+                except Exception:
+                    pass
+        else:
+            modelo = loaded_data
+
         model_loaded = True
         logger.info(f"✓ Modelo carregado: {MODEL_PATH}")
 
