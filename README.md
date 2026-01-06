@@ -352,4 +352,5 @@ cd back-end\churn
 
 Contribuidores do hackathon (NoCountry). Veja o historico de commits no GitHub.
 
+- brodyandre
 [Voltar ao Sumario](#sumario)
