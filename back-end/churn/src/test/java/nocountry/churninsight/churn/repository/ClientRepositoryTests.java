@@ -1,14 +1,20 @@
 package nocountry.churninsight.churn.repository;
 
-import nocountry.churninsight.churn.model.*; // Importa a entidade e os Enums
+import nocountry.churninsight.churn.model.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("tests")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ClientRepositoryTests {
 
     @Autowired
@@ -17,16 +23,21 @@ class ClientRepositoryTests {
     @Autowired
     private ClientRepository clientRepository;
 
+    @BeforeEach
+    void setUp() {
+        // Limpa os dados antes de cada teste para garantir isolamento no Postgres real
+        // A ordem de exclusão evita erros de chave estrangeira
+        entityManager.getEntityManager().createQuery("DELETE FROM Previsao").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM Cliente").executeUpdate();
+        entityManager.flush();
+    }
+
     @Test
+    @DisplayName("Deve retornar o total exato de 2 clientes inseridos")
     void count_DeveRetornarTotalCorretoDeClientes() {
         // --- Arrange ---
-        // Cria dois clientes válidos usando um método auxiliar para não repetir código
-        Cliente c1 = criarClienteExemplo();
-        Cliente c2 = criarClienteExemplo();
-        
-        // Persiste no banco em memória
-        entityManager.persist(c1);
-        entityManager.persist(c2);
+        entityManager.persist(criarClienteExemplo());
+        entityManager.persist(criarClienteExemplo());
         entityManager.flush(); 
 
         // --- Act ---
@@ -37,29 +48,26 @@ class ClientRepositoryTests {
     }
 
     @Test
+    @DisplayName("Deve persistir cliente e validar campos gerados automaticamente")
     void save_DevePersistirClienteEGerarDataCriacao() {
         // --- Arrange ---
         Cliente cliente = criarClienteExemplo();
 
         // --- Act ---
+        // Usamos save do repository para testar o comportamento real do componente
         Cliente salvo = clientRepository.save(cliente);
+        entityManager.flush(); // Garante que o PrePersist e o DB gerem os dados
 
         // --- Assert ---
         assertThat(salvo).isNotNull();
-        assertThat(salvo.getId()).isNotNull(); // ID gerado pelo banco
-        assertThat(salvo.getDataCriacao()).isNotNull(); // PrePersist funcionou
+        assertThat(salvo.getId()).isNotNull();
+        assertThat(salvo.getDataCriacao()).isNotNull(); 
         assertThat(salvo.getValorTotal()).isEqualTo(1500.00);
     }
 
-    /**
-     * Método auxiliar para criar um Cliente com todos os campos obrigatórios preenchidos.
-     * Ajuste os valores dos ENUMS conforme a definição real do seu projeto.
-     */
     private Cliente criarClienteExemplo() {
         Cliente cliente = new Cliente();
         
-        // Campos Obrigatórios (nullable = false)
-        // NOTA: Ajuste os valores dos Enums abaixo (ex: MASCULINO, MENSAL) para os que existem no seu projeto
         cliente.setGenero(GeneroEnum.FEMININO); 
         cliente.setIdoso(0);
         cliente.setConjuge("Sim");

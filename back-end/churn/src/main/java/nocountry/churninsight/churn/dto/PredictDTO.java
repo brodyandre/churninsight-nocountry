@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class PredictDTO {
@@ -14,12 +15,13 @@ public class PredictDTO {
     private String previsao;
 
     @JsonProperty("probabilidade")
-    @NotBlank(message = "Probabilidade é obrigatória")
+    @NotNull(message = "Probabilidade é obrigatória")
     @DecimalMin(value = "0.0", inclusive = true, message = "Probabilidade não pode ser negativa")
     @DecimalMax(value = "1.0", inclusive = true, message = "Probabilidade não pode ser maior que 1")
     private Double probabilidade;
 
     @JsonProperty("confianca")
+    @NotNull(message = "Confiança é obrigatória")
     @DecimalMin(value = "0.0", inclusive = true, message = "Confiança não pode ser negativa")
     @DecimalMax(value = "1.0", inclusive = true, message = "Confiança não pode ser maior que 1")
     private Double confianca;

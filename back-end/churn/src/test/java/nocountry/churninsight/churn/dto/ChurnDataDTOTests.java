@@ -103,7 +103,7 @@ class ChurnDataDTOTests {
 
         Set<ConstraintViolation<ChurnDataDTO>> violations = validator.validate(dto);
 
-        assertThat(violations).hasSize(2);
+        assertThat(violations).hasSize(3);
         assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("servicoInternet"));
         assertThat(violations).anyMatch(v -> v.getPropertyPath().toString().equals("metodoPagamento"));
     }

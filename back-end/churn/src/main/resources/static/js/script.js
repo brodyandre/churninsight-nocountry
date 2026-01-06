@@ -88,22 +88,22 @@
             // 1. Health do Spring (Java)
             try {
                 const sResp = await fetch("/churn/health", { cache: "no-store" });
-                UI.setTxt("kpiSpring", `Spring: ${sResp.ok ? "OK" : "(ERRO)"} (HTTP ${sResp.status})`);
+                UI.setTxt("kpiSpring", `Spring: ${sResp.ok ? "OK" : "Indisponível"} (HTTP ${sResp.status})`);
                 UI.setColor("kpiSpring", sResp.ok ? "ok" : "bad");
-            } catch(e) { UI.setTxt("kpiSpring", "Spring: indisponível"); }
+            } catch(e) { UI.setTxt("kpiSpring", "Spring: Indisponível"); }
 
             // 2. Health do DS (FastAPI via Java)
             try {
                 const resp = await fetch("/churn/ds-health", { cache: "no-store" });
                 const data = await resp.json();
-                const isOnline = resp.ok && data.status !== "offline";
+                const isOnline = resp.ok && data.status !== "OFFLINE";
 
                 UI.setTxt("kpiDs", isOnline ? `FastAPI: OK (HTTP ${resp.status})` : "FastAPI: OFFLINE");
                 UI.setColor("kpiDs", isOnline ? "ok" : "bad");
                 
                 const chip = $("chipHealth");
                 if (chip) {
-                    chip.textContent = isOnline ? "Health: OK" : "Health: DS off";
+                    chip.textContent = isOnline ? "Health: OK" : "Health: DS OFF";
                     chip.className = `chip ${isOnline ? "ok" : "bad"}`;
                 }
 
@@ -120,14 +120,14 @@
                 UI.setTxt("kpiThreshold", `Threshold: ${(!isNaN(thr) && isFinite(thr)) ? thr.toFixed(2) : "—"}`);
 
                 const rawPath = data.modelo_path || data.model_path || "";
-                const modelName = (rawPath && rawPath !== "indisponível") ? rawPath.split(/[\\/]/).pop() : "—";
+                const modelName = (rawPath && rawPath !== "Indisponível") ? rawPath.split(/[\\/]/).pop() : "—";
                 UI.setTxt("kpiModel", `Modelo: ${modelName}`);
             } catch(e) {
-                UI.setTxt("kpiDs", "FastAPI: indisponível");
+                UI.setTxt("kpiDs", "FastAPI: Indisponível");
                 UI.setColor("kpiDs", "bad");
 
                 const chip = $("chipHealth");
-                if (chip) { chip.textContent = "Health: DS off"; chip.className = "chip bad"; }
+                if (chip) { chip.textContent = "Health: DS OFF"; chip.className = "chip bad"; }
 
                 const chipDsUrl = $("chipDsUrl");
                 if (chipDsUrl) { chipDsUrl.innerHTML = "DS: —"; }

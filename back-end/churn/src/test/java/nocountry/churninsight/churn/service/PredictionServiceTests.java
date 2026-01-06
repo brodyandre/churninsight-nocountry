@@ -3,15 +3,18 @@ package nocountry.churninsight.churn.service;
 import nocountry.churninsight.churn.dto.ChurnDataDTO;
 import nocountry.churninsight.churn.dto.PredictDTO;
 import nocountry.churninsight.churn.exception.IntegrationException;
-import nocountry.churninsight.churn.exception.ValidationBusinessException;
+import nocountry.churninsight.churn.exception.InvalidChurnDataException;
+import nocountry.churninsight.churn.repository.ClientRepository;
 import nocountry.churninsight.churn.validator.ChurnDataValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,8 +24,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PredictionServiceTests {
@@ -30,8 +34,19 @@ class PredictionServiceTests {
     @Mock
     private ChurnDataValidator churnDataValidator;
 
-    @InjectMocks
+    @Mock
+    private RestTemplate restTemplate;
+    
+    @Mock
+    private ClientRepository clientRepository;
+
     private PredictionService predictionService;
+
+    @BeforeEach
+    void setUp() {
+        predictionService = new PredictionService(churnDataValidator, restTemplate, clientRepository);
+        ReflectionTestUtils.setField(predictionService, "dsServiceUrl", "http://localhost:8000/predict");
+    }
 
     // --- TESTES DO MÉTODO PREDICT (Individual) ---
 
@@ -40,11 +55,20 @@ class PredictionServiceTests {
     void devePreverCancelamentoParaValorAlto() {
         // 1. Cenário
         ChurnDataDTO dto = new ChurnDataDTO();
-        dto.setValorMensal(150.00); // Valor acima de 100
+        dto.setValorMensal(150.00);
         dto.setTipoContrato("Mensal");
 
-        // Mock do validador (não retorna erros)
+        // Mock do validador
         when(churnDataValidator.validate(dto)).thenReturn(Collections.emptyList());
+
+        // --- NOVIDADE: Mock da resposta do RestTemplate ---
+        PredictDTO mockDaApiPython = new PredictDTO();
+        mockDaApiPython.setPrevisao("Vai cancelar");
+        mockDaApiPython.setProbabilidade(0.82);
+        
+        // Configuramos o Mockito para retornar essa resposta quando o serviço chamar a API
+        when(restTemplate.postForEntity(anyString(), any(), eq(PredictDTO.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(mockDaApiPython));
 
         // 2. Execução
         PredictDTO resultado = predictionService.predict(dto);
@@ -64,6 +88,13 @@ class PredictionServiceTests {
 
         when(churnDataValidator.validate(dto)).thenReturn(Collections.emptyList());
 
+        PredictDTO mockResponse = new PredictDTO();
+        mockResponse.setPrevisao("Vai continuar");
+        mockResponse.setProbabilidade(0.15);
+
+        when(restTemplate.postForEntity(anyString(), any(), eq(PredictDTO.class)))
+            .thenReturn(org.springframework.http.ResponseEntity.ok(mockResponse));
+
         // 2. Execução
         PredictDTO resultado = predictionService.predict(dto);
 
@@ -73,16 +104,14 @@ class PredictionServiceTests {
     }
 
     @Test
-    @DisplayName("Deve lançar ValidationBusinessException se o validador encontrar erros")
+    @DisplayName("Deve lançar InvalidChurnDataException se o validador encontrar erros")
     void deveFalharNaValidacaoDeNegocio() {
         // 1. Cenário
         ChurnDataDTO dto = new ChurnDataDTO();
-        
-        // Mock do validador retornando uma lista de erros
         when(churnDataValidator.validate(dto)).thenReturn(List.of("Erro 1", "Erro 2"));
 
-        // 2. Execução e Validação
-        assertThrows(ValidationBusinessException.class, () -> {
+        // 2. Execução e Validação (Atualizado para a exceção correta)
+        assertThrows(InvalidChurnDataException.class, () -> {
             predictionService.predict(dto);
         });
     }
@@ -102,6 +131,13 @@ class PredictionServiceTests {
 
         // Mock do validador (pois o processCsv chama o predict internamente)
         when(churnDataValidator.validate(any())).thenReturn(Collections.emptyList());
+
+        PredictDTO mockResponse = new PredictDTO();
+        mockResponse.setPrevisao("Vai cancelar");
+        mockResponse.setProbabilidade(0.82);
+
+        when(restTemplate.postForEntity(anyString(), any(), eq(PredictDTO.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(mockResponse));
 
         // 2. Execução
         List<PredictDTO> resultados = predictionService.processCsv(file);

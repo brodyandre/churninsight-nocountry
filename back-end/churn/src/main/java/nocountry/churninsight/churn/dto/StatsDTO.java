@@ -32,6 +32,8 @@ public class StatsDTO {
     }
 
     public StatsDTO(long total, double media) {
+        this.totalClients = total;
+        this.churnRate = media;
     }
 
     // Getters
