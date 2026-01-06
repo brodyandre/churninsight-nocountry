@@ -329,7 +329,7 @@ Se o arquivo do modelo estiver com ~134 bytes, ele e um ponteiro LFS. Use um arq
 
 ## Testes
 
-Execute os testes automatizados do back-end (unitarios e integracao) usando o Maven Wrapper do projeto. Rode a partir da raiz do repositorio.
+Execute os testes automatizados do back-end (unitarios e integracao) usando o Maven Wrapper do projeto. Rode a partir da raiz do repositorio: `C:\Users\USER\Documents\Repositorios\churninsight-nocountry`.
 
 ```powershell
 cd back-end\churn
