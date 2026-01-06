@@ -226,7 +226,7 @@ def normalize_payload(data: Dict[str, Any]) -> Dict[str, Any]:
 # Modelo
 # -----------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
-DEFAULT_MODEL_PATH = (BASE_DIR.parent / "model" / "churn_xgboost_pipeline_tuned.joblib").resolve()
+DEFAULT_MODEL_PATH = (BASE_DIR / "models" / "churn_xgboost_pipeline_tuned.joblib").resolve()
 
 MODEL_PATH = Path(os.getenv("MODEL_PATH", str(DEFAULT_MODEL_PATH))).expanduser().resolve()
 THRESHOLD = _as_float(os.getenv("THRESHOLD", "0.5"), 0.5)
@@ -265,7 +265,7 @@ def load_model() -> None:
                     pass
         else:
             modelo = loaded_data
-
+        
         model_loaded = True
         logger.info(f"✓ Modelo carregado: {MODEL_PATH}")
 
