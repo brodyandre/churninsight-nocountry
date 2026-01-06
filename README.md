@@ -2,14 +2,14 @@
   <img src="docs/logo-churnguard.png" alt="ChurnGuard Analytics" width="440">
 </p>
 
-<h1 align="center">ChurnInsight - PrevisÃ£o de Churn (Hackathon NoCountry)</h1>
+<h1 align="center">ChurnInsight - Previsão de Churn (Hackathon NoCountry)</h1>
 
 <p align="center">
-  MVP de previsÃ£o de churn com Data Science em Python + API REST em Java (Spring Boot)
+  MVP de previsão de churn com Data Science em Python + API REST em Java (Spring Boot)
 </p>
 
 <p align="center">
-  <a href="#sumÃ¡rio">SumÃ¡rio</a> |
+  <a href="#sumario">Sumário</a> |
   <a href="#como-executar-local">Como executar</a> |
   <a href="#docker-compose-ui-completa">Docker Compose</a> |
   <a href="#endpoints-principais">Endpoints</a>
@@ -37,37 +37,38 @@
   <img src="docs/ui-screenshot.png" alt="UI ChurnInsight" width="900">
 </p>
 
-RepositÃ³rio **churninsight-nocountry** - MVP de previsÃ£o de churn (cancelamento de clientes) desenvolvido para o **hackathon da plataforma NoCountry**, focado em negÃ³cios de **serviÃ§os e assinaturas** (Telecom, Fintech, Streaming, E-commerce).
+Repositório **churninsight-nocountry** - MVP de previsão de churn (cancelamento de clientes) desenvolvido para o **hackathon da plataforma NoCountry**, focado em negócios de **serviços e assinaturas** (Telecom, Fintech, Streaming, E-commerce).
 
-A soluÃ§Ã£o combina:
+A solução combina:
 
-- **Data Science em Python** para treinar um modelo de classificaÃ§Ã£o binÃ¡ria (vai cancelar / vai continuar);
+- **Data Science em Python** para treinar um modelo de classificação binária (vai cancelar / vai continuar);
 - **API REST em Java (Spring Boot)** para expor o modelo e permitir o consumo por outros sistemas;
-- **UI Web** servida pela API para demonstraÃ§Ã£o funcional do fluxo de previsÃ£o.
+- **UI Web** servida pela API para demonstração funcional do fluxo de previsão.
 
 ---
 
-## SumÃ¡rio
+<a id="sumario"></a>
+## Sumário
 
-1. [Resumo rÃ¡pido](#resumo-rÃ¡pido)
-2. [DescriÃ§Ã£o do desafio (Hackathon NoCountry)](#descriÃ§Ã£o-do-desafio-hackathon-nocountry)
-   - [Setor de negÃ³cio](#setor-de-negÃ³cio)
-   - [DescriÃ§Ã£o do projeto](#descriÃ§Ã£o-do-projeto)
-   - [Necessidade do cliente (explicaÃ§Ã£o nÃ£o tÃ©cnica)](#necessidade-do-cliente-explicaÃ§Ã£o-nÃ£o-tÃ©cnica)
-   - [ValidaÃ§Ã£o de mercado](#validaÃ§Ã£o-de-mercado)
+1. [Resumo rápido](#resumo-rapido)
+2. [Descrição do desafio (Hackathon NoCountry)](#descricao-do-desafio-hackathon-nocountry)
+   - [Setor de negócio](#setor-de-negocio)
+   - [Descrição do projeto](#descricao-do-projeto)
+   - [Necessidade do cliente (explicação não técnica)](#necessidade-do-cliente-explicacao-nao-tecnica)
+   - [Validação de mercado](#validacao-de-mercado)
    - [Expectativa para este hackathon](#expectativa-para-este-hackathon)
-   - [EntregÃ¡veis desejados](#entregÃ¡veis-desejados)
+   - [Entregáveis desejados](#entregaveis-desejados)
    - [Funcionalidades exigidas (MVP)](#funcionalidades-exigidas-mvp)
    - [Funcionalidades opcionais](#funcionalidades-opcionais)
-   - [OrientaÃ§Ãµes tÃ©cnicas para alunos](#orientaÃ§Ãµes-tÃ©cnicas-para-alunos)
-   - [Contrato de integraÃ§Ã£o (JSON)](#contrato-de-integraÃ§Ã£o-json)
-3. [VisÃ£o geral da soluÃ§Ã£o](#visÃ£o-geral-da-soluÃ§Ã£o)
+   - [Orientações técnicas para alunos](#orientacoes-tecnicas-para-alunos)
+   - [Contrato de integração (JSON)](#contrato-de-integracao-json)
+3. [Visão geral da solução](#visao-geral-da-solucao)
 4. [Arquitetura](#arquitetura)
-5. [Estrutura do repositÃ³rio](#estrutura-do-repositÃ³rio)
+5. [Estrutura do repositório](#estrutura-do-repositorio)
 6. [Tecnologias](#tecnologias)
 7. [Como executar (local)](#como-executar-local)
    - [Data Science (Python)](#data-science-python)
-   - [MicroserviÃ§o Python (opcional)](#microserviÃ§o-python-opcional)
+   - [Microserviço Python (opcional)](#microservico-python-opcional)
    - [API Java (Spring Boot)](#api-java-spring-boot)
    - [UI (Web)](#ui-web)
 8. [Docker Compose (UI completa)](#docker-compose-ui-completa)
@@ -79,60 +80,60 @@ A soluÃ§Ã£o combina:
 
 ---
 
-## Resumo rÃ¡pido
+## Resumo rápido
 
 | Camada | O que entrega |
 | --- | --- |
-| Data Science (Python) | EDA, features, treino e serializaÃ§Ã£o do modelo |
-| MicroserviÃ§o (FastAPI) | Endpoint `/predict` com modelo carregado |
-| API Java (Spring Boot) | ValidaÃ§Ã£o, integraÃ§Ã£o DS e UI web |
-| UI Web | FormulÃ¡rio, presets e visualizaÃ§Ã£o de status |
-| Banco (opcional) | PersistÃªncia via PostgreSQL |
+| Data Science (Python) | EDA, features, treino e serialização do modelo |
+| Microserviço (FastAPI) | Endpoint `/predict` com modelo carregado |
+| API Java (Spring Boot) | Validação, integração DS e UI web |
+| UI Web | Formulário, presets e visualização de status |
+| Banco (opcional) | Persistência via PostgreSQL |
 
-[Voltar ao SumÃ¡rio](#sumÃ¡rio)
+[Voltar ao Sumário](#sumario)
 
 ---
 
-## DescriÃ§Ã£o do desafio (Hackathon NoCountry)
+## Descrição do desafio (Hackathon NoCountry)
 
-### Setor de negÃ³cio
-ServiÃ§os e assinaturas (Telecom, Fintech, Streaming, E-commerce) - empresas que dependem de clientes recorrentes e desejam reduzir cancelamentos.
+### Setor de negócio
+Serviços e assinaturas (Telecom, Fintech, Streaming, E-commerce) - empresas que dependem de clientes recorrentes e desejam reduzir cancelamentos.
 
-### DescriÃ§Ã£o do projeto
-O desafio do **ChurnInsight** consiste em criar uma soluÃ§Ã£o que preveja se um cliente estÃ¡ propenso a cancelar um serviÃ§o (churn). O objetivo Ã© que o time de Data Science desenvolva um modelo preditivo e que o time de Back-end construa uma API para disponibilizar essa previsÃ£o a outros sistemas, permitindo que o negÃ³cio aja antes que o cliente decida sair.
+### Descrição do projeto
+O desafio do **ChurnInsight** consiste em criar uma solução que preveja se um cliente está propenso a cancelar um serviço (churn). O objetivo é que o time de Data Science desenvolva um modelo preditivo e que o time de Back-end construa uma API para disponibilizar essa previsão a outros sistemas, permitindo que o negócio aja antes que o cliente decida sair.
 
-### Necessidade do cliente (explicaÃ§Ã£o nÃ£o tÃ©cnica)
-Toda empresa que vende por assinatura ou contrato recorrente sofre com cancelamentos. Manter clientes fiÃ©is Ã© mais barato do que conquistar novos. A empresa quer prever antecipadamente quem estÃ¡ prestes a cancelar, para poder agir e reter essas pessoas.
+### Necessidade do cliente (explicação não técnica)
+Toda empresa que vende por assinatura ou contrato recorrente sofre com cancelamentos. Manter clientes fiéis é mais barato do que conquistar novos. A empresa quer prever antecipadamente quem está prestes a cancelar, para poder agir e reter essas pessoas.
 
-### ValidaÃ§Ã£o de mercado
-PrediÃ§Ã£o de churn Ã© uma aplicaÃ§Ã£o comum e valiosa da ciÃªncia de dados. Empresas de telecom, bancos digitais, academias, streaming e SaaS usam modelos de churn para reduzir perdas financeiras, entender comportamento e aumentar o lifetime value.
+### Validação de mercado
+Predição de churn é uma aplicação comum e valiosa da ciência de dados. Empresas de telecom, bancos digitais, academias, streaming e SaaS usam modelos de churn para reduzir perdas financeiras, entender comportamento e aumentar o lifetime value.
 
 ### Expectativa para este hackathon
-PÃºblico: alunos iniciantes em tecnologia com base em Back-end (Java) e Data Science (Python).  
-Objetivo: construir, em grupo, um MVP capaz de prever churn e disponibilizar essa previsÃ£o via API funcional.
+Público: alunos iniciantes em tecnologia com base em Back-end (Java) e Data Science (Python).  
+Objetivo: construir, em grupo, um MVP capaz de prever churn e disponibilizar essa previsão via API funcional.
 
-### EntregÃ¡veis desejados
-- Notebook (EDA, features, treino, mÃ©tricas e serializaÃ§Ã£o do modelo).
-- API REST em Java com endpoint de previsÃ£o.
-- DocumentaÃ§Ã£o mÃ­nima (README com passos de execuÃ§Ã£o e exemplos).
-- DemonstraÃ§Ã£o funcional.
+### Entregáveis desejados
+- Notebook (EDA, features, treino, métricas e serialização do modelo).
+- API REST em Java com endpoint de previsão.
+- Documentação mínima (README com passos de execução e exemplos).
+- Demonstração funcional.
 
 ### Funcionalidades exigidas (MVP)
-- Endpoint `POST /predict` com previsÃ£o e probabilidade.
+- Endpoint `POST /predict` com previsão e probabilidade.
 - Carregamento de modelo preditivo.
-- ValidaÃ§Ã£o de entrada.
-- Resposta estruturada (previsÃ£o + probabilidade).
+- Validação de entrada.
+- Resposta estruturada (previsão + probabilidade).
 - Exemplos de uso.
 
 ### Funcionalidades opcionais
-Stats, persistÃªncia, dashboard simples, explicabilidade bÃ¡sica, batch prediction, containerizaÃ§Ã£o e testes automatizados.
+Stats, persistência, dashboard simples, explicabilidade básica, batch prediction, containerização e testes automatizados.
 
-### OrientaÃ§Ãµes tÃ©cnicas para alunos
+### Orientações técnicas para alunos
 Controlar o volume de dados e o uso de recursos (ex.: free tier de cloud).  
 Data Science: dataset limpo, modelo simples, features intuitivas, salvar pipeline com `joblib`.  
-Back-end: API REST, validaÃ§Ã£o de entrada, integraÃ§Ã£o com modelo (microserviÃ§o Python ou ONNX).
+Back-end: API REST, validação de entrada, integração com modelo (microserviço Python ou ONNX).
 
-### Contrato de integraÃ§Ã£o (JSON)
+### Contrato de integração (JSON)
 Entrada:
 ```json
 {
@@ -143,7 +144,7 @@ Entrada:
 }
 ```
 
-SaÃ­da:
+Saída:
 ```json
 {
   "previsao": "Vai cancelar",
@@ -151,21 +152,21 @@ SaÃ­da:
 }
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
-## VisÃ£o geral da soluÃ§Ã£o
+## Visão geral da solução
 
-A soluÃ§Ã£o Ã© composta por:
+A solução é composta por:
 
 - **Data Science**: notebooks em `notebooks/`, dataset em `data/`, modelo serializado em `model/`.
-- **MicroserviÃ§o Python (FastAPI)**: em `ds_service/`, responsÃ¡vel por carregar o modelo e servir `/predict`.
-- **API Java (Spring Boot)**: em `back-end/churn/`, expÃµe endpoints e serve a UI.
-- **Banco de dados**: PostgreSQL via Docker (opcional para persistÃªncia).
-- **UI Web**: pÃ¡gina estÃ¡tica servida pelo back-end Java em `http://localhost:8080/`.
+- **Microserviço Python (FastAPI)**: em `ds_service/`, responsável por carregar o modelo e servir `/predict`.
+- **API Java (Spring Boot)**: em `back-end/churn/`, expõe endpoints e serve a UI.
+- **Banco de dados**: PostgreSQL via Docker (opcional para persistência).
+- **UI Web**: página estática servida pelo back-end Java em `http://localhost:8080/`.
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -180,29 +181,29 @@ graph LR
   NOTE["Notebooks / data"] --> MODEL
 ```
 
-Fluxo: a UI chama a API Java, que valida dados e delega a previsÃ£o ao microserviÃ§o Python. O resultado retorna para a UI. A persistÃªncia em banco Ã© opcional.
+Fluxo: a UI chama a API Java, que valida dados e delega a previsão ao microserviço Python. O resultado retorna para a UI. A persistência em banco é opcional.
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
-## Estrutura do repositÃ³rio
+## Estrutura do repositório
 
 ```text
 .
 |-- back-end/
 |   `-- churn/                 # API Java (Spring Boot)
-|-- backend/                   # Pasta legado (se aplicÃ¡vel)
 |-- data/
 |   `-- raw/                   # Dados brutos
-|-- ds_service/                # MicroserviÃ§o Python (FastAPI)
+|-- docs/                      # Imagens e documentação
+|-- ds_service/                # Microserviço Python (FastAPI)
 |-- model/                     # Modelos serializados (.joblib/.pkl)
 |-- notebooks/                 # EDA e modelagem
 |-- docker-compose.yml
 `-- README.md                  # Este arquivo
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -213,7 +214,7 @@ Fluxo: a UI chama a API Java, que valida dados e delega a previsÃ£o ao microse
 - **PostgreSQL** (opcional)
 - **Docker / Docker Compose**
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -229,7 +230,7 @@ python -m venv .venv
 pip install -r ds_service\requirements.txt
 ```
 
-### MicroserviÃ§o Python (opcional)
+### Microserviço Python (opcional)
 Garanta o modelo no caminho esperado:
 
 ```powershell
@@ -246,7 +247,7 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8001
 ```
 
 ### API Java (Spring Boot)
-Defina variaveis de ambiente e rode o back-end:
+Defina variáveis de ambiente e rode o back-end:
 
 ```powershell
 cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
@@ -260,7 +261,7 @@ Abra no navegador:
 http://localhost:8080/
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -278,7 +279,7 @@ UI:
 http://localhost:8080/
 ```
 
-Checks rÃ¡pidos:
+Checks rápidos:
 ```
 http://localhost:8080/churn/health
 http://localhost:8080/churn/ds-health
@@ -289,7 +290,7 @@ Logs:
 docker compose logs -f java-api ds-service
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -311,7 +312,7 @@ Exemplo de request:
 }
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
@@ -319,43 +320,41 @@ Exemplo de request:
 
 - Dataset: localizado em `data/` (raw/processed).
 - Modelos treinados salvos em `model/`.
-- Pipeline utiliza transformacoes de features e classificador supervisionado.
+- Pipeline utiliza transformações de features e classificador supervisionado.
 
-Se o arquivo do modelo estiver com ~134 bytes, ele e um ponteiro LFS. Use um arquivo real (~500 KB).
+Se o arquivo do modelo estiver com ~134 bytes, ele é um ponteiro LFS. Use um arquivo real (~500 KB).
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
 ## Testes
 
-Execute os testes automatizados do back-end (unitÃ¡rios e integraÃ§Ã£o) usando o Maven Wrapper do projeto. Rode a partir da raiz do repositÃ³rio: `C:\Users\USER\Documents\Repositorios\churninsight-nocountry`.
+A partir da raiz do repositório, rode os testes do back-end Java dentro de `back-end\churn`:
 
 ```powershell
-cd back-end\churn
+cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 .\mvnw.cmd test
 ```
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
 ## Troubleshooting
 
 - **503 no /predict**: DS Service sem modelo carregado ou `xgboost` ausente.
-- **404 na UI**: back-end nÃ£o serviu a pÃ¡gina estÃ¡tica (ver logs).
+- **404 na UI**: back-end não serviu a página estática (ver logs).
 - **Falha no modelo**: verificar tamanho do `.pkl` e logs do DS Service.
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
 
 ---
 
 ## Time
 
-Contribuidores do hackathon (NoCountry). Veja o histÃ³rico de commits no GitHub.
-
 - [brodyandre](https://github.com/brodyandre)
 - [walkii-dev](https://github.com/walkii-dev)
 - [augustoramos000](https://github.com/augustoramos000)
 
-[Voltar ao Sumário](#Sumário)
+[Voltar ao Sumário](#sumario)
