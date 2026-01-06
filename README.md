@@ -173,11 +173,11 @@ A solucao e composta por:
 
 ```mermaid
 graph LR
-  UI[UI Web (Spring Boot Static)] --> API[API Java /churn/predict]
-  API --> DS[DS Service (FastAPI)]
-  DS --> MODEL[Modelo .pkl/.joblib]
+  UI["UI Web - Spring Boot Static"] --> API["API Java /churn/predict"]
+  API --> DS["DS Service - FastAPI"]
+  DS --> MODEL["Modelo .pkl/.joblib"]
   API --> DB[(PostgreSQL)]
-  NOTE[Notebooks / data] --> MODEL
+  NOTE["Notebooks / data"] --> MODEL
 ```
 
 Fluxo: a UI chama a API Java, que valida dados e delega a previsao ao microservico Python. O resultado retorna para a UI. A persistencia em banco e opcional.
