@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,32 +39,15 @@ public class DemoDataService {
 
     /**
      * Recupera exemplos de demonstração para o preenchimento automático do formulário.
-     * Tenta buscar dados dinâmicos do FastAPI e, em caso de erro, recorre aos presets locais.
      */
     public List<DemoExampleDTO> getDemoExamples() {
-        logger.info("Buscando presets dinâmicos em: {}", dsServiceUrl + "/demo-examples");
-
-        try {
-            ResponseEntity<DemoExampleDTO[]> response = restTemplate.getForEntity(
-                    dsServiceUrl + "/demo-examples",
-                    DemoExampleDTO[].class
-            );
-
-            if (response.getBody() != null && response.getBody().length > 0) {
-                logger.info("Presets carregados do FastAPI com sucesso.");
-
-                return List.of(response.getBody());
-            }
-
-        } catch (Exception e) {
-            logger.warn("FastAPI offline ou erro no endpoint. Usando presets locais. Detalhe: {}", e.getMessage());
-        }
+        logger.info("Servindo {} presets carregados localmente.", cachedPresets.size());
 
         return cachedPresets;
     }
 
     /**
-     * Gera uma lista de presets estáticos (fallback) codificados no Java.
+     * Gera uma lista de presets estáticos codificados no Java.
      */
     public List<DemoExampleDTO> loadPresetsFromFiles() {
         List<DemoExampleDTO> presets = new ArrayList<>();
@@ -74,12 +56,21 @@ public class DemoDataService {
             Resource[] resources = new PathMatchingResourcePatternResolver()
                 .getResources("classpath:presets/*.json");
 
-            for (Resource resource : resources) {
-                DemoExampleDTO dto = objectMapper.readValue(
-                    resource.getInputStream(),
-                    DemoExampleDTO.class);
+            if (resources.length == 0) {
+                logger.warn("Nenhum arquivo encontrado em classpath:presets/*.json");
+            }
 
-                presets.add(dto);
+            for (Resource resource : resources) {
+                try {
+                    DemoExampleDTO dto = objectMapper.readValue(
+                        resource.getInputStream(),
+                        DemoExampleDTO.class);
+    
+                    presets.add(dto);    
+                } catch (Exception e) {
+                    logger.error("Erro ao processar o arquivo: {}", resource.getFilename(), e);
+                }
+
             }
         } catch (Exception e) {
             logger.error("Erro crítico ao ler arquivos de preset", e);
