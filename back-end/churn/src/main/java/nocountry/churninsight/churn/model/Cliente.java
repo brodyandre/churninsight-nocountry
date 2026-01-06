@@ -3,15 +3,20 @@ package nocountry.churninsight.churn.model;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 @Entity
 @Table(name = "clientes")
 public class Cliente {
     
     @Id
+    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "genero", columnDefinition = "genero_enum", nullable = false)
     private GeneroEnum genero;
     
@@ -25,6 +30,7 @@ public class Cliente {
     private String dependentes;
     
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "tipo_contrato", columnDefinition = "tipo_contrato_enum", nullable = false)
     private TipoContratoEnum tipoContrato;
     
@@ -38,6 +44,7 @@ public class Cliente {
     private String multiplasLinhasTel;
     
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "servico_internet", columnDefinition = "servico_internet_enum", nullable = false)
     private ServicoInternetEnum servicoInternet;
     
@@ -63,6 +70,7 @@ public class Cliente {
     private String faturaOnline;
     
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "metodo_pagamento", columnDefinition = "metodo_pagamento_enum", nullable = false)
     private MetodoPagamentoEnum metodoPagamento;
     
