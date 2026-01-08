@@ -73,12 +73,8 @@ body {
   align-items: center;
 }
 
-.logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--accent);
-  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.25);
+.logo img {
+  height: 50px;
 }
 
 h1 {
