@@ -81,6 +81,7 @@ Essa abordagem facilita manutenção, testes e escalabilidade.
 * **XGBoost** (modelo de predição de churn)
 * **JUnit / Mockito** (testes)
 * **HTML / CSS / JavaScript** (frontend simples para visualização)
+* **Swagger (OpenAPI)** (documentação interativa da API REST)
 
 🔝 [Voltar ao topo](#topo)
 
