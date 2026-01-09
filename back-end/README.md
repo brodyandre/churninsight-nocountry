@@ -399,7 +399,7 @@ Utiliza um algoritmo customizado de parsing linear (**BufferedReader**) para ite
 Para cada linha válida, o sistema realiza uma chamada ao motor de IA e consolida o resultado em um **PredictDTO**.
 
 > [!NOTE]
-> Linhas com formato inconsistente (menos de 19 colunas) são ignoradas e registradas em log, impedindo que erros isolados interrompam o processamento do lote.
+> Linhas com formato inconsistente (menos de 19 colunas) são ignoradas e registradas em _log_, impedindo que erros isolados interrompam o processamento do lote.
 
 #### Exemplo de Resposta (Sucesso)
 
