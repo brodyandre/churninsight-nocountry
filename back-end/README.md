@@ -8,15 +8,19 @@
   <a href="https://www.oracle.com/java/">
     <img src="https://img.shields.io/badge/Java-21-EE6300?logo=coffeescript&logoColor=white" alt="Java 21">
   </a>
+
   <a href="https://spring.io/projects/spring-boot">
     <img src="https://img.shields.io/badge/Spring%20Boot-3.x-479E3E?logo=springboot&logoColor=white" alt="Spring Boot">
   </a>
+
   <a href="https://maven.apache.org/">
     <img src="https://img.shields.io/badge/Maven-3.9.x-C71A36?logo=maven&logoColor=white" alt="Maven">
   </a>
+
   <a href="https://junit.org/">
     <img src="https://img.shields.io/badge/JUnit-5-D0372D?logo=junit&logoColor=white" alt="JUnit">
   </a>
+
   <a href="https://www.postgresql.org/">
     <img src="https://img.shields.io/badge/PostreSQL-16-31638C?logo=postgresql&logoColor=white" alt="PostgreSQL 16">
   </a>
@@ -394,7 +398,8 @@ _Endpoint_ para processamento analítico em lote (_bulk processing_).
 Utiliza um algoritmo customizado de parsing linear (**BufferedReader**) para iterar sobre o arquivo CSV sem carregar todo o conteúdo na memória (focado em performance).
 Para cada linha válida, o sistema realiza uma chamada ao motor de IA e consolida o resultado em um **PredictDTO**.
 
-> [!NOTE] Linhas com formato inconsistente (menos de 19 colunas) são ignoradas e registradas em log, impedindo que erros isolados interrompam o processamento do lote.
+> [!NOTE]
+> Linhas com formato inconsistente (menos de 19 colunas) são ignoradas e registradas em log, impedindo que erros isolados interrompam o processamento do lote.
 
 #### Exemplo de Resposta (Sucesso)
 
@@ -455,7 +460,7 @@ Serve o _frontend_ minimalista embutido no _backend_.
 Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ atua como um servidor de arquivos estáticos para o SPA (_Single Page Application_) localizado em `src/main/resources/static`.
 
 <p align="center">
-  <img src="back-end\churn\assets\print-interface.png" alt="Interface ChurnInsight" width="800">
+  <img src="churn\assets\print-interface.png" alt="Interface ChurnInsight" width="800">
   <br>
   <em><strong>Figura 1:</strong> Interface SPA integrada ao Spring Boot. O painel demonstra o consumo dos <strong>Presets</strong> e a visualização dinâmica do cálculo de <strong>Confiança</strong> gerado pelo backend.</em>
 </p>
@@ -467,7 +472,7 @@ Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ at
 Interface para exploração e execução de testes manuais nos _endpoints_ sem necessidade de ferramentas externas.
 
 <p align="center">
-  <img src="back-end\churn\assets\print-swagger.png" alt="Documentação Swagger OpenAPI" width="800">
+  <img src="churn\assets\print-swagger.png" alt="Documentação Swagger OpenAPI" width="800">
   <br>
   <em><strong>Figura 2:</strong> Documentação interativa via <strong>SpringDoc OpenAPI 3</strong>. A interface permite a validação dos contratos de dados e testes diretos nos endpoints de predição e estatísticas.</em>
 </p>
@@ -525,7 +530,8 @@ Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a ins
 
 Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost).
 
-> [!NOTE] Este _endpoint_ retorna o _header_ customizado `X-Proxy-Latency-Ms`, indicando o tempo de ida e volta (_round-trip_) entre o Java e o Python.
+> [!NOTE] 
+> Este _endpoint_ retorna o _header_ customizado `X-Proxy-Latency-Ms`, indicando o tempo de ida e volta (_round-trip_) entre o Java e o Python.
 
 #### Exemplo de Resposta (Sucesso)
 
