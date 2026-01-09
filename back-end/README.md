@@ -437,7 +437,7 @@ Serve o _frontend_ minimalista embutido no _backend_.
 Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ atua como um servidor de arquivos estáticos para o SPA (_Single Page Application_) localizado em `src/main/resources/static`.
 
 <p align="center">
-  <img src="assets/print-interface.png" alt="Interface ChurnInsight" width="800">
+  <img src="back-end\churn\assets\print-interface.png" alt="Interface ChurnInsight" width="800">
   <br>
   <em><strong>Figura 1:</strong> Interface SPA integrada ao Spring Boot. O painel demonstra o consumo dos <strong>Presets</strong> e a visualização dinâmica do cálculo de <strong>Confiança</strong> gerado pelo backend.</em>
 </p>
@@ -449,7 +449,7 @@ Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ at
 Interface para exploração e execução de testes manuais nos _endpoints_ sem necessidade de ferramentas externas.
 
 <p align="center">
-  <img src="assets/print-swagger.png" alt="Documentação Swagger OpenAPI" width="800">
+  <img src="back-end\churn\assets\print-swagger.png" alt="Documentação Swagger OpenAPI" width="800">
   <br>
   <em><strong>Figura 2:</strong> Documentação interativa via <strong>SpringDoc OpenAPI 3</strong>. A interface permite a validação dos contratos de dados e testes diretos nos endpoints de predição e estatísticas.</em>
 </p>
@@ -635,6 +635,12 @@ mvn clean install
 
 # Inicia a aplicação Spring Boot
 mvn spring-boot:run
+
+# Limpa e instala as dependências ignorando os testes
+mvn clean install -DskipTests
+
+# Inicia a aplicação Spring Boot sem executar os testes
+mvn spring-boot:run -DskipTests
 ```
 
 ---
@@ -644,7 +650,7 @@ mvn spring-boot:run
 Após o _log_ de sucesso do Spring Boot, os serviços estarão disponíveis nos seguintes endereços:
 
 * **Dashboard (_Frontend_):** `http://localhost:8080/index.html`
-* **Documentação (Swagger):** `http://localhost:8080/swagger-ui/index.html`
+* **Documentação (Swagger):** `http://localhost:8080/swagger-ui.html`
 
 🔝 [Voltar ao topo](#topo)
 
@@ -715,16 +721,16 @@ Abaixo estão listadas as principais decisões de engenharia e as renúncias (_t
 
 Como parte da evolução planejada para a solução, foram mapeadas as seguintes melhorias técnicas:
 
-* **Métricas Financeiras (_Revenue at Risk_)**: Integrar a lógica de cálculo de média e soma de valores para exibir o impacto financeiro estimado dos clientes em risco de evasão.
-* **Séries Temporais**: Evoluir o _StatsService_ para agrupar predições por períodos (diário/mensal), permitindo a visualização de gráficos de linha com a evolução da taxa de churn ao longo do tempo.
-* **Segmentação por Atributos**: Implementar filtros dinâmicos para calcular estatísticas baseadas em categorias (ex: Taxa de _Churn_ apenas para clientes com "Fibra Óptica" vs "DSL").
-* **Refatoração do _Parser_ de CSV**: Substituição da lógica manual de _split_ pela integração total com a biblioteca Apache Commons CSV, visando suporte a delimitadores complexos e tratamento de campos com aspas.
-* **Autenticação e Segurança**: Implementação de Spring Security com JWT ou Basic Auth para proteger os _endpoints_ de estatísticas e infraestrutura, mantendo apenas a interface de demonstração pública.
-* **Persistência de Auditoria**: Implementar a gravação automática na tabela `previsoes` apenas para fins de auditoria e retreinamento futuro do modelo de IA.
-* **Persistência de Lote**: Implementação da gravação automática no banco de dados para todas as predições realizadas via _upload_, permitindo análises históricas retroativas.
-* **Histórico do Cliente**: Permitir que, mediante autenticação, um cliente possa salvar o seu resultado de _churn_ para acompanhar a evolução do seu risco ao longo dos meses.
-* **Expansão da Malha de Testes**: Ampliar a cobertura de testes de integração para alcançar 95% dos serviços críticos, incluindo testes de carga para o processamento de CSV e simulações de falhas de rede intermitentes.
-* **Otimização da Cobertura de Código**: Elevar a cobertura de linhas de 65% para 85%, focando na inclusão de testes de borda (_edge cases_) para o processamento de CSV e tratamentos de exceções específicas na integração com a API de Data Science.
+1. [ ] **Métricas Financeiras (_Revenue at Risk_)**: Integrar a lógica de cálculo de média e soma de valores para exibir o impacto financeiro estimado dos clientes em risco de evasão.
+2. [ ] **Séries Temporais**: Evoluir o _StatsService_ para agrupar predições por períodos (diário/mensal), permitindo a visualização de gráficos de linha com a evolução da taxa de churn ao longo do tempo.
+3. [ ] **Segmentação por Atributos**: Implementar filtros dinâmicos para calcular estatísticas baseadas em categorias (ex: Taxa de _Churn_ apenas para clientes com "Fibra Óptica" vs "DSL").
+4. [ ] **Refatoração do _Parser_ de CSV**: Substituição da lógica manual de _split_ pela integração total com a biblioteca Apache Commons CSV, visando suporte a delimitadores complexos e tratamento de campos com aspas.
+5. [ ] **Autenticação e Segurança**: Implementação de Spring Security com JWT ou Basic Auth para proteger os _endpoints_ de estatísticas e infraestrutura, mantendo apenas a interface de demonstração pública.
+6. [ ] **Persistência de Auditoria**: Implementar a gravação automática na tabela `previsoes` apenas para fins de auditoria e retreinamento futuro do modelo de IA.
+7. [ ] **Persistência de Lote**: Implementação da gravação automática no banco de dados para todas as predições realizadas via _upload_, permitindo análises históricas retroativas.
+8. [ ] **Histórico do Cliente**: Permitir que, mediante autenticação, um cliente possa salvar o seu resultado de _churn_ para acompanhar a evolução do seu risco ao longo dos meses.
+9. [ ] **Expansão da Malha de Testes**: Ampliar a cobertura de testes de integração para alcançar 95% dos serviços críticos, incluindo testes de carga para o processamento de CSV e simulações de falhas de rede intermitentes.
+10. [ ] **Otimização da Cobertura de Código**: Elevar a cobertura de linhas de 65% para 85%, focando na inclusão de testes de borda (_edge cases_) para o processamento de CSV e tratamentos de exceções específicas na integração com a API de Data Science.
 
 🔝 [Voltar ao topo](#topo)
 
@@ -742,10 +748,10 @@ Este projeto é distribuído sob a licença MIT. Veja o arquivo `LICENSE` para m
 <a id="equipe"></a>
 ## 👥 Equipe
 
-| Foto                                                                                                                      | Nome              | Role              | LinkedIn                                                           |
-|---------------------------------------------------------------------------------------------------------------------------|-------------------|-------------------|--------------------------------------------------------------------|
-| <img src="https://github.com/augustoramos000.png" alt="Avatar de Augusto Ramos" style="width: 30px; border-radius: 50%;"> | **Augusto Ramos** | Backend Developer | [LinkedIn](https://www.linkedin.com/in/augustoramos00/)            |
-| <img src="https://github.com/biachristie.png" alt="Avatar de Beatriz Christie" style="width: 30px; border-radius: 50%;">  | **Beatriz Christie** | Backend Developer | [LinkedIn](https://www.linkedin.com/in/beatriz-christie/)          |
-| <img src="https://github.com/walkii-dev.png" alt="Avatar de Lucas Oliveira" style="width: 30px; border-radius: 50%;">     | **Lucas Oliveira** | Backend Developer | [LinkedIn](https://www.linkedin.com/in/luoliveiracode/)            |
-| <img src="https://github.com/joaojosers.png" alt="Avatar de João José Sousa" style="width: 30px; border-radius: 50%;">    | **João José Sousa** | Backend Developer | [LinkedIn](https://www.linkedin.com/in/joao-jose-sousa-developer/) |
-| <img src="https://github.com/PHmore.png" alt="Avatar de Patryck Silva" style="width: 30px; border-radius: 50%;">          | **Patryck Silva** | Backend Developer | [LinkedIn](https://www.linkedin.com/in//)                          |
+| Foto                                                                                                                      | Nome                      | Role              | LinkedIn                                                           | GitHub |
+|---------------------------------------------------------------------------------------------------------------------------|---------------------------|-------------------|--------------------------------------------------------------------|--------|
+| <img src="https://github.com/augustoramos000.png" alt="Avatar de Augusto Ramos" style="width: 30px; border-radius: 50%;"> | **Augusto Ramos**         | Backend Developer | [LinkedIn](https://www.linkedin.com/in/augustoramos00/)            | [GitHub](https://github.com/augustoramos000) |
+| <img src="https://github.com/biachristie.png" alt="Avatar de Beatriz Christie" style="width: 30px; border-radius: 50%;">  | **Beatriz Christie**      | Backend Developer | [LinkedIn](https://www.linkedin.com/in/beatriz-christie/)          | [GitHub](https://github.com/biachristie) |
+| <img src="https://github.com/walkii-dev.png" alt="Avatar de Lucas Oliveira" style="width: 30px; border-radius: 50%;">     | **Lucas Oliveira**        | Backend Developer | [LinkedIn](https://www.linkedin.com/in/luoliveiracode/)            | [GitHub](https://github.com/walkii-dev) |
+| <img src="https://github.com/joaojosers.png" alt="Avatar de João José Sousa" style="width: 30px; border-radius: 50%;">    | **João José Sousa**       | Backend Developer | [LinkedIn](https://www.linkedin.com/in/joao-jose-sousa-developer/) | [GitHub](https://github.com/joaojosers) |
+| <img src="https://github.com/PHmore.png" alt="Avatar de Patryck Silva" style="width: 30px; border-radius: 50%;">          | **Patryck Henryck Silva** | Backend Developer | [LinkedIn](https://www.linkedin.com/in//)                          | [GitHub](https://github.com/PHmore) |
