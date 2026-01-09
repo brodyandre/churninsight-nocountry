@@ -3,6 +3,24 @@
 </p>
 
 <h1 align="center">🚀 ChurnInsight – Backend (Hackathon)</h1>
+
+<p align="center">
+  <a href="https://www.oracle.com/java/">
+    <img src="https://img.shields.io/badge/Java-21-EE6300?logo=coffeescript&logoColor=white" alt="Java 21">
+  </a>
+  <a href="https://spring.io/projects/spring-boot">
+    <img src="https://img.shields.io/badge/Spring%20Boot-3.x-479E3E?logo=springboot&logoColor=white" alt="Spring Boot">
+  </a>
+  <a href="https://maven.apache.org/">
+    <img src="https://img.shields.io/badge/Maven-3.9.x-C71A36?logo=maven&logoColor=white" alt="Maven">
+  </a>
+  <a href="https://junit.org/">
+    <img src="https://img.shields.io/badge/JUnit-5-D0372D?logo=junit&logoColor=white" alt="JUnit">
+  </a>
+  <a href="https://www.postgresql.org/">
+    <img src="https://img.shields.io/badge/PostreSQL-16-31638C?logo=postgresql&logoColor=white" alt="PostgreSQL 16">
+  </a>
+</p>
 <br>
 
 API backend desenvolvida para o projeto **ChurnInsight**, criado no contexto de um **hackathon**, com o objetivo de fornecer uma base sólida, escalável e bem estruturada para análise e previsão de *churn* (evasão de clientes).
@@ -25,8 +43,8 @@ Este backend foi construído seguindo boas práticas de arquitetura em camadas, 
 * [_Endpoints_ Principais](#endpoints_principais)
 * [_Endpoints_ de Infraestrutura e Suporte](#endpoints_infraestrutura)
 * [Tratamento de Erros e Respostas HTTP](#tratamento-erros-e-respostas)
-* [Testes](#testes)
 * [Como Executar o Projeto](#como-executar-o-projeto)
+* [Testes](#testes)
 * [Boas Práticas Adotadas](#boas-praticas-adotadas)
 * [Decisões Técnicas & Tradeoffs](#decisoes-tecnicas-tradeoffs)
 * [Próximos Passos](#proximos-passos)
@@ -507,7 +525,7 @@ Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a ins
 
 Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost).
 
-> [!NOTE] Este _endpoint_ retorna o _header_ customizado `X-Proxy-Latency-Ms`, indicando o tempo de ida e vollta (_round-trip_) entre o Java e o Python.
+> [!NOTE] Este _endpoint_ retorna o _header_ customizado `X-Proxy-Latency-Ms`, indicando o tempo de ida e volta (_round-trip_) entre o Java e o Python.
 
 #### Exemplo de Resposta (Sucesso)
 
@@ -565,38 +583,6 @@ Todas as respostas de erro seguem o formato:
 
 ---
 
-<a id="testes"></a>
-## 🧪 Testes
-
-O projeto adota uma pirâmide de testes robusta para garantir que as predições de churn e o processamento de dados ocorram sem falhas de integridade.
-A suíte de testes foi dividida em três camadas principais utilizando **JUnit 5**, **Mockito** e **AssertJ**:
-
-1. **Testes de Unidade (Puros):** Focados na lógica de negócio isolada (**Services** e **Validators**).
-2. **Testes de Integração (_Slice_):** Validação de persistência com `DataJpaTest` (PostgreSQL) e serialização JSON com `JsonTest`.
-3. **Testes de Controller (MockMvc):** Garantem que os contratos da API (HTTP Status, JSON de saída) sejam respeitados.
-
-A suíte de testes atinge uma cobertura de **87% das classes** do sistema. O foco da validação concentra-se na camada de serviços e validadores, garantindo que 100% das regras de consistência de dados e cálculos de confiança sejam verificados automaticamente a cada _build_.
-
----
-
-### 🛠️ Como executar os testes
-
-Para rodar toda a suíte de testes e gerar o relatório de execução, utilize o comando:
-
-```bash
-# Executa todos os testes
-mvn test
-
-# Executa apenas uma classe específica
-mvn test -Dtest=ChurnControllerTests
-```
-
-> **Configuração de Ambiente:** Os testes utilizam o arquivo `application-tests.properties` que carrega automaticamente as variáveis do seu `.env` para conectar ao banco de dados durante a validação dos **Repositories**.
-
-🔝 [Voltar ao topo](#topo)
-
----
-
 <a id="como-executar-o-projeto"></a>
 ## ▶️ Como Executar o Projeto
 
@@ -612,7 +598,7 @@ Para rodar a aplicação em ambiente local, é necessário seguir os passos de c
 
 ### 1️⃣ Configuração do Banco de Dados
 
-O projeto utiliza o **Flyway** para gerir as migrações de esquema. Antes de iniciar, crie uma base de dados no PostgreSQL (ex: `churninsight`) e configure as variáveis de ambiente no ficheiro `.env` na raiz do projeto ou diretamente no sistema:
+O projeto utiliza o **Flyway** para gerir as migrações de esquema. Antes de iniciar, crie uma base de dados no PostgreSQL (ex: `churninsight`) e configure as variáveis de ambiente no ficheiro `.env` na raiz do diretório `churn` ou diretamente no sistema:
 
 ```bash
 DATABASE_HOST=localhost
@@ -627,7 +613,7 @@ DS_SERVICE_URL=http://localhost:8000
 
 ### 2️⃣ Build e Execução
 
-Na raiz do diretório _backend_, utilize o Maven para baixar as dependências e iniciar o servidor:
+Na raiz do diretório `churn`, utilize o Maven para baixar as dependências e iniciar o servidor:
 
 ```bash
 # Limpa e instala as dependências
@@ -651,6 +637,38 @@ Após o _log_ de sucesso do Spring Boot, os serviços estarão disponíveis nos 
 
 * **Dashboard (_Frontend_):** `http://localhost:8080/index.html`
 * **Documentação (Swagger):** `http://localhost:8080/swagger-ui.html`
+
+🔝 [Voltar ao topo](#topo)
+
+---
+
+<a id="testes"></a>
+## 🧪 Testes
+
+O projeto adota uma pirâmide de testes robusta para garantir que as predições de churn e o processamento de dados ocorram sem falhas de integridade.
+A suíte de testes foi dividida em três camadas principais utilizando **JUnit 5**, **Mockito** e **AssertJ**:
+
+1. **Testes de Unidade (Puros):** Focados na lógica de negócio isolada (**Services** e **Validators**).
+2. **Testes de Integração (_Slice_):** Validação de persistência com `DataJpaTest` (PostgreSQL) e serialização JSON com `JsonTest`.
+3. **Testes de Controller (MockMvc):** Garantem que os contratos da API (HTTP Status, JSON de saída) sejam respeitados.
+
+A suíte de testes atinge uma cobertura de **87% das classes** do sistema. O foco da validação concentra-se na camada de serviços e validadores, garantindo que 100% das regras de consistência de dados e cálculos de confiança sejam verificados automaticamente a cada _build_.
+
+---
+
+### 🛠️ Como executar os testes
+
+Para rodar toda a suíte de testes e gerar o relatório de execução, utilize o comando dentro do diretório `churn`:
+
+```bash
+# Executa todos os testes
+mvn test
+
+# Executa apenas uma classe específica
+mvn test -Dtest=ChurnControllerTests
+```
+
+> **Configuração de Ambiente:** Os testes utilizam o arquivo `application-tests.properties` que carrega automaticamente as variáveis do seu `.env` para conectar ao banco de dados durante a validação dos **Repositories**.
 
 🔝 [Voltar ao topo](#topo)
 
