@@ -37,6 +37,8 @@
   <img src="docs/ui-screenshot.png" alt="UI ChurnInsight" width="900">
 </p>
 
+Documentacao de Data Science: [README_DATA_SCIENCE.md](README_DATA_SCIENCE.md)
+
 Repositório **churninsight-nocountry** - MVP de previsão de churn (cancelamento de clientes) desenvolvido para o **hackathon da plataforma NoCountry**, focado em negócios de **serviços e assinaturas** (Telecom, Fintech, Streaming, E-commerce).
 
 A solução combina:
