@@ -2,34 +2,22 @@
   <a id="topo"></a>
 </p>
 
-<h1 align="center">🚀 ChurnInsight – Backend (Hackathon)</h1>
+<h1 align="center">ChurnInsight – Backend (Hackathon ONE BR)</h1>
 
-<p align="center">
-  <a href="https://www.oracle.com/java/">
-    <img src="https://img.shields.io/badge/Java-21-EE6300?logo=coffeescript&logoColor=white" alt="Java 21">
-  </a>
+<div align="center">
 
-  <a href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring%20Boot-3.x-479E3E?logo=springboot&logoColor=white" alt="Spring Boot">
-  </a>
+  [![Badge Java](https://img.shields.io/badge/Java-21-EE6300?logo=coffeescript&logoColor=white)](https://www.oracle.com/java/)
+  [![Badge Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-479E3E?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+  [![Badge Maven](https://img.shields.io/badge/Maven-3.9.x-C71A36?logo=maven&logoColor=white)](https://maven.apache.org/)
+  [![Badge JUnit](https://img.shields.io/badge/JUnit-5-D0372D?logo=junit&logoColor=white)](https://junit.org/)
+  [![Badge PostgreSQL](https://img.shields.io/badge/PostreSQL-16-31638C?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-  <a href="https://maven.apache.org/">
-    <img src="https://img.shields.io/badge/Maven-3.9.x-C71A36?logo=maven&logoColor=white" alt="Maven">
-  </a>
-
-  <a href="https://junit.org/">
-    <img src="https://img.shields.io/badge/JUnit-5-D0372D?logo=junit&logoColor=white" alt="JUnit">
-  </a>
-
-  <a href="https://www.postgresql.org/">
-    <img src="https://img.shields.io/badge/PostreSQL-16-31638C?logo=postgresql&logoColor=white" alt="PostgreSQL 16">
-  </a>
-</p>
+</div>
 <br>
 
-API backend desenvolvida para o projeto **ChurnInsight**, criado no contexto de um **hackathon**, com o objetivo de fornecer uma base sólida, escalável e bem estruturada para análise e previsão de *churn* (evasão de clientes).
+API _backend_ desenvolvida para o projeto **ChurnInsight**, criado no contexto de um **hackathon**, com o objetivo de fornecer uma base sólida, escalável e bem estruturada para análise e previsão de *churn* (evasão de clientes).
 
-Este backend foi construído seguindo boas práticas de arquitetura em camadas, separação de responsabilidades e foco em manutenibilidade, servindo como base para integração com frontend, pipelines de dados e possíveis modelos preditivos.
+Este _backend_ foi construído seguindo boas práticas de arquitetura em camadas, separação de responsabilidades e foco em manutenibilidade, servindo como base para integração com _frontend_, _pipelines_ de dados e possíveis modelos preditivos.
 
 ---
 
@@ -50,7 +38,7 @@ Este backend foi construído seguindo boas práticas de arquitetura em camadas, 
 * [Como Executar o Projeto](#como-executar-o-projeto)
 * [Testes](#testes)
 * [Boas Práticas Adotadas](#boas-praticas-adotadas)
-* [Decisões Técnicas & Tradeoffs](#decisoes-tecnicas-tradeoffs)
+* [Decisões Técnicas & _Tradeoffs_](#decisoes-tecnicas-tradeoffs)
 * [Próximos Passos](#proximos-passos)
 * [Licença de Uso](#licenca-de-uso)
 * [Equipe](#equipe)
@@ -60,11 +48,11 @@ Este backend foi construído seguindo boas práticas de arquitetura em camadas, 
 <a id="visao-geral"></a>
 ## 🧠 Visão Geral
 
-O **ChurnInsight Backend** é responsável por centralizar as regras de negócio, persistência de dados e exposição de _endpoints_ que suportam análises relacionadas à **predição de _churn_ de clientes**.
+O **ChurnInsight _Backend_** é responsável por centralizar as regras de negócio, persistência de dados e exposição de _endpoints_ que suportam análises relacionadas à **predição de _churn_ de clientes**.
 
 O projeto atua como um orquestrador que integra um **modelo de Machine Learning baseado em XGBoost**, permitindo que dados históricos sejam processados e avaliados para estimar a probabilidade de evasão. 
 
-Para facilitar a demonstração técnica, a aplicação serve nativamente uma interface. Esse _frontend_ permite o envio de dados, a visualização imediata de resultados e a execução de exemplos pré-configurados sem a necessidade de ferramentas externas.
+A aplicação serve nativamente uma interface para facilitar a demonstração técnica. Esse _frontend_ permite o envio de dados, a visualização imediata de resultados e a execução de exemplos pré-configurados sem a necessidade de ferramentas externas.
 
 A aplicação foi estruturada para equilibrar **velocidade de entrega**, **qualidade técnica** e **clareza arquitetural**, características essenciais em um ambiente de _hackathon_.
 
@@ -75,9 +63,9 @@ A aplicação foi estruturada para equilibrar **velocidade de entrega**, **quali
 <a id="objetivos-do-projeto"></a>
 ## 🎯 Objetivos do Projeto
 
-* Disponibilizar uma API robusta e extensível através de _endpoints_ padronizados para análise individual e em lote (_bulk_) de dados de clientes.
+* Disponibilizar uma API robusta e extensível através de _endpoints_ padronizados para análise de dados de clientes.
 * Centralizar a lógica de negócio e as regras de validação para garantir que a consistência dos dados e as métricas de retenção sejam processadas de forma segura.
-* Integrar inteligência preditiva ao sistema via consumo resiliente de um motor de Machine Learning (XGBoost) para o fornecimento de probabilidades de evasão.
+* Integrar inteligência preditiva ao sistema via consumo resiliente de um motor de Machine Learning para o fornecimento de probabilidades de evasão.
 * Facilitar a experiência de demonstração técnica por meio de uma interface integrada e dados de exemplo (_presets_) que permitem a validação imediata das funcionalidades.
 * Demonstrar rigor arquitetural mediante a aplicação de padrões de projeto e boas práticas de desenvolvimento voltadas à manutenibilidade e alta performance.
 
@@ -123,7 +111,7 @@ O projeto adota uma **estrutura em camadas** para garantir a separação de resp
 
 ```
 src/main/java/nocountry/churninsight/churn/
-├── config/             # Configurações globais e infraestrutura (Bean, CORS, RestTemplate)
+├── config/             # Configurações globais e infraestrutura (Bean, RestTemplate)
 ├── controller/         # Exposição de endpoints REST e controle de requisições
 ├── dto/                # Objetos para transporte de dados e validações de entrada
 ├── exception/          # Tratamento de exceções e respostas padronizadas de erro
@@ -148,15 +136,13 @@ src/test/java/          # Estrutura de testes unitários e de integração
 <a id="camadas-da-aplicacao"></a>
 ## 🧱 Camadas da Aplicação
 
-
-
-### Controller
+### _Controller_
 
 Funciona como a **porta de entrada** da aplicação. No projeto, o **ChurnController** recebe as requisições de predição e arquivos CSV, enquanto o **InfrastructureController** monitora a saúde do sistema e fornece dados de demonstração. Sua função é receber os dados e direcionar para o serviço correto.
 
 ---
 
-### Service
+### _Service_
 
 Contém a **regra de negócio** da aplicação. Para garantir a manutenibilidade, o projeto distribui as responsabilidades da seguinte forma:
 - Predição e Lote: O **PredictionService** centraliza a lógica de envio de dados para a IA e o processamento de arquivos CSV (lote).
@@ -165,25 +151,25 @@ Contém a **regra de negócio** da aplicação. Para garantir a manutenibilidade
 
 ---
 
-### Validator
+### _Validator_
 
 Garante que os dados tenham **coerência lógica**. Enquanto outras camadas olham se os campos estão preenchidos, o **ChurnDataValidator** impede "erros impossíveis", como um cliente possuir serviços de _internet_ (_backup_, segurança) sem possuir um plano de _internet_ ativo.
 
 ---
 
-### Repository
+### _Repository_
 
 Atua como o **bibliotecário do sistema**. Ele é o único que conversa diretamente com o banco de dados através do Spring Data JPA para salvar informações dos clientes ou buscar contagens específicas via consultas customizadas (`@Query`).
 
 ---
 
-### DTO
+### _Data Transfer Object_ (DTO)
 
 Funciona como um **envelope de segurança para o transporte de dados**. Eles garantem que apenas as informações necessárias para a predição viajem entre o _frontend_ e o _backend_, protegendo o modelo interno do banco de dados e validando o que o usuário preencheu.
 
 ---
 
-### Exception
+### _Exception_
 
 É o **protocolo de emergência** para quando algo dá errado. O **GlobalExceptionHandler** captura falhas (como o motor de IA estar fora do ar ou dados inválidos) e transforma erros técnicos complexos em mensagens claras e educadas para o usuário final.
 
@@ -192,18 +178,18 @@ Funciona como um **envelope de segurança para o transporte de dados**. Eles gar
 ### Config
 
 Contém as **definições estruturais** que permitem o funcionamento da aplicação e sua comunicação com o exterior.
-- Comunicação Externa (**AppConfig**): Define a configuração do **RestTemplate**, estabelecendo limites de tempo (_timeouts_) para conexão e leitura. Esta configuração é essencial para a resiliência do sistema, impedindo o bloqueio do _backend_ em caso de latência no motor de Inteligência Artificial.
+- Comunicação Externa (**AppConfig**): Define a configuração do **RestTemplate**, estabelecendo limites de tempo (_timeouts_) para conexão e leitura, impedindo o bloqueio do _backend_ em caso de latência no motor de Inteligência Artificial.
 - Roteamento Web (**WebConfig**): Estabelece as regras para o fornecimento de recursos estáticos (HTML, CSS e JS) e garante o mapeamento correto da pasta `static` e o direcionamento automático para o painel principal ao acessar a raiz da aplicação.
 
 ---
 
-### Model
+### _Model_
 
-Representa as tabelas do banco de dados no código Java. É a estrutura fundamental onde os dados dos clientes e os resultados das previsões são mapeados para serem armazenados permanentemente.
+Representa as **tabelas do banco de dados** no código Java. É a estrutura fundamental onde os dados dos clientes e os resultados das previsões são mapeados para serem armazenados permanentemente.
 
 ---
 
-### Database (_Migrations_)
+### _Database_ (_Migrations_)
 
 A gestão do esquema do banco de dados é realizada de forma automatizada.
 O uso de migrações (`db/migration`) permite que a estrutura do banco de dados evolua de forma controlada e reprodutível, além de garantir que todos os ambientes (desenvolvimento, teste e produção) utilizem a mesma versão das tabelas, evitando erros de incompatibilidade entre o código Java e o esquema SQL.
@@ -279,7 +265,7 @@ Isso garante versionamento, reprodutibilidade do _schema_ e facilidade de evolu�
 <a id="schema-do-banco-de-dados"></a>
 ## 📊 Schema do Banco de Dados
 
-O _schema_ abaixo representa o modelo real do banco de dados utilizado pelo projeto, alinhado às *features* consumidas pelo modelo de predição.
+O _schema_ abaixo representa o modelo real do banco de dados utilizado pelo projeto, alinhado às _features_ consumidas pelo modelo de predição.
 
 ### 👤 Tabela: `clientes`
 
@@ -313,7 +299,7 @@ Armazena os dados cadastrais e comportamentais dos clientes, utilizados como ent
 
 ### 📈 Tabela: `previsoes`
 
-Armazena o histórico de predições de churn geradas pelo modelo **XGBoost**.
+Armazena o histórico de predições de _churn_ geradas pelo modelo **ChurnInsight XGBoost**.
 
 | Campo | Tipo | Descrição                                              |
 |------|------|--------------------------------------------------------|
@@ -379,7 +365,7 @@ O objeto enviado deve conter as características demográficas e contratuais do 
 
 #### Exemplo de Resposta (Sucesso)
 
-A resposta é enriquecida pelo backend com o cálculo de confiança.
+A resposta é enriquecida pelo _backend_ com o cálculo de confiança, caso necessário.
 
 ```json
 {
@@ -395,15 +381,13 @@ A resposta é enriquecida pelo backend com o cálculo de confiança.
 
 _Endpoint_ para processamento analítico em lote (_bulk processing_).
 
-Utiliza um algoritmo customizado de parsing linear (**BufferedReader**) para iterar sobre o arquivo CSV sem carregar todo o conteúdo na memória (focado em performance).
+Utiliza um algoritmo customizado de _parsing_ linear (**BufferedReader**) para iterar sobre o arquivo CSV sem carregar todo o conteúdo na memória (focado em performance).
 Para cada linha válida, o sistema realiza uma chamada ao motor de IA e consolida o resultado em um **PredictDTO**.
 
 > [!NOTE]
 > Linhas com formato inconsistente (menos de 19 colunas) são ignoradas e registradas em _log_, impedindo que erros isolados interrompam o processamento do lote.
 
 #### Exemplo de Resposta (Sucesso)
-
-A resposta é enriquecida pelo _backend_ com o cálculo de confiança.
 
 ```json
 [
@@ -433,8 +417,6 @@ Recupera métricas agregadas baseadas no histórico de predições armazenadas n
 
 #### Exemplo de Resposta (Sucesso)
 
-A resposta é enriquecida pelo _backend_ com o cálculo de confiança.
-
 ```json
 {
   "totalClients": 150,
@@ -462,7 +444,7 @@ Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ at
 <p align="center">
   <img src="churn\assets\print-interface.png" alt="Interface ChurnInsight" width="800">
   <br>
-  <em><strong>Figura 1:</strong> Interface SPA integrada ao Spring Boot. O painel demonstra o consumo dos <strong>Presets</strong> e a visualização dinâmica do cálculo de <strong>Confiança</strong> gerado pelo backend.</em>
+  <em><strong>Figura 1:</strong> Interface SPA integrada ao Spring Boot. O painel demonstra o consumo dos <strong>Presets</strong> e a visualização dinâmica da <strong>predição de evasão</strong> de clientes.</em>
 </p>
 
 ---
@@ -481,28 +463,38 @@ Interface para exploração e execução de testes manuais nos _endpoints_ sem n
 
 ### `GET /demo-examples`
 
-Fornece uma lista de cenários pré-configurados (Presets) para preenchimento automático e testes rápidos da interface.
+Fornece uma lista de cenários pré-configurados (_presets_) para preenchimento automático e testes rápidos da interface.
 
 #### Exemplo de Resposta (Sucesso)
 
 ```json
 [
   {
-    "id": "high-risk",
-    "order": 2,
-    "label": "Novo Cliente (Risco Alto)",
-    "risk": "high",
-    "description": "Contrato mensal, Fibra Ótica e sem serviços de segurança.",
+    "id": "low-risk",
+    "order": 1,
+    "label": "Cliente Fiel (Risco Baixo)",
+    "risk": "low",
+    "description": "Contrato Bianual com todos os serviços de suporte.",
     "payload": {
-      "gender": "Feminino",
-      "SeniorCitizen": 0,
-      "Partner": "Não",
-      "Dependents": "Não",
-      "tenure": 1,
-      "PhoneService": "Sim",
-      "InternetService": "Fibra Ótica",
-      "MonthlyCharges": 99.0,
-      "TotalCharges": 99.0
+      "gender": "Masculino",
+        "SeniorCitizen": 0,
+        "Partner": "Sim",
+        "Dependents": "Sim",
+        "tenure": 60,
+        "PhoneService": "Sim",
+        "MultipleLines": "Sim",
+        "InternetService": "DSL",
+        "OnlineSecurity": "Sim",
+        "OnlineBackup": "Sim",
+        "DeviceProtection": "Sim",
+        "TechSupport": "Sim",
+        "StreamingTV": "Não",
+        "StreamingMovies": "Não",
+        "Contract": "Bianual",
+        "PaperlessBilling": "Não",
+        "PaymentMethod": "Cartão de crédito",
+        "MonthlyCharges": 29.00,
+        "TotalCharges": 1700.00
     }
   }
 ]
@@ -519,8 +511,17 @@ Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a ins
 ```json
 {
   "status": "UP",
-  "java_service_url": "http://192.168.1.10:8080",
+  "java_service_url": "http://127.0.0.1:8080",
   "java_internal_latency": 15
+}
+```
+
+#### Exemplo de Resposta (Serviço _Offline_)
+
+```json
+{
+  "status": "DOWN",
+  "error": "Mensagem do erro"
 }
 ```
 
@@ -539,20 +540,24 @@ Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost
 {
   "status": "online",
   "model_loaded": true,
-  "ds_service_url": "http://api-ml-url",
   "model_path": "models/xgb_model.joblib",
-  "threshold": 0.5
+  "threshold": 0.5,
+  "ds_service_url": "http://api-ml-url",
+  "internal_latency": 45
 }
 ```
 
-#### Exemplo de Resposta (Serviço Offline)
+#### Exemplo de Resposta (Serviço _Offline_)
 
 ```json
 {
   "status": "offline",
   "model_loaded": false,
-  "error_message": "Connection refused",
-  "ds_service_url": "http://api-ml-url"
+  "ds_service_url": "http://api-ml-url",
+  "internal_latency": -1,
+  "threshold": "-",
+  "model_path": "indisponível",
+  "error_message": "Connection refused"
 }
 ```
 
@@ -581,7 +586,7 @@ Todas as respostas de erro seguem o formato:
 | **404** | Recurso solicitado não existe no banco. | `ResourceNotFoundException` |
 | **405** | Tentativa de uso de método não suportado. | `HttpRequestMethodNotSupportedException` |
 | **422** | Dados válidos, mas inconsistentes para a IA. | `InvalidChurnDataException` |
-| **502** | O serviço de Data Science (Python) está offline. | `IntegrationException` |
+| **502** | O serviço de Data Science (Python) está _offline_. | `IntegrationException` |
 | **504** | O motor de predição excedeu o tempo limite. | `PredictionServiceTimeoutException` |
 
 
@@ -641,7 +646,7 @@ mvn spring-boot:run -DskipTests
 
 Após o _log_ de sucesso do Spring Boot, os serviços estarão disponíveis nos seguintes endereços:
 
-* **Dashboard (_Frontend_):** `http://localhost:8080/index.html`
+* **Interface (_Frontend_):** `http://localhost:8080/index.html`
 * **Documentação (Swagger):** `http://localhost:8080/swagger-ui.html`
 
 🔝 [Voltar ao topo](#topo)
@@ -651,7 +656,7 @@ Após o _log_ de sucesso do Spring Boot, os serviços estarão disponíveis nos 
 <a id="testes"></a>
 ## 🧪 Testes
 
-O projeto adota uma pirâmide de testes robusta para garantir que as predições de churn e o processamento de dados ocorram sem falhas de integridade.
+O projeto adota uma pirâmide de testes robusta para garantir que as predições de _churn_ e o processamento de dados ocorram sem falhas de integridade.
 A suíte de testes foi dividida em três camadas principais utilizando **JUnit 5**, **Mockito** e **AssertJ**:
 
 1. **Testes de Unidade (Puros):** Focados na lógica de negócio isolada (**Services** e **Validators**).
@@ -704,7 +709,7 @@ O desenvolvimento do projeto seguiu padrões de mercado para garantir manutenibi
 ---
 
 <a id="decisoes-tecnicas-tradeoffs"></a>
-## 🧠 Decisões Técnicas & Trade-offs
+## 🧠 Decisões Técnicas & _Trade-offs_
 
 Abaixo estão listadas as principais decisões de engenharia e as renúncias (_trade-offs_) assumidas para este projeto.
 
@@ -724,9 +729,9 @@ Abaixo estão listadas as principais decisões de engenharia e as renúncias (_t
 
 ### _Frontend_ Integrado ao _Backend_
 
-**Decisão:** FInterface simples servida via recursos estáticos do Spring Boot.
+**Decisão:** Interface simples servida via recursos estáticos do Spring Boot.
 
-* **Pró**: Garante uma demonstração _end-to-end_ imediata com deploy simplificado (artefato único).
+* **Pró**: Garante uma demonstração _end-to-end_ imediata com _deploy_ simplificado (artefato único).
 * **Contra**: Limita a escalabilidade independente da interface em relação à API.
 
 ### Foco em Legibilidade
@@ -746,11 +751,11 @@ Abaixo estão listadas as principais decisões de engenharia e as renúncias (_t
 Como parte da evolução planejada para a solução, foram mapeadas as seguintes melhorias técnicas:
 
 1. [ ] **Métricas Financeiras (_Revenue at Risk_)**: Integrar a lógica de cálculo de média e soma de valores para exibir o impacto financeiro estimado dos clientes em risco de evasão.
-2. [ ] **Séries Temporais**: Evoluir o _StatsService_ para agrupar predições por períodos (diário/mensal), permitindo a visualização de gráficos de linha com a evolução da taxa de churn ao longo do tempo.
+2. [ ] **Séries Temporais**: Evoluir o _StatsService_ para agrupar predições por períodos (diário/mensal), permitindo a visualização de gráficos de linha com a evolução da taxa de _churn_ ao longo do tempo.
 3. [ ] **Segmentação por Atributos**: Implementar filtros dinâmicos para calcular estatísticas baseadas em categorias (ex: Taxa de _Churn_ apenas para clientes com "Fibra Óptica" vs "DSL").
 4. [ ] **Refatoração do _Parser_ de CSV**: Substituição da lógica manual de _split_ pela integração total com a biblioteca Apache Commons CSV, visando suporte a delimitadores complexos e tratamento de campos com aspas.
 5. [ ] **Autenticação e Segurança**: Implementação de Spring Security com JWT ou Basic Auth para proteger os _endpoints_ de estatísticas e infraestrutura, mantendo apenas a interface de demonstração pública.
-6. [ ] **Persistência de Auditoria**: Implementar a gravação automática na tabela `previsoes` apenas para fins de auditoria e retreinamento futuro do modelo de IA.
+6. [ ] **Persistência de Auditoria**: Implementar a gravação automática na tabela `previsoes` para fins de auditoria e retreinamento futuro do modelo de IA.
 7. [ ] **Persistência de Lote**: Implementação da gravação automática no banco de dados para todas as predições realizadas via _upload_, permitindo análises históricas retroativas.
 8. [ ] **Histórico do Cliente**: Permitir que, mediante autenticação, um cliente possa salvar o seu resultado de _churn_ para acompanhar a evolução do seu risco ao longo dos meses.
 9. [ ] **Expansão da Malha de Testes**: Ampliar a cobertura de testes de integração para alcançar 95% dos serviços críticos, incluindo testes de carga para o processamento de CSV e simulações de falhas de rede intermitentes.
