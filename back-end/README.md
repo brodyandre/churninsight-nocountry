@@ -419,11 +419,11 @@ Recupera métricas agregadas baseadas no histórico de predições armazenadas n
 
 ```json
 {
-  "totalClients": 150,
-  "totalPredictions": 150,
-  "churnRate": 24.0,
-  "retainedClients": 114,
-  "churnedClients": 36
+  "total_clientes": 150,
+  "total_previsoes": 150,
+  "taxa_churn": 24.0,
+  "clientes_retidos": 114,
+  "clientes_churn": 36
 }
 ```
 
@@ -449,15 +449,27 @@ Através da configuração de **ResourceHandlers** no Spring Web, o _backend_ at
 
 ---
 
-### `GET /swagger-ui/index.html`
+### `GET /swagger-ui.html`
 
-Interface para exploração e execução de testes manuais nos _endpoints_ sem necessidade de ferramentas externas.
+Interface interativa para exploração e execução de testes manuais nos _endpoints_ sem necessidade de ferramentas externas.
+
+> [!TIP] 
+> Esta interface é a representação visual do contrato OpenAPI 3.1.0 do projeto. Ela facilita a compreensão dos modelos de dados (DTOs) e permite testar a lógica de predição em tempo real.
 
 <p align="center">
   <img src="churn\assets\print-swagger.png" alt="Documentação Swagger OpenAPI" width="800">
   <br>
-  <em><strong>Figura 2:</strong> Documentação interativa via <strong>SpringDoc OpenAPI 3</strong>. A interface permite a validação dos contratos de dados e testes diretos nos endpoints de predição e estatísticas.</em>
+  <em><strong>Figura 2:</strong> Documentação interativa via <strong>SpringDoc OpenAPI 3</strong>. A interface permite a validação dos contratos de dados e testes diretos nos endpoints de predição e infraestrutura.</em>
 </p>
+
+---
+
+### `GET /api-docs`
+
+Especificação técnica estruturada em formato JSON para integração com ferramentas de terceiros e automação de testes.
+
+> [!IMPORTANT] 
+> Utilize este _endpoint_ para importar a coleção completa de _endpoints_ em ferramentas como Postman ou Insomnia. Basta selecionar a opção "Import via Link" e fornecer a URL da API em execução.
 
 ---
 
@@ -516,20 +528,11 @@ Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a ins
 }
 ```
 
-#### Exemplo de Resposta (Serviço _Offline_)
-
-```json
-{
-  "status": "DOWN",
-  "error": "Mensagem do erro"
-}
-```
-
 ---
 
 ### `GET /ds-health`
 
-Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost).
+Verifica a conectividade e o estado do Serviço de Data Science (FastAPI / XGBoost).
 
 > [!NOTE] 
 > Este _endpoint_ retorna o _header_ customizado `X-Proxy-Latency-Ms`, indicando o tempo de ida e volta (_round-trip_) entre o Java e o Python.
@@ -538,12 +541,12 @@ Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost
 
 ```json
 {
-  "status": "online",
+  "status": "UP",
   "model_loaded": true,
-  "model_path": "models/xgb_model.joblib",
+  "service_version": "1.0.0",
   "threshold": 0.5,
-  "ds_service_url": "http://api-ml-url",
-  "internal_latency": 45
+  "modelo_path": "/app/models/churn_xgboost_pipeline_tuned.joblib",
+  "ds_service_url": "http://ds-service:8000",
 }
 ```
 
@@ -553,11 +556,10 @@ Verifica a conectividade e o estado do Serviço de Data Science (FastAPI/XGBoost
 {
   "status": "offline",
   "model_loaded": false,
-  "ds_service_url": "http://api-ml-url",
-  "internal_latency": -1,
+  "ds_service_url": "http://ds-service:8000",
   "threshold": "-",
   "model_path": "indisponível",
-  "error_message": "Connection refused"
+  "error_message": "Mensagem de erro"
 }
 ```
 
