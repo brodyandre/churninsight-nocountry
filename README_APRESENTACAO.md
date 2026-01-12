@@ -386,5 +386,6 @@ cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 - [walkii-dev](https://github.com/walkii-dev) - [Back-end]
 - [augustoramos000](https://github.com/augustoramos000) - [Back-end]
 - [pedrocassioG](https://github.com/pedrocassioG) - [Data-Science]
+- [joaojosers](https://github.com/joaojosers) -[Back-end]
   
 [Voltar ao Sumário](#sumario)
