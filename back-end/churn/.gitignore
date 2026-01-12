@@ -1,33 +1,39 @@
-HELP.md
+### Java/Maven ###
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.nextSnapshot
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+### Environment / Secrets ###
 .env
-!**/src/main/**/target/
-!**/src/test/**/target/
+.env.local
+.env.*.local
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+### IDE Specific ###
+# IntelliJ
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Eclipse / STS
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+.sts4-cache
 
-### VS Code ###
+# VS Code
 .vscode/
+bin/
+
+### OS Specific ###
+.DS_Store
+Thumbs.db
