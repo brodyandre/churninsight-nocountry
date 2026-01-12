@@ -385,5 +385,6 @@ cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 - [brodyandre](https://github.com/brodyandre)
 - [walkii-dev](https://github.com/walkii-dev)
 - [augustoramos000](https://github.com/augustoramos000)
+- [pedrocassioG](https://github.com/pedrocassioG)
 
 [Voltar ao Sumário](#sumario)
