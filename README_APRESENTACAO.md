@@ -382,9 +382,9 @@ cd C:\Users\USER\Documents\Repositorios\churninsight-nocountry\back-end\churn
 <a id="time"></a>
 ## Time
 
-- [brodyandre](https://github.com/brodyandre)
-- [walkii-dev](https://github.com/walkii-dev)
-- [augustoramos000](https://github.com/augustoramos000)
-- [pedrocassioG](https://github.com/pedrocassioG)
-
+- [brodyandre](https://github.com/brodyandre) - [Data-Science]
+- [walkii-dev](https://github.com/walkii-dev) - [Back-end]
+- [augustoramos000](https://github.com/augustoramos000) - [Back-end]
+- [pedrocassioG](https://github.com/pedrocassioG) - [Data-Science]
+  
 [Voltar ao Sumário](#sumario)
