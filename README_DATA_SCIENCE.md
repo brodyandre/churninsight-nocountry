@@ -485,6 +485,6 @@ curl.exe -X POST "http://localhost:8000/predict" ^
 
 - Hackathon No Country — equipe ChurnInsight
 
-> Atualize esta seção com os nomes/links do time conforme o padrão do repositório.
+- [pedrocassioG](https://github.com/pedrocassioG)
 
 [⬆ Voltar ao Sumário](#menu)
