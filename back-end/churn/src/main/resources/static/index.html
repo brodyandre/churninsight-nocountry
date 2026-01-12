@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChurnInsight</title>
+    <link rel="icon" href="./img/favicon.ico" type="image/ico">
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">
+                    <img src="./img/logo.png" alt="Logo ChurnGuard">
+                </div>
+                <div>
+                    <h1>ChurnInsight</h1>
+                </div>
+            </div>
+
+            <div class="chips">
+                <div>
+                    <span class="chip">UI: <code>/</code></span>
+                    <span class="divider-v">|</span>
+                    <span class="chip">Modelo de Predição: <code>/churn/predict</code></span>
+                </div>
+                <div>
+                    <span class="chip" id="chipDsUrl">DS URL: —</span>
+                    <span class="divider-v">|</span>
+                    <span class="chip warn" id="chipHealth">Health: checando…</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="layout">
+            <!-- Sidebar -->
+            <aside class="card">
+                <h2>Entrada</h2>
+                <div class="muted ">
+                    <span>→ Edite o formulário ou carregue um preset.</span></br>
+                    <span>→ Clique em <b>Prever</b> para chamar <code>/churn/predict</code>.</span>
+                </div>
+
+                <div class="row">
+                    <div class="grow">
+                        <label class="label">Presets
+                            <select id="demoSelect"></select>
+                        </label>
+                    </div>
+                    <button class="btn ghost" id="btnLoad">Carregar</button>
+                </div>
+
+                <div class="row">
+                    <span class="riskTag custom" id="riskTag">
+                        <span class="badge">
+                    </span>
+                    <span id="riskText">Custom</span></span>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Abas do formulário -->
+                <div class="tabbar" role="tablist" aria-label="Form tabs">
+                    <input type="radio" id="radio-1" name="tabs" checked>
+                    <label class="tab" for="radio-1" data-tab="tab_basic" id="tabBtn_basic">Básico</label>
+
+                    <input type="radio" id="radio-2" name="tabs">
+                    <label class="tab" for="radio-2" data-tab="tab_services" id="tabBtn_services">Serviços</label>
+
+                    <input type="radio" id="radio-3" name="tabs">
+                    <label class="tab" for="radio-3" data-tab="tab_billing" id="tabBtn_billing">Cobrança</label>
+
+                    <span class="glider"></span>
+                </div>
+
+                <!-- TAB: Básico -->
+                <div class="tabpanel active" id="tab_basic" role="tabpanel">
+                    <div class="formGrid2">
+                        <div>
+                            <label class="label">Gênero*
+                                <select id="f_gender">
+                                    <option>Feminino</option><option>Masculino</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Idoso*
+                                <select id="f_SeniorCitizen">
+                                    <option value="0">0</option><option value="1">1</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Cônjuge*
+                                <select id="f_Partner">
+                                    <option>Sim</option><option>Não</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Dependentes*
+                                <select id="f_Dependents">
+                                    <option>Sim</option><option>Não</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="span2">
+                            <label class="label">Tempo de Contrato*
+                                <input id="f_tenure" type="number" min="0" step="1" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Serviços -->
+                <div class="tabpanel" id="tab_services" role="tabpanel">
+                    <div class="formGrid2">
+                        <div>
+                            <label class="label">Serviço de Telefone*
+                                <select id="f_PhoneService">
+                                    <option>Sim</option><option>Não</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Múltiplas Linhas de Telefone*
+                                <select id="f_MultipleLines">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de telefone</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="span2">
+                            <label class="label">Serviço de Internet*
+                                <select id="f_InternetService">
+                                    <option>DSL</option><option>Fibra Ótica</option><option>Nenhum</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Segurança Online*
+                                <select id="f_OnlineSecurity">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Backup Online*
+                                <select id="f_OnlineBackup">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Proteção do Dispositivo*
+                                <select id="f_DeviceProtection">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Suporte Técnico*
+                                <select id="f_TechSupport">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Streaming de TV*
+                                <select id="f_StreamingTV">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Streaming de Filmes*
+                                <select id="f_StreamingMovies">
+                                    <option>Sim</option><option>Não</option><option>Sem serviço de internet</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Cobrança -->
+                <div class="tabpanel" id="tab_billing" role="tabpanel">
+                    <div class="formGrid2">
+                        <div class="span2">
+                            <label class="label">Tipo de Contrato*
+                                <select id="f_Contract">
+                                    <option>Mensal</option><option>Anual</option><option>Bianual</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="span2">
+                            <label class="label">Fatura Online*
+                                <select id="f_PaperlessBilling">
+                                    <option>Sim</option><option>Não</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="span2">
+                            <label class="label">Método de Pagamento*
+                                <select id="f_PaymentMethod">
+                                    <option>Pix</option>
+                                    <option>Ted</option>
+                                    <option>Boleto</option>
+                                    <option>Débito em conta</option>
+                                    <option>Cartão de crédito</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Valor Mensal*
+                                <input id="f_MonthlyCharges" type="number" min="0" step="0.01" />
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="label">Valor Anual*
+                                <input id="f_TotalCharges" type="number" min="0" step="0.01" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="hint" style="margin-top:12px;">
+                    <span>*</span> Campos obrigatórios.
+                </div>
+
+                <div class="row buttons">
+                    <button class="btn ghost" id="btnHealth">Verificar conexão</button>
+                    <button class="btn ghost" id="btnReset">Reset</button>
+                    <button class="btn primary" id="btnPredict">Prever</button>
+                </div>
+            </aside>
+
+            <!-- Main -->
+            <main class="card">
+                <h2>Status e KPIs</h2>
+                <div class="muted">
+                    → Indica status da aplicação (<code>/churn/health</code>) e do modelo (<code>/churn/ds-health</code>).
+                </div>
+
+                <div class="kpi">
+                    <div class="pill">
+                        <div id="kpiSpring">Spring: —</div>
+                        <div id="kpiDs">FastAPI: —</div>
+                    </div>
+                    <div class="pill">
+                        <div id="kpiDsLatency">Latência proxy: —</div>
+                        <div id="kpiPredictLatency">Latência predict: —</div>
+                    </div>
+                    <div class="pill">
+                        <div id="kpiThreshold">Threshold: —</div>
+                        <div id="kpiModel">Modelo: —</div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <h2>Resposta</h2>
+                <pre id="result">Aguardando…</pre>
+
+                <div class="divider"></div>
+
+                <details open>
+                    <summary>Modo avançado (JSON Request)</summary>
+                    <div class="muted">
+                        → Você pode editar o JSON manualmente e clicar em <b>Aplicar JSON</b>.
+                    </div>
+                    <label class="label">
+                        <textarea id="payloadJson" spellcheck="false"></textarea>
+                    </label>
+                    <div class="row" style="margin-top:10px;">
+                        <button class="btn ghost" id="btnSyncJson">Aplicar JSON</button>
+                    </div>
+                </details>
+            </main>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-info">
+                <span class="copyright">© 2025 • ChurnGuard Analytics</span>
+                <span class="divider-v">|</span>
+                <a href="https://github.com/brodyandre/churninsight-nocountry?tab=MIT-1-ov-file#readme" class="footer-link">Licença de uso</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
