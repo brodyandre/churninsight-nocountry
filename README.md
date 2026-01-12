@@ -1,4 +1,4 @@
-# ChurnInsight – Previsão de Cancelamento de Clientes (Hackaton No Country)
+# ChurnInsight – Previsão de Cancelamento de Clientes (Hackathon No Country)
 
 Repositório `churninsight-nocountry` — MVP de previsão de churn (cancelamento de clientes) desenvolvido para o **hackaton da plataforma No Country**, com foco em negócios de **serviços e assinaturas** (Telecom, Fintech, Streaming, E-commerce).
 
@@ -16,7 +16,7 @@ A solução combina:
 3. [Arquitetura](#arquitetura)  
 4. [Dataset utilizado](#dataset-utilizado)  
 5. [Tecnologias](#tecnologias)  
-6. [Como executar](#como-executar)  
+6. [Como Executar](#como-executar)  
    - [Data Science (Python)](#data-science-python)  
    - [Microserviço Python (opcional)](#microserviço-python-opcional)  
    - [API Java (Spring Boot)](#api-java-spring-boot)  
@@ -37,7 +37,12 @@ Este projeto tem como objetivo:
 - Estimar a **probabilidade numérica** associada a essa previsão;
 - Disponibilizar essa previsão via uma **API REST**, permitindo que times de negócio (marketing, suporte, sucesso do cliente) ajam de forma **proativa** para retenção.
 
+
+[Voltar ao Sumário](#-sumário)
+
 ---
+
+
 
 ## Visão geral da solução
 
@@ -58,6 +63,9 @@ A solução está dividida em dois grandes componentes:
    - Validação de entrada e tratamento de erros;  
    - Integração com o modelo de Data Science (via microserviço Python ou modelo carregado).
 
+
+[Voltar ao Sumário](#-sumário)
+
 ---
 
 ## Arquitetura
@@ -74,7 +82,12 @@ Fluxo simplificado:
    - Recebe a previsão e a probabilidade;  
    - Retorna uma resposta JSON estruturada ao cliente.
 
-Estrutura de pastas sugerida no repositório:
+
+[Voltar ao Sumário](#-sumário)
+
+---
+
+## Estrutura de pastas sugerida no repositório
 
 ```text
 .
@@ -87,3 +100,85 @@ Estrutura de pastas sugerida no repositório:
 ├── backend/               # API Java + Spring Boot
 ├── docs/                  # Diagramas, imagens, anotações
 └── README.md
+```
+
+## Dataset utilizado
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Tecnologias
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Como Executar
+### Data Science (Python)
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+### API Java (Spring Boot)
+   
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+### Microserviço Python (opcional)
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Contrato da API / JSON
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Métricas do modelo
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Próximos Passos
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
+## Time
+
+
+
+
+
+[Voltar ao Sumário](#-sumário)
+
+---
