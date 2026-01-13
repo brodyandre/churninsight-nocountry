@@ -38,6 +38,7 @@
 </p>
 
 Documentação de Data Science: [README_DATA_SCIENCE.md](README_DATA_SCIENCE.md)
+
 Documentação de Back-End: [README_BACK-END.md](back-end/README.md)
 
 Repositório **churninsight-nocountry** - MVP de previsão de churn (cancelamento de clientes) desenvolvido para o **hackathon da plataforma NoCountry**, focado em negócios de **serviços e assinaturas** (Telecom, Fintech, Streaming, E-commerce).
