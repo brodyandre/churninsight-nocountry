@@ -473,7 +473,7 @@ Especificação técnica estruturada em formato JSON para integração com ferra
 
 ---
 
-### `GET /demo-examples`
+### `GET /churn/demo-examples`
 
 Fornece uma lista de cenários pré-configurados (_presets_) para preenchimento automático e testes rápidos da interface.
 
@@ -514,7 +514,7 @@ Fornece uma lista de cenários pré-configurados (_presets_) para preenchimento 
 
 ---
 
-### `GET /health`
+### `GET /churn/health`
 
 Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a instância em execução.
 
@@ -530,7 +530,7 @@ Verifica a integridade do _backend_ (Spring Boot) e fornece detalhes sobre a ins
 
 ---
 
-### `GET /ds-health`
+### `GET /churn/ds-health`
 
 Verifica a conectividade e o estado do Serviço de Data Science (FastAPI / XGBoost).
 
@@ -546,7 +546,7 @@ Verifica a conectividade e o estado do Serviço de Data Science (FastAPI / XGBoo
   "service_version": "1.0.0",
   "threshold": 0.5,
   "modelo_path": "/app/models/churn_xgboost_pipeline_tuned.joblib",
-  "ds_service_url": "http://ds-service:8000",
+  "ds_service_url": "http://ds-service:8000"
 }
 ```
 
@@ -783,6 +783,5 @@ Este projeto é distribuído sob a licença MIT. Veja o arquivo `LICENSE` para m
 |---------------------------------------------------------------------------------------------------------------------------|---------------------------|-------------------|--------------------------------------------------------------------|--------|
 | <img src="https://github.com/augustoramos000.png" alt="Avatar de Augusto Ramos" style="width: 30px; border-radius: 50%;"> | **Augusto Ramos**         | Backend Developer | [LinkedIn](https://www.linkedin.com/in/augustoramos00/)            | [GitHub](https://github.com/augustoramos000) |
 | <img src="https://github.com/biachristie.png" alt="Avatar de Beatriz Christie" style="width: 30px; border-radius: 50%;">  | **Beatriz Christie**      | Backend Developer | [LinkedIn](https://www.linkedin.com/in/beatriz-christie/)          | [GitHub](https://github.com/biachristie) |
-| <img src="https://github.com/walkii-dev.png" alt="Avatar de Lucas Oliveira" style="width: 30px; border-radius: 50%;">     | **Lucas Oliveira**        | Backend Developer | [LinkedIn](https://www.linkedin.com/in/luoliveiracode/)            | [GitHub](https://github.com/walkii-dev) |
 | <img src="https://github.com/joaojosers.png" alt="Avatar de João José Sousa" style="width: 30px; border-radius: 50%;">    | **João José Sousa**       | Backend Developer | [LinkedIn](https://www.linkedin.com/in/joao-jose-sousa-developer/) | [GitHub](https://github.com/joaojosers) |
 | <img src="https://media.licdn.com/dms/image/v2/D4D03AQEjtCFXu74a2Q/profile-displayphoto-shrink_800_800/B4DZRnRvfxHIAg-/0/1736899492456?e=1769644800&v=beta&t=mcwTSf1hNyEyTVc_IT0Arb7oiyJj09jhfdS_bE0x6o0" alt="Avatar de Patryck Silva" style="width: 30px; border-radius: 50%;">          | **Patryck Henryck Silva** | Backend Developer | [LinkedIn](https://www.linkedin.com/in/patryck-henryck/)                          | [GitHub](https://github.com/PHmore) |
