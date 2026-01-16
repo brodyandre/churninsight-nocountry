@@ -493,8 +493,8 @@ curl.exe -X POST "http://localhost:8000/predict" ^
 
 | Foto                                                                                                                      | Nome                      | Squad              | LinkedIn                                                           | GitHub |
 |---------------------------------------------------------------------------------------------------------------------------|---------------------------|-------------------|--------------------------------------------------------------------|--------|
-| <img src="https://github.com/brodyandre.png" alt="Avatar de Luiz André de Souza" style="width: 30px; border-radius: 50%;">     | **Luiz André de Souza**        | Data Science | [LinkedIn](https://www.linkedin.com/in/)            | [GitHub](https://github.com/brodyandre) |                          | [GitHub](https://github.com/PHmore) |
-| <img src="https://github.com/pedrocassioG.png" alt="Avatar de Pedro Cassio" style="width: 30px; border-radius: 50%;">          | **Pedro Cassio** | Data Science | [LinkedIn](https://www.linkedin.com/in/pedro-cassio/)                          | [GitHub]
+| <img src="https://github.com/brodyandre.png" alt="Avatar de Luiz André de Souza" style="width: 30px; border-radius: 50%;">     | **Luiz André de Souza**        | Data Science | [LinkedIn](https://www.linkedin.com/in/luiz-andre-souza-data-engineer/)            | [GitHub](https://github.com/brodyandre) |
+| <img src="https://github.com/pedrocassioG.png" alt="Avatar de Pedro Cassio" style="width: 30px; border-radius: 50%;">          | **Pedro Cassio** | Data Science | [LinkedIn](https://www.linkedin.com/in/pedro-cassio/)                          | [GitHub](https://github.com/pedrocassioG)
 
 
 [⬆ Voltar ao Sumário](#menu)
